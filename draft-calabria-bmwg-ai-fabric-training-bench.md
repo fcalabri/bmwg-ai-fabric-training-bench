@@ -31,7 +31,15 @@ author:
     ins: C. Pignataro
     org: Blue Fern Consulting
     email: carlos@bluefern.consulting
-
+  - name: Qin Wu
+    ins. Q. Wu
+    org: Huawei
+    email: bill.wu@huawei.com
+  - name: Giuseppe Fioccola
+    ins: G. Fioccola
+    org: Huawei
+    email: giuseppe.fioccola@huawei.com
+ 
 normative:
   RFC1242:
   RFC2119:
