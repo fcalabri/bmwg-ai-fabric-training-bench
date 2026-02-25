@@ -32,7 +32,7 @@ author:
     org: Blue Fern Consulting
     email: carlos@bluefern.consulting
   - name: Qin Wu
-    ins. Q. Wu
+    ins: Q. Wu
     org: Huawei
     email: bill.wu@huawei.com
   - name: Giuseppe Fioccola
