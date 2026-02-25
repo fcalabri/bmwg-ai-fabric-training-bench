@@ -1,13 +1,13 @@
 <!-- regenerate: on (set to off if you edit this file) -->
 
-# TODO - Your title
+# Benchmarking Methodology for AI Training Network Fabrics
 
-This is the working area for the individual Internet-Draft, "TODO - Your title".
+This is the working area for the individual Internet-Draft, "Benchmarking Methodology for AI Training Network Fabrics".
 
-* [Editor's Copy](https://fcalabri.github.io/bmwg-ai-fabric-training-bench/#go.draft-todo-yourname-protocol.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-todo-yourname-protocol)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-todo-yourname-protocol)
-* [Compare Editor's Copy to Individual Draft](https://fcalabri.github.io/bmwg-ai-fabric-training-bench/#go.draft-todo-yourname-protocol.diff)
+* [Editor's Copy](https://fcalabri.github.io/bmwg-ai-fabric-training-bench/#go.draft-calabria-bmwg-ai-fabric-training-bench.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-calabria-bmwg-ai-fabric-training-bench)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-training-bench)
+* [Compare Editor's Copy to Individual Draft](https://fcalabri.github.io/bmwg-ai-fabric-training-bench/#go.draft-calabria-bmwg-ai-fabric-training-bench.diff)
 
 
 ## Contributing
