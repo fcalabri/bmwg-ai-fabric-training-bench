@@ -1161,7 +1161,7 @@ Table of Contents
    (Section 9.1, S=1GB).  At each scale point record JCT Ratio, BusBW,
    ECN ratio, PFC count, CPU and memory utilization.  Also measure BGP/
    routing convergence time after clearing all adjacencies (analogous to
-   [EVPN-BENCH] Section 6).
+   [EVPN-BENCH] Sections 3.10, 3.11, 4.9, 4.10).
 
 11.2.  Link Failure Convergence
 
@@ -1199,7 +1199,7 @@ Table of Contents
 
    *Objective:* Verify DUT fabric stability under sustained AI training
    load over an extended period, following the methodology pattern from
-   [EVPN-BENCH] Section 7.
+   [EVPN-BENCH] Sections 3.12, 4.11.
 
    *Procedure:* Configure DUT at maximum validated scale from
    Section 11.1.  Generate bidirectional collective communication
@@ -1334,9 +1334,9 @@ Table of Contents
    [EVPN-BENCH]
               Jacob, S. and K. Tiruveedhula, "Benchmarking Methodology
               for EVPN and PBB-EVPN", Work in Progress, Internet-Draft,
-              draft-kishjac-bmwg-evpntest-10, June 2018,
-              <https://datatracker.ietf.org/doc/html/draft-kishjac-bmwg-
-              evpntest-10>.
+              draft-ietf-bmwg-evpntest-11, August 2023,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-bmwg-
+              evpntest-11>.
 
    [LIBFABRIC]
               OpenFabrics Interfaces Working Group, "libfabric: Open

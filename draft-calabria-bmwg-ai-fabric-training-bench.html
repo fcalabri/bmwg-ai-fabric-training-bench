@@ -2851,7 +2851,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-fabric-scale-limits" class="section-name selfRef">Fabric Scale Limits</a>
         </h3>
 <p id="section-11.1-1"><strong>Objective:</strong> Determine the maximum fabric scale at which the DUT maintains acceptable KPI performance.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
-<p id="section-11.1-2"><strong>Procedure:</strong> Progressively increase active accelerator endpoints from N=64 to maximum topology support while running AllReduce (<a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>, S=1GB). At each scale point record JCT Ratio, BusBW, ECN ratio, PFC count, CPU and memory utilization. Also measure BGP/routing convergence time after clearing all adjacencies (analogous to <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> Section 6).<a href="#section-11.1-2" class="pilcrow">¶</a></p>
+<p id="section-11.1-2"><strong>Procedure:</strong> Progressively increase active accelerator endpoints from N=64 to maximum topology support while running AllReduce (<a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>, S=1GB). At each scale point record JCT Ratio, BusBW, ECN ratio, PFC count, CPU and memory utilization. Also measure BGP/routing convergence time after clearing all adjacencies (analogous to <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> Sections 3.10, 3.11, 4.9, 4.10).<a href="#section-11.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="link-failure-convergence">
@@ -2899,7 +2899,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
         <h3 id="name-24-hour-sustained-load">
 <a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-24-hour-sustained-load" class="section-name selfRef">24-Hour Sustained Load</a>
         </h3>
-<p id="section-12.1-1"><strong>Objective:</strong> Verify DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> Section 7.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
+<p id="section-12.1-1"><strong>Objective:</strong> Verify DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> Sections 3.12, 4.11.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
 <p id="section-12.1-2"><strong>Procedure:</strong> Configure DUT at maximum validated scale from <a href="#fabric-scale-limits" class="auto internal xref">Section 11.1</a>. Generate bidirectional collective communication traffic (alternating AllReduce and AlltoAll). Run continuously for 24 hours. Sample all KPIs from <a href="#kpi-framework-and-metrics-taxonomy" class="auto internal xref">Section 4</a> every 60 seconds.<a href="#section-12.1-2" class="pilcrow">¶</a></p>
 <p id="section-12.1-3">There <span class="bcp14">SHOULD NOT</span> be any memory leaks, crashes, or CPU spikes. Any anomaly <span class="bcp14">MUST</span> be reported with timestamp and duration.<a href="#section-12.1-3" class="pilcrow">¶</a></p>
 <p id="section-12.1-4"><strong>Reporting:</strong> Time-series plots of JCT Ratio, BusBW, ECN ratio, PFC count, CPU, and memory over the 24-hour period. Report standard deviation of JCT Ratio (stability metric).<a href="#section-12.1-4" class="pilcrow">¶</a></p>
@@ -3027,7 +3027,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <dd class="break"></dd>
 <dt id="EVPN-BENCH">[EVPN-BENCH]</dt>
         <dd>
-<span class="refAuthor">Jacob, S.</span> and <span class="refAuthor">K. Tiruveedhula</span>, <span class="refTitle">"Benchmarking Methodology for EVPN and PBB-EVPN"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-kishjac-bmwg-evpntest-10</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-kishjac-bmwg-evpntest-10">https://datatracker.ietf.org/doc/html/draft-kishjac-bmwg-evpntest-10</a>&gt;</span>. </dd>
+<span class="refAuthor">Jacob, S.</span> and <span class="refAuthor">K. Tiruveedhula</span>, <span class="refTitle">"Benchmarking Methodology for EVPN and PBB-EVPN"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-bmwg-evpntest-11</span>, <time datetime="2023-08" class="refDate">August 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-bmwg-evpntest-11">https://datatracker.ietf.org/doc/html/draft-ietf-bmwg-evpntest-11</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="LIBFABRIC">[LIBFABRIC]</dt>
         <dd>
