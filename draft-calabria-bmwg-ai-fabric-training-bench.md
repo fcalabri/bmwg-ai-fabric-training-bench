@@ -163,6 +163,7 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 
 The following terms are defined for use in this document. Where a term overlaps with {{RFC1242}} or {{RFC8238}}, the definition herein takes precedence in the context of AI fabric benchmarking.
 
+~~~~
 | Term | Definition |
 |---|---|
 | **AI Fabric** | The dedicated Ethernet backend network interconnecting accelerators (GPUs/XPUs) for distributed AI training, typically a non-blocking Clos topology running RoCEv2 |
@@ -192,6 +193,7 @@ The following terms are defined for use in this document. Where a term overlaps 
 | **CBFC** (Credit-Based Flow Control) | Optional UEC per-destination flow control; alternative to PFC that avoids head-of-line blocking |
 | **UEC Profile** | Defined UET feature subset: AI Base, AI Full, or HPC |
 | **Entropy Value** | Explicit per-packet UET field for ECMP path selection; improves multipath utilization vs. 5-tuple hashing |
+~~~~
 {: #tab-terminology title="Terminology and Definitions"}
 
 # Test Topology and Architecture
