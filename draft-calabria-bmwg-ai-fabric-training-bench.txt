@@ -244,116 +244,37 @@ Table of Contents
    term overlaps with [RFC1242] or [RFC8238], the definition herein
    takes precedence in the context of AI fabric benchmarking.
 
-       +===============+===========================================+
-       | Term          | Definition                                |
-       +===============+===========================================+
-       | *AI Fabric*   | The dedicated Ethernet backend network    |
-       |               | interconnecting accelerators (GPUs/XPUs)  |
-       |               | for distributed AI training, typically a  |
-       |               | non-blocking Clos topology running RoCEv2 |
-       +---------------+-------------------------------------------+
-       | *JCT* (Job    | The wall-clock duration from start to     |
-       | Completion    | completion of a training job, inclusive   |
-       | Time)         | of all computation and communication      |
-       |               | phases                                    |
-       +---------------+-------------------------------------------+
-       | *DUT Fabric*  | All leaf switches, spine switches,        |
-       |               | superspine switches (if applicable), and  |
-       |               | interconnecting links forming the AI      |
-       |               | training fabric                           |
-       +---------------+-------------------------------------------+
-       | *Roofline     | Theoretical minimum JCT assuming perfect  |
-       | JCT*          | (zero-contention) network behavior        |
-       +---------------+-------------------------------------------+
-       | *JCT Ratio*   | Measured JCT / Roofline JCT; 1.0 = no     |
-       |               | network overhead; >1.0 = fabric           |
-       |               | inefficiency                              |
-       +---------------+-------------------------------------------+
-       | *BusBW* (Bus  | Effective per-accelerator throughput      |
-       | Bandwidth)    | during a collective: (data_size x         |
-       |               | algo_factor) / time                       |
-       +---------------+-------------------------------------------+
-       | *QP* (Queue   | RDMA communication endpoint (Send Queue + |
-       | Pair)         | Receive Queue); multiple QPs per src-dst  |
-       |               | pair increase ECMP entropy                |
-       +---------------+-------------------------------------------+
-       | *Incast       | Ratio of senders to receivers (e.g., N:1  |
-       | Ratio*        | incast)                                   |
-       +---------------+-------------------------------------------+
-       | *MMR* (Max-   | Flow count on most-loaded link / average  |
-       | Mean Ratio)   | flow count; quantifies ECMP imbalance     |
-       |               | (1.0 = perfect)                           |
-       +---------------+-------------------------------------------+
-       | *PFC Pause    | Single PFC PAUSE frame transmitted on a   |
-       | Event*        | priority class                            |
-       +---------------+-------------------------------------------+
-       | *ECN Marking  | % of packets marked with Congestion       |
-       | Ratio*        | Experienced (CE) over a measurement       |
-       |               | interval                                  |
-       +---------------+-------------------------------------------+
-       | *Collective   | Coordinated cross-accelerator             |
-       | Operation*    | communication: AllReduce, AlltoAll,       |
-       |               | AllGather                                 |
-       +---------------+-------------------------------------------+
-       | *DCQCN*       | Data Center Quantized Congestion          |
-       |               | Notification: ECN + PFC for end-to-end    |
-       |               | congestion control with RoCEv2            |
-       +---------------+-------------------------------------------+
-       | *Packet       | Load balancing distributing individual    |
-       | Spray*        | packets across all ECMP paths; maximizes  |
-       |               | utilization but may cause reordering      |
-       +---------------+-------------------------------------------+
-       | *DLB/Flowlet* | Dynamic Load Balancing using flowlet      |
-       |               | detection; reroutes traffic at flow idle  |
-       |               | gaps                                      |
-       +---------------+-------------------------------------------+
-       | *Zero-Impact  | Sub-microsecond path convergence upon     |
-       | Failover*     | link/switch failure with no measurable    |
-       |               | JCT impact                                |
-       +---------------+-------------------------------------------+
-       | *UET* (Ultra  | Connectionless RDMA transport defined by  |
-       | Ethernet      | UEC Spec 1.0; designed as next-generation |
-       | Transport)    | replacement for RoCEv2                    |
-       +---------------+-------------------------------------------+
-       | *PDC* (Packet | Ephemeral, connectionless UET transport   |
-       | Delivery      | endpoint; analogous to but distinct from  |
-       | Context)      | an RDMA QP                                |
-       +---------------+-------------------------------------------+
-       | *ROD*         | Reliable Ordered Delivery: UET service    |
-       |               | semantically equivalent to RoCEv2 RC mode |
-       +---------------+-------------------------------------------+
-       | *RUD*         | Reliable Unordered Delivery: UET service  |
-       |               | enabling native packet spray without      |
-       |               | receiver reorder buffer overhead          |
-       +---------------+-------------------------------------------+
-       | *RUDI*        | Reliable Unordered Delivery for           |
-       |               | Idempotent operations; simplified         |
-       |               | retransmission for RDMA Writes            |
-       +---------------+-------------------------------------------+
-       | *UUD*         | Unreliable Unordered Delivery: best-      |
-       |               | effort UET service for telemetry/         |
-       |               | speculative operations                    |
-       +---------------+-------------------------------------------+
-       | *LLR* (Link   | Optional UEC per-hop error recovery (sub- |
-       | Layer Retry)  | microsecond) at the Ethernet link layer   |
-       +---------------+-------------------------------------------+
-       | *Packet       | Optional UEC enhancement; congested       |
-       | Trimming*     | switches transmit packet header only      |
-       |               | instead of dropping the full packet       |
-       +---------------+-------------------------------------------+
-       | *CBFC*        | Optional UEC per-destination flow         |
-       | (Credit-Based | control; alternative to PFC that avoids   |
-       | Flow Control) | head-of-line blocking                     |
-       +---------------+-------------------------------------------+
-       | *UEC Profile* | Defined UET feature subset: AI Base, AI   |
-       |               | Full, or HPC                              |
-       +---------------+-------------------------------------------+
-       | *Entropy      | Explicit per-packet UET field for ECMP    |
-       | Value*        | path selection; improves multipath        |
-       |               | utilization vs. 5-tuple hashing           |
-       +---------------+-------------------------------------------+
+| Term | Definition |
+|---|---|
+| **AI Fabric** | The dedicated Ethernet backend network interconnecting accelerators (GPUs/XPUs) for distributed AI training, typically a non-blocking Clos topology running RoCEv2 |
+| **JCT** (Job Completion Time) | The wall-clock duration from start to completion of a training job, inclusive of all computation and communication phases |
+| **DUT Fabric** | All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric |
+| **Roofline JCT** | Theoretical minimum JCT assuming perfect (zero-contention) network behavior |
+| **JCT Ratio** | Measured JCT / Roofline JCT; 1.0 = no network overhead; >1.0 = fabric inefficiency |
+| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective: (data_size x algo_factor) / time |
+| **QP** (Queue Pair) | RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy |
+| **Incast Ratio** | Ratio of senders to receivers (e.g., N:1 incast) |
+| **MMR** (Max-Mean Ratio) | Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect) |
+| **PFC Pause Event** | Single PFC PAUSE frame transmitted on a priority class |
+| **ECN Marking Ratio** | % of packets marked with Congestion Experienced (CE) over a measurement interval |
+| **Collective Operation** | Coordinated cross-accelerator communication: AllReduce, AlltoAll, AllGather |
+| **DCQCN** | Data Center Quantized Congestion Notification: ECN + PFC for end-to-end congestion control with RoCEv2 |
+| **Packet Spray** | Load balancing distributing individual packets across all ECMP paths; maximizes utilization but may cause reordering |
+| **DLB/Flowlet** | Dynamic Load Balancing using flowlet detection; reroutes traffic at flow idle gaps |
+| **Zero-Impact Failover** | Sub-microsecond path convergence upon link/switch failure with no measurable JCT impact |
+| **UET** (Ultra Ethernet Transport) | Connectionless RDMA transport defined by UEC Spec 1.0; designed as next-generation replacement for RoCEv2 |
+| **PDC** (Packet Delivery Context) | Ephemeral, connectionless UET transport endpoint; analogous to but distinct from an RDMA QP |
+| **ROD** | Reliable Ordered Delivery: UET service semantically equivalent to RoCEv2 RC mode |
+| **RUD** | Reliable Unordered Delivery: UET service enabling native packet spray without receiver reorder buffer overhead |
+| **RUDI** | Reliable Unordered Delivery for Idempotent operations; simplified retransmission for RDMA Writes |
+| **UUD** | Unreliable Unordered Delivery: best-effort UET service for telemetry/speculative operations |
+| **LLR** (Link Layer Retry) | Optional UEC per-hop error recovery (sub-microsecond) at the Ethernet link layer |
+| **Packet Trimming** | Optional UEC enhancement; congested switches transmit packet header only instead of dropping the full packet |
+| **CBFC** (Credit-Based Flow Control) | Optional UEC per-destination flow control; alternative to PFC that avoids head-of-line blocking |
+| **UEC Profile** | Defined UET feature subset: AI Base, AI Full, or HPC |
+| **Entropy Value** | Explicit per-packet UET field for ECMP path selection; improves multipath utilization vs. 5-tuple hashing |
 
-                    Table 1: Terminology and Definitions
+                Figure 2: Terminology and Definitions
 
 3.  Test Topology and Architecture
 
@@ -380,7 +301,7 @@ Table of Contents
    Hosts w/  Hosts w/  Hosts w/  Hosts w/
    RoCEv2 NIC            RoCEv2 NIC
 
-               Figure 2: Topology A: 2-Tier Clos (Leaf-Spine)
+               Figure 3: Topology A: 2-Tier Clos (Leaf-Spine)
 
    The DUT boundary encompasses all leaf and spine switches and their
    interconnecting links.  Traffic generators or actual GPU hosts
@@ -417,7 +338,7 @@ Table of Contents
    +--------+ +--------+ +--------+ +--------+
    |<------ Rail-0 ------->|         |<-Rail-7->|
 
-                    Figure 3: Topology C: Rail-Optimized
+                    Figure 4: Topology C: Rail-Optimized
 
    In rail-optimized topologies, each NIC on a multi-NIC host connects
    to a dedicated leaf switch ("rail"), co-optimizing network locality
@@ -455,7 +376,7 @@ Table of Contents
     |              | driver, BIOS settings   | Version, OFED Version |
     +--------------+-------------------------+-----------------------+
 
-                  Table 2: DUT Identification Parameters
+                  Table 1: DUT Identification Parameters
 
 3.3.  Traffic Generator Requirements
 
@@ -488,7 +409,7 @@ Table of Contents
        | Burst generation        | 1-1000 frames at line rate      |
        +-------------------------+---------------------------------+
 
-             Table 3: Minimum Measurement Accuracy Requirements
+             Table 2: Minimum Measurement Accuracy Requirements
 
 3.3.3.  Acceptable Implementations
 
@@ -546,7 +467,7 @@ Table of Contents
    | P99.9)     |               | latency            |                 |
    +------------+---------------+--------------------+-----------------+
 
-                           Table 4: Primary KPIs
+                           Table 3: Primary KPIs
 
 4.2.  Secondary KPIs
 
@@ -588,7 +509,7 @@ Table of Contents
     |                |               | (Clear-to-Send, ACKs)         |
     +----------------+---------------+-------------------------------+
 
-                         Table 5: Secondary KPIs
+                         Table 4: Secondary KPIs
 
 4.3.  Fabric Health Indicators
 
@@ -614,7 +535,7 @@ Table of Contents
     | Consumption      |         | draw under test load              |
     +------------------+---------+-----------------------------------+
 
-                    Table 6: Fabric Health Indicators
+                    Table 5: Fabric Health Indicators
 
 5.  Test Category 1: RDMA Transport Benchmarks
 
@@ -741,7 +662,7 @@ Table of Contents
    | Count      |        |        |        |        |        |        |
    +------------+--------+--------+--------+--------+--------+--------+
 
-               Table 7: UET Throughput by Transport Service
+               Table 6: UET Throughput by Transport Service
 
 6.2.  UET Latency Characterization
 
@@ -800,7 +721,7 @@ Table of Contents
    | Flowlet         |        |        |        |        |             |
    +-----------------+--------+--------+--------+--------+-------------+
 
-                Table 8: Packet Spray Efficacy Under UET RUD
+                Table 7: Packet Spray Efficacy Under UET RUD
 
       UET RUD SHOULD achieve zero host-visible reordering despite per-
       packet spray because the transport layer natively tolerates
@@ -872,7 +793,7 @@ Table of Contents
    | AllGather  | 1GB  | 128    | (meas)  | (meas)  | (meas) | (meas) |
    +------------+------+--------+---------+---------+--------+--------+
 
-            Table 9: UET Collective Communication Performance
+            Table 8: UET Collective Communication Performance
 
 6.7.  UET PDC Scalability and Connection Setup Rate
 
@@ -981,7 +902,7 @@ Table of Contents
 
    JFI = (Sum LinkTx_i)^2 / (N x Sum LinkTx_i^2)
 
-                   Figure 4: Jain Fairness Index Formula
+                   Figure 5: Jain Fairness Index Formula
 
    where LinkTx_i = transmitted traffic on fabric link i, N = total
    parallel links.  Range: 1/N (worst) to 1.0 (perfect).
@@ -1059,7 +980,7 @@ Table of Contents
    | Flowlet         |        |        |        |        |             |
    +-----------------+--------+--------+--------+--------+-------------+
 
-          Table 10: Collective Communication Bus Bandwidth Summary
+          Table 9: Collective Communication Bus Bandwidth Summary
 
 10.  Test Category 5: Job Completion Time (JCT) Benchmarks
 
@@ -1092,12 +1013,12 @@ Table of Contents
             | Iterations          | 1000                     |
             +---------------------+--------------------------+
 
-                 Table 11: Synthetic JCT Test Parameters
+                 Table 10: Synthetic JCT Test Parameters
 
    Roofline JCT = Iterations x (C + S x algo_factor / NIC_line_rate)
    JCT Ratio    = Measured_JCT / Roofline_JCT
 
-                      Figure 5: JCT Ratio Calculation
+                      Figure 6: JCT Ratio Calculation
 
       JCT Ratio < 1.05 = excellent fabric performance; > 1.15 =
       significant fabric-induced overhead.
@@ -1123,7 +1044,7 @@ Table of Contents
 
    JCT Interference Factor = Contention_JCT / Baseline_JCT
 
-                     Figure 6: JCT Interference Factor
+                     Figure 7: JCT Interference Factor
 
    Test with spine link overlap: 0%, 25%, 50%, 75%.
 
@@ -1448,7 +1369,7 @@ Appendix A.  KPI-to-Test Mapping Summary
    | PDCs          |         |                    |                    |
    +---------------+---------+--------------------+--------------------+
 
-                   Table 12: KPI-to-Test Mapping Summary
+                   Table 11: KPI-to-Test Mapping Summary
 
 Appendix B.  ASIC Feature Categories (Informational)
 
@@ -1502,7 +1423,7 @@ Appendix B.  ASIC Feature Categories (Informational)
    | Support      |                | scales        | ASIC count       |
    +--------------+----------------+---------------+------------------+
 
-                    Table 13: ASIC Feature Categories
+                    Table 12: ASIC Feature Categories
 
    All values MUST be reported based on vendor documentation or measured
    capability.  Additional DUT capabilities affecting benchmark results
@@ -1543,7 +1464,7 @@ Appendix C.  RoCEv2 Test Frame Format
       |        |                   |      | Sequence               |
       +--------+-------------------+------+------------------------+
 
-                    Table 14: RoCEv2 Test Frame Format
+                    Table 13: RoCEv2 Test Frame Format
 
 Appendix D.  UET (Ultra Ethernet Transport) Frame Format
 
@@ -1588,7 +1509,7 @@ Appendix D.  UET (Ultra Ethernet Transport) Frame Format
      |        |                  |      | Sequence                  |
      +--------+------------------+------+---------------------------+
 
-                        Table 15: UET Frame Format
+                        Table 14: UET Frame Format
 
 D.1.  Key Differences from RoCEv2
 
@@ -1617,7 +1538,7 @@ D.1.  Key Differences from RoCEv2
    | Overhead     |              | Write)        | sub-layer headers   |
    +--------------+--------------+---------------+---------------------+
 
-                    Table 16: RoCEv2 vs. UET Comparison
+                    Table 15: RoCEv2 vs. UET Comparison
 
    1.  *UDP Destination Port:* UET uses port 4793 vs. RoCEv2 port 4791.
 

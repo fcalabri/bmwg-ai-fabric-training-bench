@@ -1477,174 +1477,43 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
       </h2>
 <p id="section-2-1">The following terms are defined for use in this document. Where a term overlaps with <span>[<a href="#RFC1242" class="cite xref">RFC1242</a>]</span> or <span>[<a href="#RFC8238" class="cite xref">RFC8238</a>]</span>, the definition herein takes precedence in the context of AI fabric benchmarking.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <span id="name-terminology-and-definitions-2"></span><div id="tab-terminology">
-<table class="center" id="table-1">
-        <caption>
-<a href="#table-1" class="selfRef">Table 1</a>:
+<figure id="figure-2">
+        <div class="alignLeft art-text artwork" id="section-2-2.1">
+<pre>
+| Term | Definition |
+|---|---|
+| **AI Fabric** | The dedicated Ethernet backend network interconnecting accelerators (GPUs/XPUs) for distributed AI training, typically a non-blocking Clos topology running RoCEv2 |
+| **JCT** (Job Completion Time) | The wall-clock duration from start to completion of a training job, inclusive of all computation and communication phases |
+| **DUT Fabric** | All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric |
+| **Roofline JCT** | Theoretical minimum JCT assuming perfect (zero-contention) network behavior |
+| **JCT Ratio** | Measured JCT / Roofline JCT; 1.0 = no network overhead; &gt;1.0 = fabric inefficiency |
+| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective: (data_size x algo_factor) / time |
+| **QP** (Queue Pair) | RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy |
+| **Incast Ratio** | Ratio of senders to receivers (e.g., N:1 incast) |
+| **MMR** (Max-Mean Ratio) | Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect) |
+| **PFC Pause Event** | Single PFC PAUSE frame transmitted on a priority class |
+| **ECN Marking Ratio** | % of packets marked with Congestion Experienced (CE) over a measurement interval |
+| **Collective Operation** | Coordinated cross-accelerator communication: AllReduce, AlltoAll, AllGather |
+| **DCQCN** | Data Center Quantized Congestion Notification: ECN + PFC for end-to-end congestion control with RoCEv2 |
+| **Packet Spray** | Load balancing distributing individual packets across all ECMP paths; maximizes utilization but may cause reordering |
+| **DLB/Flowlet** | Dynamic Load Balancing using flowlet detection; reroutes traffic at flow idle gaps |
+| **Zero-Impact Failover** | Sub-microsecond path convergence upon link/switch failure with no measurable JCT impact |
+| **UET** (Ultra Ethernet Transport) | Connectionless RDMA transport defined by UEC Spec 1.0; designed as next-generation replacement for RoCEv2 |
+| **PDC** (Packet Delivery Context) | Ephemeral, connectionless UET transport endpoint; analogous to but distinct from an RDMA QP |
+| **ROD** | Reliable Ordered Delivery: UET service semantically equivalent to RoCEv2 RC mode |
+| **RUD** | Reliable Unordered Delivery: UET service enabling native packet spray without receiver reorder buffer overhead |
+| **RUDI** | Reliable Unordered Delivery for Idempotent operations; simplified retransmission for RDMA Writes |
+| **UUD** | Unreliable Unordered Delivery: best-effort UET service for telemetry/speculative operations |
+| **LLR** (Link Layer Retry) | Optional UEC per-hop error recovery (sub-microsecond) at the Ethernet link layer |
+| **Packet Trimming** | Optional UEC enhancement; congested switches transmit packet header only instead of dropping the full packet |
+| **CBFC** (Credit-Based Flow Control) | Optional UEC per-destination flow control; alternative to PFC that avoids head-of-line blocking |
+| **UEC Profile** | Defined UET feature subset: AI Base, AI Full, or HPC |
+| **Entropy Value** | Explicit per-packet UET field for ECMP path selection; improves multipath utilization vs. 5-tuple hashing |
+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-terminology-and-definitions-2" class="selfRef">Terminology and Definitions</a>
-        </caption>
-<thead>
-          <tr>
-            <th class="text-left" rowspan="1" colspan="1">Term</th>
-            <th class="text-left" rowspan="1" colspan="1">Definition</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>AI Fabric</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">The dedicated Ethernet backend network interconnecting accelerators (GPUs/XPUs) for distributed AI training, typically a non-blocking Clos topology running RoCEv2</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>JCT</strong> (Job Completion Time)</td>
-            <td class="text-left" rowspan="1" colspan="1">The wall-clock duration from start to completion of a training job, inclusive of all computation and communication phases</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>DUT Fabric</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>Roofline JCT</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Theoretical minimum JCT assuming perfect (zero-contention) network behavior</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>JCT Ratio</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Measured JCT / Roofline JCT; 1.0 = no network overhead; &gt;1.0 = fabric inefficiency</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>BusBW</strong> (Bus Bandwidth)</td>
-            <td class="text-left" rowspan="1" colspan="1">Effective per-accelerator throughput during a collective: (data_size x algo_factor) / time</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>QP</strong> (Queue Pair)</td>
-            <td class="text-left" rowspan="1" colspan="1">RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>Incast Ratio</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Ratio of senders to receivers (e.g., N:1 incast)</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>MMR</strong> (Max-Mean Ratio)</td>
-            <td class="text-left" rowspan="1" colspan="1">Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect)</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>PFC Pause Event</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Single PFC PAUSE frame transmitted on a priority class</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>ECN Marking Ratio</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">% of packets marked with Congestion Experienced (CE) over a measurement interval</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>Collective Operation</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Coordinated cross-accelerator communication: AllReduce, AlltoAll, AllGather</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>DCQCN</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Data Center Quantized Congestion Notification: ECN + PFC for end-to-end congestion control with RoCEv2</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>Packet Spray</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Load balancing distributing individual packets across all ECMP paths; maximizes utilization but may cause reordering</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>DLB/Flowlet</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Dynamic Load Balancing using flowlet detection; reroutes traffic at flow idle gaps</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>Zero-Impact Failover</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Sub-microsecond path convergence upon link/switch failure with no measurable JCT impact</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>UET</strong> (Ultra Ethernet Transport)</td>
-            <td class="text-left" rowspan="1" colspan="1">Connectionless RDMA transport defined by UEC Spec 1.0; designed as next-generation replacement for RoCEv2</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>PDC</strong> (Packet Delivery Context)</td>
-            <td class="text-left" rowspan="1" colspan="1">Ephemeral, connectionless UET transport endpoint; analogous to but distinct from an RDMA QP</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>ROD</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Reliable Ordered Delivery: UET service semantically equivalent to RoCEv2 RC mode</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>RUD</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Reliable Unordered Delivery: UET service enabling native packet spray without receiver reorder buffer overhead</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>RUDI</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Reliable Unordered Delivery for Idempotent operations; simplified retransmission for RDMA Writes</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>UUD</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Unreliable Unordered Delivery: best-effort UET service for telemetry/speculative operations</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>LLR</strong> (Link Layer Retry)</td>
-            <td class="text-left" rowspan="1" colspan="1">Optional UEC per-hop error recovery (sub-microsecond) at the Ethernet link layer</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>Packet Trimming</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Optional UEC enhancement; congested switches transmit packet header only instead of dropping the full packet</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>CBFC</strong> (Credit-Based Flow Control)</td>
-            <td class="text-left" rowspan="1" colspan="1">Optional UEC per-destination flow control; alternative to PFC that avoids head-of-line blocking</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>UEC Profile</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Defined UET feature subset: AI Base, AI Full, or HPC</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">
-              <strong>Entropy Value</strong>
-</td>
-            <td class="text-left" rowspan="1" colspan="1">Explicit per-packet UET field for ECMP path selection; improves multipath utilization vs. 5-tuple hashing</td>
-          </tr>
-        </tbody>
-      </table>
+        </figcaption></figure>
 </div>
 </section>
 </div>
@@ -1665,7 +1534,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <a href="#section-3.1.1" class="section-number selfRef">3.1.1. </a><a href="#name-topology-a-2-tier-clos-leaf" class="section-name selfRef">Topology A: 2-Tier Clos (Leaf-Spine)</a>
           </h4>
 <span id="name-topology-a-2-tier-clos-leaf-"></span><div id="fig-topo-a">
-<figure id="figure-2">
+<figure id="figure-3">
             <div class="alignLeft art-ascii-art art-text artwork" id="section-3.1.1-1.1">
 <pre>
 +--------+ +--------+ +--------+ +--------+
@@ -1684,7 +1553,7 @@ Hosts w/  Hosts w/  Hosts w/  Hosts w/
 RoCEv2 NIC            RoCEv2 NIC
 </pre>
 </div>
-<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
 <a href="#name-topology-a-2-tier-clos-leaf-" class="selfRef">Topology A: 2-Tier Clos (Leaf-Spine)</a>
             </figcaption></figure>
 </div>
@@ -1705,7 +1574,7 @@ RoCEv2 NIC            RoCEv2 NIC
 <a href="#section-3.1.3" class="section-number selfRef">3.1.3. </a><a href="#name-topology-c-rail-optimized" class="section-name selfRef">Topology C: Rail-Optimized</a>
           </h4>
 <span id="name-topology-c-rail-optimized-2"></span><div id="fig-topo-c">
-<figure id="figure-3">
+<figure id="figure-4">
             <div class="alignLeft art-ascii-art art-text artwork" id="section-3.1.3-1.1">
 <pre>
                        SPINE LAYER
@@ -1730,7 +1599,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 |&lt;------ Rail-0 -------&gt;|         |&lt;-Rail-7-&gt;|
 </pre>
 </div>
-<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
 <a href="#name-topology-c-rail-optimized-2" class="selfRef">Topology C: Rail-Optimized</a>
             </figcaption></figure>
 </div>
@@ -1745,9 +1614,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-device-under-test-dut-ident" class="section-name selfRef">Device Under Test (DUT) Identification</a>
         </h3>
 <span id="name-dut-identification-paramete"></span><div id="tab-dut-id">
-<table class="center" id="table-2">
+<table class="center" id="table-1">
           <caption>
-<a href="#table-2" class="selfRef">Table 2</a>:
+<a href="#table-1" class="selfRef">Table 1</a>:
 <a href="#name-dut-identification-paramete" class="selfRef">DUT Identification Parameters</a>
           </caption>
 <thead>
@@ -1827,9 +1696,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <a href="#section-3.3.2" class="section-number selfRef">3.3.2. </a><a href="#name-minimum-measurement-accurac" class="section-name selfRef">Minimum Measurement Accuracy Requirements</a>
           </h4>
 <span id="name-minimum-measurement-accuracy"></span><div id="tab-tgen-accuracy">
-<table class="center" id="table-3">
+<table class="center" id="table-2">
             <caption>
-<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#table-2" class="selfRef">Table 2</a>:
 <a href="#name-minimum-measurement-accuracy" class="selfRef">Minimum Measurement Accuracy Requirements</a>
             </caption>
 <thead>
@@ -1900,9 +1769,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-primary-kpis" class="section-name selfRef">Primary KPIs</a>
         </h3>
 <span id="name-primary-kpis-2"></span><div id="tab-primary-kpis">
-<table class="center" id="table-4">
+<table class="center" id="table-3">
           <caption>
-<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#table-3" class="selfRef">Table 3</a>:
 <a href="#name-primary-kpis-2" class="selfRef">Primary KPIs</a>
           </caption>
 <thead>
@@ -1961,9 +1830,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-secondary-kpis" class="section-name selfRef">Secondary KPIs</a>
         </h3>
 <span id="name-secondary-kpis-2"></span><div id="tab-secondary-kpis">
-<table class="center" id="table-5">
+<table class="center" id="table-4">
           <caption>
-<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#table-4" class="selfRef">Table 4</a>:
 <a href="#name-secondary-kpis-2" class="selfRef">Secondary KPIs</a>
           </caption>
 <thead>
@@ -2035,9 +1904,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-fabric-health-indicators" class="section-name selfRef">Fabric Health Indicators</a>
         </h3>
 <span id="name-fabric-health-indicators-2"></span><div id="tab-fabric-health">
-<table class="center" id="table-6">
+<table class="center" id="table-5">
           <caption>
-<a href="#table-6" class="selfRef">Table 6</a>:
+<a href="#table-5" class="selfRef">Table 5</a>:
 <a href="#name-fabric-health-indicators-2" class="selfRef">Fabric Health Indicators</a>
           </caption>
 <thead>
@@ -2193,9 +2062,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <p id="section-6.1-2"><strong>Procedure:</strong> Use UEC 1.0-compliant NICs; establish PDCs; use libfabric fi_write. Apply binary search (<span>[<a href="#RFC2544" class="cite xref">RFC2544</a>]</span> Section 26.1). Vary PDC counts: 1, 4, 16, 32. A parallel RoCEv2 test series <span class="bcp14">MUST</span> be executed. Both unidirectional and bidirectional configurations <span class="bcp14">MUST</span> be tested.<a href="#section-6.1-2" class="pilcrow">¶</a></p>
 <p id="section-6.1-3"><strong>Reporting template:</strong><a href="#section-6.1-3" class="pilcrow">¶</a></p>
 <span id="name-uet-throughput-by-transport-"></span><div id="tab-uet-throughput">
-<table class="center" id="table-7">
+<table class="center" id="table-6">
           <caption>
-<a href="#table-7" class="selfRef">Table 7</a>:
+<a href="#table-6" class="selfRef">Table 6</a>:
 <a href="#name-uet-throughput-by-transport-" class="selfRef">UET Throughput by Transport Service</a>
           </caption>
 <thead>
@@ -2294,9 +2163,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <p id="section-6.3-4">Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective goodput. Vary ECMP paths: 4, 8, 16, 32.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
 <p id="section-6.3-5"><strong>Reporting template:</strong><a href="#section-6.3-5" class="pilcrow">¶</a></p>
 <span id="name-packet-spray-efficacy-under-"></span><div id="tab-uet-spray">
-<table class="center" id="table-8">
+<table class="center" id="table-7">
           <caption>
-<a href="#table-8" class="selfRef">Table 8</a>:
+<a href="#table-7" class="selfRef">Table 7</a>:
 <a href="#name-packet-spray-efficacy-under-" class="selfRef">Packet Spray Efficacy Under UET RUD</a>
           </caption>
 <thead>
@@ -2400,9 +2269,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <p id="section-6.6-2"><strong>Procedure:</strong> Execute the collective benchmark suite from <a href="#test-collective" class="auto internal xref">Section 9</a> over UET RUD transport using a UEC-compliant collective library. Same accelerator count, message sizes, and fabric topology. Run UET RUD + packet spray as primary; UET ROD + ECMP as secondary baseline.<a href="#section-6.6-2" class="pilcrow">¶</a></p>
 <p id="section-6.6-3"><strong>Reporting template:</strong><a href="#section-6.6-3" class="pilcrow">¶</a></p>
 <span id="name-uet-collective-communication"></span><div id="tab-uet-collective">
-<table class="center" id="table-9">
+<table class="center" id="table-8">
           <caption>
-<a href="#table-9" class="selfRef">Table 9</a>:
+<a href="#table-8" class="selfRef">Table 8</a>:
 <a href="#name-uet-collective-communication" class="selfRef">UET Collective Communication Performance</a>
           </caption>
 <thead>
@@ -2555,13 +2424,13 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <p id="section-8.4-1"><strong>Objective:</strong> Single-number summary of load balancing quality comparable across all strategies.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <p id="section-8.4-2"><strong>Formula:</strong><a href="#section-8.4-2" class="pilcrow">¶</a></p>
 <span id="name-jain-fairness-index-formula"></span><div id="fig-jfi">
-<figure id="figure-4">
+<figure id="figure-5">
           <div class="alignLeft art-ascii-art art-text artwork" id="section-8.4-3.1">
 <pre>
 JFI = (Sum LinkTx_i)^2 / (N x Sum LinkTx_i^2)
 </pre>
 </div>
-<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
 <a href="#name-jain-fairness-index-formula" class="selfRef">Jain Fairness Index Formula</a>
           </figcaption></figure>
 </div>
@@ -2628,9 +2497,9 @@ JFI = (Sum LinkTx_i)^2 / (N x Sum LinkTx_i^2)
         </h3>
 <p id="section-9.4-1"><strong>Reporting template:</strong><a href="#section-9.4-1" class="pilcrow">¶</a></p>
 <span id="name-collective-communication-bu"></span><div id="tab-ccl-summary">
-<table class="center" id="table-10">
+<table class="center" id="table-9">
           <caption>
-<a href="#table-10" class="selfRef">Table 10</a>:
+<a href="#table-9" class="selfRef">Table 9</a>:
 <a href="#name-collective-communication-bu" class="selfRef">Collective Communication Bus Bandwidth Summary</a>
           </caption>
 <thead>
@@ -2713,9 +2582,9 @@ JFI = (Sum LinkTx_i)^2 / (N x Sum LinkTx_i^2)
 </li>
         </ol>
 <span id="name-synthetic-jct-test-paramete"></span><div id="tab-synthetic-jct-params">
-<table class="center" id="table-11">
+<table class="center" id="table-10">
           <caption>
-<a href="#table-11" class="selfRef">Table 11</a>:
+<a href="#table-10" class="selfRef">Table 10</a>:
 <a href="#name-synthetic-jct-test-paramete" class="selfRef">Synthetic JCT Test Parameters</a>
           </caption>
 <thead>
@@ -2745,14 +2614,14 @@ JFI = (Sum LinkTx_i)^2 / (N x Sum LinkTx_i^2)
         </table>
 </div>
 <span id="name-jct-ratio-calculation"></span><div id="fig-jct-formula">
-<figure id="figure-5">
+<figure id="figure-6">
           <div class="alignLeft art-ascii-art art-text artwork" id="section-10.1-5.1">
 <pre>
 Roofline JCT = Iterations x (C + S x algo_factor / NIC_line_rate)
 JCT Ratio    = Measured_JCT / Roofline_JCT
 </pre>
 </div>
-<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-jct-ratio-calculation" class="selfRef">JCT Ratio Calculation</a>
           </figcaption></figure>
 </div>
@@ -2780,13 +2649,13 @@ JCT Ratio    = Measured_JCT / Roofline_JCT
 <p id="section-10.3-1"><strong>Objective:</strong> Quantify JCT impact when multiple training jobs share the same fabric.<a href="#section-10.3-1" class="pilcrow">¶</a></p>
 <p id="section-10.3-2"><strong>Procedure:</strong> Configure two or more independent training jobs. Jobs <span class="bcp14">SHOULD</span> overlap in spine-layer link usage. Measure baseline JCT (isolated) and contention JCT (simultaneous).<a href="#section-10.3-2" class="pilcrow">¶</a></p>
 <span id="name-jct-interference-factor"></span><div id="fig-jct-interference">
-<figure id="figure-6">
+<figure id="figure-7">
           <div class="alignLeft art-ascii-art art-text artwork" id="section-10.3-3.1">
 <pre>
 JCT Interference Factor = Contention_JCT / Baseline_JCT
 </pre>
 </div>
-<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
 <a href="#name-jct-interference-factor" class="selfRef">JCT Interference Factor</a>
           </figcaption></figure>
 </div>
@@ -3019,9 +2888,9 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-kpi-to-test-mapping-summary" class="section-name selfRef">KPI-to-Test Mapping Summary</a>
       </h2>
 <span id="name-kpi-to-test-mapping-summary-2"></span><div id="tab-kpi-mapping">
-<table class="center" id="table-12">
+<table class="center" id="table-11">
         <caption>
-<a href="#table-12" class="selfRef">Table 12</a>:
+<a href="#table-11" class="selfRef">Table 11</a>:
 <a href="#name-kpi-to-test-mapping-summary-2" class="selfRef">KPI-to-Test Mapping Summary</a>
         </caption>
 <thead>
@@ -3277,9 +3146,9 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
       </h2>
 <p id="appendix-B-1">This appendix identifies ASIC feature categories relevant to AI fabric performance. Implementers <span class="bcp14">SHOULD</span> document which categories are present and enabled on the DUT. Specific vendor names are intentionally omitted.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 <span id="name-asic-feature-categories"></span><div id="tab-asic-features">
-<table class="center" id="table-13">
+<table class="center" id="table-12">
         <caption>
-<a href="#table-13" class="selfRef">Table 13</a>:
+<a href="#table-12" class="selfRef">Table 12</a>:
 <a href="#name-asic-feature-categories" class="selfRef">ASIC Feature Categories</a>
         </caption>
 <thead>
@@ -3345,9 +3214,9 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-rocev2-test-frame-format" class="section-name selfRef">RoCEv2 Test Frame Format</a>
       </h2>
 <span id="name-rocev2-test-frame-format-2"></span><div id="tab-rocev2-frame">
-<table class="center" id="table-14">
+<table class="center" id="table-13">
         <caption>
-<a href="#table-14" class="selfRef">Table 14</a>:
+<a href="#table-13" class="selfRef">Table 13</a>:
 <a href="#name-rocev2-test-frame-format-2" class="selfRef">RoCEv2 Test Frame Format</a>
         </caption>
 <thead>
@@ -3437,9 +3306,9 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
       </h2>
 <p id="appendix-D-1">UET runs over UDP/IP using IANA-assigned destination port 4793.<a href="#appendix-D-1" class="pilcrow">¶</a></p>
 <span id="name-uet-frame-format"></span><div id="tab-uet-frame">
-<table class="center" id="table-15">
+<table class="center" id="table-14">
         <caption>
-<a href="#table-15" class="selfRef">Table 15</a>:
+<a href="#table-14" class="selfRef">Table 14</a>:
 <a href="#name-uet-frame-format" class="selfRef">UET Frame Format</a>
         </caption>
 <thead>
@@ -3538,9 +3407,9 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <a href="#appendix-D.1" class="section-number selfRef">D.1. </a><a href="#name-key-differences-from-rocev2" class="section-name selfRef">Key Differences from RoCEv2</a>
         </h3>
 <span id="name-rocev2-vs-uet-comparison"></span><div id="tab-rocev2-vs-uet">
-<table class="center" id="table-16">
+<table class="center" id="table-15">
           <caption>
-<a href="#table-16" class="selfRef">Table 16</a>:
+<a href="#table-15" class="selfRef">Table 15</a>:
 <a href="#name-rocev2-vs-uet-comparison" class="selfRef">RoCEv2 vs. UET Comparison</a>
           </caption>
 <thead>
