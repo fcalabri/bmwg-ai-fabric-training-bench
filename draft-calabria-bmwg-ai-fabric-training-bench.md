@@ -62,12 +62,12 @@ informative:
     title: "Benchmarking Methodology for EVPN and PBB-EVPN"
     author:
       - ins: S. Jacob
-        name: Saneesh Jacob
+        name: Sudhin Jacob
       - ins: K. Tiruveedhula
         name: Kishore Tiruveedhula
-    date: 2018-06
+    date: 2023-08
     seriesinfo:
-      Internet-Draft: draft-kishjac-bmwg-evpntest-10
+      Internet-Draft: draft-ietf-bmwg-evpntest-11
   LLM-BENCH:
     title: "Benchmarking Methodology for Large Language Model Serving"
     author:
@@ -642,7 +642,7 @@ Test with spine link overlap: 0%, 25%, 50%, 75%.
 
 **Objective:** Determine the maximum fabric scale at which the DUT maintains acceptable KPI performance.
 
-**Procedure:** Progressively increase active accelerator endpoints from N=64 to maximum topology support while running AllReduce ({{allreduce-benchmark}}, S=1GB). At each scale point record JCT Ratio, BusBW, ECN ratio, PFC count, CPU and memory utilization. Also measure BGP/routing convergence time after clearing all adjacencies (analogous to {{EVPN-BENCH}} Section 6).
+**Procedure:** Progressively increase active accelerator endpoints from N=64 to maximum topology support while running AllReduce ({{allreduce-benchmark}}, S=1GB). At each scale point record JCT Ratio, BusBW, ECN ratio, PFC count, CPU and memory utilization. Also measure BGP/routing convergence time after clearing all adjacencies (analogous to {{EVPN-BENCH}} Sections 3.10, 3.11, 4.9, 4.10).
 
 ## Link Failure Convergence
 
@@ -667,7 +667,7 @@ Repeat for: leaf uplink failure, spine switch failure, superspine link failure (
 
 ## 24-Hour Sustained Load {#soak-24h}
 
-**Objective:** Verify DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from {{EVPN-BENCH}} Section 7.
+**Objective:** Verify DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from {{EVPN-BENCH}} Sections 3.12, 4.11.
 
 **Procedure:** Configure DUT at maximum validated scale from {{fabric-scale-limits}}. Generate bidirectional collective communication traffic (alternating AllReduce and AlltoAll). Run continuously for 24 hours. Sample all KPIs from {{kpi-framework-and-metrics-taxonomy}} every 60 seconds.
 
