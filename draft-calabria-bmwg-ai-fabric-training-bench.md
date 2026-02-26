@@ -145,7 +145,6 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 
 ## Relationship to Existing BMWG Work
 
-~~~~
 | Document | Relationship |
 |---|---|
 | {{RFC1242}} | Base terminology for network benchmarking; terms reused herein |
@@ -156,14 +155,12 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 | {{RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
 | {{LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT. This document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. |
 | {{UEC-1.0}} | UET protocol specification; transport services, congestion control, and link-layer enhancements benchmarked in {{test-uec}} |
-~~~~
 {: #tab-existing-work title="Relationship to Existing BMWG Work"}
 
 # Terminology and Definitions
 
 The following terms are defined for use in this document. Where a term overlaps with {{RFC1242}} or {{RFC8238}}, the definition herein takes precedence in the context of AI fabric benchmarking.
 
-~~~~
 | Term | Definition |
 |---|---|
 | **AI Fabric** | The dedicated Ethernet backend network interconnecting accelerators (GPUs/XPUs) for distributed AI training, typically a non-blocking Clos topology running RoCEv2 |
@@ -193,7 +190,6 @@ The following terms are defined for use in this document. Where a term overlaps 
 | **CBFC** (Credit-Based Flow Control) | Optional UEC per-destination flow control; alternative to PFC that avoids head-of-line blocking |
 | **UEC Profile** | Defined UET feature subset: AI Base, AI Full, or HPC |
 | **Entropy Value** | Explicit per-packet UET field for ECMP path selection; improves multipath utilization vs. 5-tuple hashing |
-~~~~
 {: #tab-terminology title="Terminology and Definitions"}
 
 # Test Topology and Architecture
