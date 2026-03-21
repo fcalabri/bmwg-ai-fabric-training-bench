@@ -13,24 +13,24 @@
        This document defines benchmarking terminology, methodologies, and Key Performance Indicators (KPIs) for evaluating Ethernet-based AI training network fabrics. 
        As large-scale distributed AI/ML training clusters grow to tens of thousands of accelerators (GPUs/XPUs), the backend network fabric becomes the critical bottleneck determining job completion time (JCT), training throughput, and accelerator utilization. 
        This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads, covering RDMA/RoCEv2 transport, the Ultra Ethernet Transport (UET) protocol defined by the UEC Specification 1.0  , congestion management (PFC, ECN, DCQCN, CBFC), load balancing strategies (ECMP, DLB, packet spraying), collective communication patterns (AllReduce, AlltoAll, AllGather), and scale/soak testing. 
-       The methodology enables apples-to-apples comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized). 
+       The methodology enables direct, reproducible comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized). 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.32.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-calabria-bmwg-ai-fabric-training-bench-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
+  xml2rfc 3.32.0
     Python 3.12.12
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.0.2
-    platformdirs 4.5.1
+    platformdirs 4.9.4
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.32.5
-    wcwidth 0.3.0
+    wcwidth 0.6.0
 -->
 <link href="draft-calabria-bmwg-ai-fabric-training-bench.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1051,11 +1051,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">AI Fabric Bench</td>
-<td class="right">February 2026</td>
+<td class="right">March 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Calabria, et al.</td>
-<td class="center">Expires 30 August 2026</td>
+<td class="center">Expires 22 September 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-calabria-bmwg-ai-fabric-training-bench-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-02-26" class="published">26 February 2026</time>
+<time datetime="2026-03-21" class="published">21 March 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-08-30">30 August 2026</time></dd>
+<dd class="expires"><time datetime="2026-09-22">22 September 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1101,7 +1101,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-abstract-1">This document defines benchmarking terminology, methodologies, and Key Performance Indicators (KPIs) for evaluating Ethernet-based AI training network fabrics.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">As large-scale distributed AI/ML training clusters grow to tens of thousands of accelerators (GPUs/XPUs), the backend network fabric becomes the critical bottleneck determining job completion time (JCT), training throughput, and accelerator utilization.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads, covering RDMA/RoCEv2 transport, the Ultra Ethernet Transport (UET) protocol defined by the UEC Specification 1.0 <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span>, congestion management (PFC, ECN, DCQCN, CBFC), load balancing strategies (ECMP, DLB, packet spraying), collective communication patterns (AllReduce, AlltoAll, AllGather), and scale/soak testing.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
-<p id="section-abstract-4">The methodology enables apples-to-apples comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized).<a href="#section-abstract-4" class="pilcrow">¶</a></p>
+<p id="section-abstract-4">The methodology enables direct, reproducible comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized).<a href="#section-abstract-4" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1138,7 +1138,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 30 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1715,18 +1715,18 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <pre>
 +--------+ +--------+ +--------+ +--------+
 | Spine1 | | Spine2 | | Spine3 | | SpineN |
-+--++--+  +--++--+  +--++--+  +--++--+
-   ||         ||         ||         ||
-   ||   Full Mesh Interconnect       ||
-   ||   (ECMP / DLB / Spray)        ||
-   ||         ||         ||         ||
-+--++--+  +--++--+  +--++--+  +--++--+
++---++---+ +---++---+ +---++---+ +---++---+
+    ||          ||          ||          ||
+    ||    Full Mesh Interconnect        ||
+    ||    (ECMP / DLB / Spray)         ||
+    ||          ||          ||          ||
++---++---+ +---++---+ +---++---+ +---++---+
 | Leaf 1 | | Leaf 2 | | Leaf 3 | | Leaf N |
-+--++--+  +--++--+  +--++--+  +--++--+
-   ||         ||         ||         ||
-[GPU/XPU] [GPU/XPU] [GPU/XPU] [GPU/XPU]
-Hosts w/  Hosts w/  Hosts w/  Hosts w/
-RoCEv2 NIC            RoCEv2 NIC
++---++---+ +---++---+ +---++---+ +---++---+
+    ||          ||          ||          ||
+[GPU/XPU]  [GPU/XPU]  [GPU/XPU]  [GPU/XPU]
+Hosts w/   Hosts w/   Hosts w/   Hosts w/
+RoCEv2 NIC             RoCEv2 NIC
 </pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
@@ -2509,7 +2509,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-uet-pdc-scalability-and-con" class="section-name selfRef">UET PDC Scalability and Connection Setup Rate</a>
         </h3>
 <p id="section-6.7-1"><strong>Objective:</strong> Measure PDC establishment rate and maximum concurrent PDC count vs. RoCEv2 QP-based connections.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
-<p id="section-6.7-2"><strong>Procedure:</strong> (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification targets up to 1 million endpoints.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
+<p id="section-6.7-2"><strong>Procedure:</strong> (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> targets up to 1 million endpoints.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2654,7 +2654,7 @@ JFI = (Sum LinkTx_i)^2 / (N x Sum LinkTx_i^2)
 <a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-alltoall-benchmark" class="section-name selfRef">AlltoAll Benchmark</a>
         </h3>
 <p id="section-9.2-1"><strong>Objective:</strong> Measure fabric performance during AlltoAll operations -- used in Mixture-of-Experts (MoE) models and expert parallelism.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
-<p id="section-9.2-2"><strong>Procedure:</strong> Execute AlltoAll with same parameters as <a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>. AlltoAll creates the worst-case congestion scenario: every accelerator simultaneously sends to every other. Report JCT per iteration -- the most sensitive indicator of fabric congestion management quality.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+<p id="section-9.2-2"><strong>Procedure:</strong> Execute AlltoAll with same parameters as <a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>. AlltoAll creates the worst-case congestion scenario: every accelerator simultaneously sends to every other participating accelerator. Report JCT per iteration -- the most sensitive indicator of fabric congestion management quality.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="allgather-benchmark">
@@ -2680,51 +2680,59 @@ JFI = (Sum LinkTx_i)^2 / (N x Sum LinkTx_i^2)
           </caption>
 <thead>
             <tr>
-              <th class="text-left" rowspan="1" colspan="1">Load Balancing Config</th>
-              <th class="text-left" rowspan="1" colspan="1">MMR</th>
-              <th class="text-left" rowspan="1" colspan="1">JFI</th>
-              <th class="text-left" rowspan="1" colspan="1">OOO Rate</th>
-              <th class="text-left" rowspan="1" colspan="1">Retx Rate</th>
-              <th class="text-left" rowspan="1" colspan="1">Effective Goodput (%)</th>
+              <th class="text-left" rowspan="1" colspan="1">Collective</th>
+              <th class="text-left" rowspan="1" colspan="1">Msg Size</th>
+              <th class="text-left" rowspan="1" colspan="1">N Accels</th>
+              <th class="text-left" rowspan="1" colspan="1">ECMP BusBW (Gbps/accel)</th>
+              <th class="text-left" rowspan="1" colspan="1">DLB BusBW (Gbps/accel)</th>
+              <th class="text-left" rowspan="1" colspan="1">Spray BusBW (Gbps/accel)</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">UET RUD + Packet Spray</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">UET ROD + Packet Spray</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+              <td class="text-left" rowspan="1" colspan="1">AllReduce</td>
+              <td class="text-left" rowspan="1" colspan="1">1GB</td>
+              <td class="text-left" rowspan="1" colspan="1">128</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">RoCEv2 RC + Packet Spray</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">RoCEv2 RC + ECMP (baseline)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
-              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+              <td class="text-left" rowspan="1" colspan="1">AllReduce</td>
+              <td class="text-left" rowspan="1" colspan="1">1GB</td>
+              <td class="text-left" rowspan="1" colspan="1">512</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">UET RUD + DLB/Flowlet</td>
+              <td class="text-left" rowspan="1" colspan="1">AlltoAll</td>
+              <td class="text-left" rowspan="1" colspan="1">1GB</td>
+              <td class="text-left" rowspan="1" colspan="1">128</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">AlltoAll</td>
+              <td class="text-left" rowspan="1" colspan="1">1GB</td>
+              <td class="text-left" rowspan="1" colspan="1">512</td>
+              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">AllGather</td>
+              <td class="text-left" rowspan="1" colspan="1">1GB</td>
+              <td class="text-left" rowspan="1" colspan="1">128</td>
+              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+              <td class="text-left" rowspan="1" colspan="1">(meas)</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">AllGather</td>
+              <td class="text-left" rowspan="1" colspan="1">1GB</td>
+              <td class="text-left" rowspan="1" colspan="1">512</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>

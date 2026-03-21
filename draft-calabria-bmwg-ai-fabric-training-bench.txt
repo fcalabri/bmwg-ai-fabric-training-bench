@@ -5,11 +5,11 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 30 August 2026                             Blue Fern Consulting
+Expires: 22 September 2026                          Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
-                                                        26 February 2026
+                                                           21 March 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -35,10 +35,10 @@ Abstract
    communication patterns (AllReduce, AlltoAll, AllGather), and scale/
    soak testing.
 
-   The methodology enables apples-to-apples comparison across different
-   switch ASICs, vendor implementations, NIC transport stacks (RoCEv2
-   vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-
-   optimized).
+   The methodology enables direct, reproducible comparison across
+   different switch ASICs, vendor implementations, NIC transport stacks
+   (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos,
+   rail-optimized).
 
 About This Document
 
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 August 2026.
+   This Internet-Draft will expire on 22 September 2026.
 
 Copyright Notice
 
@@ -389,18 +389,18 @@ Table of Contents
 
    +--------+ +--------+ +--------+ +--------+
    | Spine1 | | Spine2 | | Spine3 | | SpineN |
-   +--++--+  +--++--+  +--++--+  +--++--+
-      ||         ||         ||         ||
-      ||   Full Mesh Interconnect       ||
-      ||   (ECMP / DLB / Spray)        ||
-      ||         ||         ||         ||
-   +--++--+  +--++--+  +--++--+  +--++--+
+   +---++---+ +---++---+ +---++---+ +---++---+
+       ||          ||          ||          ||
+       ||    Full Mesh Interconnect        ||
+       ||    (ECMP / DLB / Spray)         ||
+       ||          ||          ||          ||
+   +---++---+ +---++---+ +---++---+ +---++---+
    | Leaf 1 | | Leaf 2 | | Leaf 3 | | Leaf N |
-   +--++--+  +--++--+  +--++--+  +--++--+
-      ||         ||         ||         ||
-   [GPU/XPU] [GPU/XPU] [GPU/XPU] [GPU/XPU]
-   Hosts w/  Hosts w/  Hosts w/  Hosts w/
-   RoCEv2 NIC            RoCEv2 NIC
+   +---++---+ +---++---+ +---++---+ +---++---+
+       ||          ||          ||          ||
+   [GPU/XPU]  [GPU/XPU]  [GPU/XPU]  [GPU/XPU]
+   Hosts w/   Hosts w/   Hosts w/   Hosts w/
+   RoCEv2 NIC             RoCEv2 NIC
 
                Figure 1: Topology A: 2-Tier Clos (Leaf-Spine)
 
@@ -905,8 +905,8 @@ Table of Contents
    {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-
    handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write.
    (c) Maximum concurrent PDC count: scale until per-PDC throughput
-   drops below 90% of single-PDC rate.  The UEC specification targets up
-   to 1 million endpoints.
+   drops below 90% of single-PDC rate.  The UEC specification [UEC-1.0]
+   targets up to 1 million endpoints.
 
 7.  Test Category 2: Congestion Management
 
@@ -1043,9 +1043,9 @@ Table of Contents
 
    *Procedure:* Execute AlltoAll with same parameters as Section 9.1.
    AlltoAll creates the worst-case congestion scenario: every
-   accelerator simultaneously sends to every other.  Report JCT per
-   iteration -- the most sensitive indicator of fabric congestion
-   management quality.
+   accelerator simultaneously sends to every other participating
+   accelerator.  Report JCT per iteration -- the most sensitive
+   indicator of fabric congestion management quality.
 
 9.3.  AllGather Benchmark
 
@@ -1060,26 +1060,24 @@ Table of Contents
 
    *Reporting template:*
 
-   +=================+========+========+========+========+=============+
-   | Load Balancing  | MMR    | JFI    | OOO    | Retx   | Effective   |
-   | Config          |        |        | Rate   | Rate   | Goodput (%) |
-   +=================+========+========+========+========+=============+
-   | UET RUD +       | (meas) | (meas) | (meas) | (meas) | (meas)      |
-   | Packet Spray    |        |        |        |        |             |
-   +-----------------+--------+--------+--------+--------+-------------+
-   | UET ROD +       | (meas) | (meas) | (meas) | (meas) | (meas)      |
-   | Packet Spray    |        |        |        |        |             |
-   +-----------------+--------+--------+--------+--------+-------------+
-   | RoCEv2 RC +     | (meas) | (meas) | (meas) | (meas) | (meas)      |
-   | Packet Spray    |        |        |        |        |             |
-   +-----------------+--------+--------+--------+--------+-------------+
-   | RoCEv2 RC +     | (meas) | (meas) | (meas) | (meas) | (meas)      |
-   | ECMP            |        |        |        |        |             |
-   | (baseline)      |        |        |        |        |             |
-   +-----------------+--------+--------+--------+--------+-------------+
-   | UET RUD + DLB/  | (meas) | (meas) | (meas) | (meas) | (meas)      |
-   | Flowlet         |        |        |        |        |             |
-   +-----------------+--------+--------+--------+--------+-------------+
+   +============+======+========+============+===========+=============+
+   | Collective | Msg  | N      | ECMP BusBW | DLB BusBW | Spray       |
+   |            | Size | Accels | (Gbps/     | (Gbps/    | BusBW       |
+   |            |      |        | accel)     | accel)    | (Gbps/      |
+   |            |      |        |            |           | accel)      |
+   +============+======+========+============+===========+=============+
+   | AllReduce  | 1GB  | 128    | (meas)     | (meas)    | (meas)      |
+   +------------+------+--------+------------+-----------+-------------+
+   | AllReduce  | 1GB  | 512    | (meas)     | (meas)    | (meas)      |
+   +------------+------+--------+------------+-----------+-------------+
+   | AlltoAll   | 1GB  | 128    | (meas)     | (meas)    | (meas)      |
+   +------------+------+--------+------------+-----------+-------------+
+   | AlltoAll   | 1GB  | 512    | (meas)     | (meas)    | (meas)      |
+   +------------+------+--------+------------+-----------+-------------+
+   | AllGather  | 1GB  | 128    | (meas)     | (meas)    | (meas)      |
+   +------------+------+--------+------------+-----------+-------------+
+   | AllGather  | 1GB  | 512    | (meas)     | (meas)    | (meas)      |
+   +------------+------+--------+------------+-----------+-------------+
 
           Table 11: Collective Communication Bus Bandwidth Summary
 
