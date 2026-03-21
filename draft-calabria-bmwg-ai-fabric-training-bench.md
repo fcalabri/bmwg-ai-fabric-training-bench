@@ -117,7 +117,7 @@ As large-scale distributed AI/ML training clusters grow to tens of thousands of 
 
 This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads, covering RDMA/RoCEv2 transport, the Ultra Ethernet Transport (UET) protocol defined by the UEC Specification 1.0 {{UEC-1.0}}, congestion management (PFC, ECN, DCQCN, CBFC), load balancing strategies (ECMP, DLB, packet spraying), collective communication patterns (AllReduce, AlltoAll, AllGather), and scale/soak testing.
 
-The methodology enables apples-to-apples comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized).
+The methodology enables direct, reproducible comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized).
 
 --- middle
 
@@ -203,18 +203,18 @@ Three reference topologies are defined. All tests MUST specify which topology is
 ~~~ ascii-art
 +--------+ +--------+ +--------+ +--------+
 | Spine1 | | Spine2 | | Spine3 | | SpineN |
-+--++--+  +--++--+  +--++--+  +--++--+
-   ||         ||         ||         ||
-   ||   Full Mesh Interconnect       ||
-   ||   (ECMP / DLB / Spray)        ||
-   ||         ||         ||         ||
-+--++--+  +--++--+  +--++--+  +--++--+
++---++---+ +---++---+ +---++---+ +---++---+
+    ||          ||          ||          ||
+    ||    Full Mesh Interconnect        ||
+    ||    (ECMP / DLB / Spray)         ||
+    ||          ||          ||          ||
++---++---+ +---++---+ +---++---+ +---++---+
 | Leaf 1 | | Leaf 2 | | Leaf 3 | | Leaf N |
-+--++--+  +--++--+  +--++--+  +--++--+
-   ||         ||         ||         ||
-[GPU/XPU] [GPU/XPU] [GPU/XPU] [GPU/XPU]
-Hosts w/  Hosts w/  Hosts w/  Hosts w/
-RoCEv2 NIC            RoCEv2 NIC
++---++---+ +---++---+ +---++---+ +---++---+
+    ||          ||          ||          ||
+[GPU/XPU]  [GPU/XPU]  [GPU/XPU]  [GPU/XPU]
+Hosts w/   Hosts w/   Hosts w/   Hosts w/
+RoCEv2 NIC             RoCEv2 NIC
 ~~~
 {: #fig-topo-a title="Topology A: 2-Tier Clos (Leaf-Spine)"}
 
@@ -478,7 +478,7 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 
 **Objective:** Measure PDC establishment rate and maximum concurrent PDC count vs. RoCEv2 QP-based connections.
 
-**Procedure:** (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification targets up to 1 million endpoints.
+**Procedure:** (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification {{UEC-1.0}} targets up to 1 million endpoints.
 
 # Test Category 2: Congestion Management {#test-congestion}
 
@@ -567,7 +567,7 @@ These tests evaluate the fabric's performance under realistic collective communi
 
 **Objective:** Measure fabric performance during AlltoAll operations -- used in Mixture-of-Experts (MoE) models and expert parallelism.
 
-**Procedure:** Execute AlltoAll with same parameters as {{allreduce-benchmark}}. AlltoAll creates the worst-case congestion scenario: every accelerator simultaneously sends to every other. Report JCT per iteration -- the most sensitive indicator of fabric congestion management quality.
+**Procedure:** Execute AlltoAll with same parameters as {{allreduce-benchmark}}. AlltoAll creates the worst-case congestion scenario: every accelerator simultaneously sends to every other participating accelerator. Report JCT per iteration -- the most sensitive indicator of fabric congestion management quality.
 
 ## AllGather Benchmark
 
@@ -579,13 +579,14 @@ These tests evaluate the fabric's performance under realistic collective communi
 
 **Reporting template:**
 
-| Load Balancing Config | MMR | JFI | OOO Rate | Retx Rate | Effective Goodput (%) |
+| Collective | Msg Size | N Accels | ECMP BusBW (Gbps/accel) | DLB BusBW (Gbps/accel) | Spray BusBW (Gbps/accel) |
 |---|---|---|---|---|---|
-| UET RUD + Packet Spray | (meas) | (meas) | (meas) | (meas) | (meas) |
-| UET ROD + Packet Spray | (meas) | (meas) | (meas) | (meas) | (meas) |
-| RoCEv2 RC + Packet Spray | (meas) | (meas) | (meas) | (meas) | (meas) |
-| RoCEv2 RC + ECMP (baseline) | (meas) | (meas) | (meas) | (meas) | (meas) |
-| UET RUD + DLB/Flowlet | (meas) | (meas) | (meas) | (meas) | (meas) |
+| AllReduce | 1GB | 128 | (meas) | (meas) | (meas) |
+| AllReduce | 1GB | 512 | (meas) | (meas) | (meas) |
+| AlltoAll | 1GB | 128 | (meas) | (meas) | (meas) |
+| AlltoAll | 1GB | 512 | (meas) | (meas) | (meas) |
+| AllGather | 1GB | 128 | (meas) | (meas) | (meas) |
+| AllGather | 1GB | 512 | (meas) | (meas) | (meas) |
 {: #tab-ccl-summary title="Collective Communication Bus Bandwidth Summary"}
 
 # Test Category 5: Job Completion Time (JCT) Benchmarks {#test-jct}
