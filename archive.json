@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-19T02:52:19.060854+00:00",
+  "timestamp": "2026-03-22T02:53:01.056226+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -50,5 +50,34 @@
     }
   ],
   "issues": [],
-  "pulls": []
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDORX7w2M7MVwMK",
+      "title": "Editorial review: inclusive language, copy-paste fix, clarity improvements",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/1",
+      "state": "MERGED",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n\n- Replace colloquialism \"apples-to-apples\" with \"direct, reproducible comparison\" per NIST IR 8366 inclusive language guidance\n- Fix copy-paste error in Collective Communication Library Bus Bandwidth Summary table (was incorrectly showing the UET spray efficacy template; now correctly shows BusBW per collective operation, accelerator count, and load balancing strategy)\n- Normalize ASCII art box widths in Topology A for consistent rendering across HTML/PDF\n- Clarify AlltoAll description: \"every other participating accelerator\" (removes ambiguity)\n- Add `{{UEC-1.0}}` citation for the 1 million endpoint scalability claim in PDC Scalability section\n\n## Test plan\n\n- [ ] Verify rendered HTML output of Topology A ASCII art looks correct\n- [ ] Confirm CCL BusBW Summary table structure matches intent of the section\n- [ ] Review inclusive language changes against NIST IR 8366",
+      "createdAt": "2026-03-21T09:51:37Z",
+      "updatedAt": "2026-03-21T11:54:42Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "e19e0180f9d2bb6ad8c1a34cae3d0f30e2821c47",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "carlos-review",
+      "headRefOid": "595eaf275268a92f2a1f5d235c41eabaf5da6962",
+      "closedAt": "2026-03-21T11:54:42Z",
+      "mergedAt": "2026-03-21T11:54:42Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "a885acc4a4ce6c15aaa74fea6ab8cf00caf76ec8"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
