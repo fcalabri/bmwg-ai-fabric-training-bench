@@ -5,11 +5,11 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 22 September 2026                          Blue Fern Consulting
+Expires: 25 September 2026                          Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
-                                                           21 March 2026
+                                                           24 March 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 September 2026.
+   This Internet-Draft will expire on 25 September 2026.
 
 Copyright Notice
 
@@ -218,6 +218,14 @@ Table of Contents
    switches and interconnecting links), not individual accelerators or
    host NICs, though host-side configuration MUST be documented as it
    materially affects results.
+
+   The DUT boundary for all measurements in this document is the NIC-to-
+   NIC Ethernet fabric segment.  Intra-node communication (NVLink, PCIe)
+   and Individual GPU/accelerator performance are explicitly out of
+   scope.  Collective operation measurements (AllReduce, AllGather,
+   AllToAll) are measured at the Ethernet fabric boundary; intra-node
+   NVLink contributions MUST be reported separately when characterizing
+   wide-EP or multi-node onfigurations.
 
    The methodology is designed for controlled laboratory environments
    per the BMWG charter; it is NOT intended for production network

@@ -1055,7 +1055,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Calabria, et al.</td>
-<td class="center">Expires 22 September 2026</td>
+<td class="center">Expires 25 September 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-calabria-bmwg-ai-fabric-training-bench-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-03-21" class="published">21 March 2026</time>
+<time datetime="2026-03-24" class="published">24 March 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-09-22">22 September 2026</time></dd>
+<dd class="expires"><time datetime="2026-09-25">25 September 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1138,7 +1138,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 September 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1438,7 +1438,9 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         </h3>
 <p id="section-1.2-1">This document applies to Ethernet-based AI training backend network fabrics employing RoCEv2 and/or UEC Ultra Ethernet Transport (UET) protocols. The scope includes leaf-spine (2-tier Clos) and leaf-spine-superspine (3-tier Clos) topologies.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 <p id="section-1.2-2">InfiniBand fabrics are explicitly <strong>out of scope</strong>, though many KPIs defined herein may be adapted for IB benchmarking by future documents. The DUT is the network fabric itself (the collection of switches and interconnecting links), not individual accelerators or host NICs, though host-side configuration <span class="bcp14">MUST</span> be documented as it materially affects results.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
-<p id="section-1.2-3">The methodology is designed for controlled laboratory environments per the BMWG charter; it is NOT intended for production network measurement.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
+<p id="section-1.2-3">The DUT boundary for all measurements in this document is the NIC-to-NIC Ethernet fabric segment.  Intra-node communication (NVLink, PCIe) and Individual GPU/accelerator performance are explicitly out of scope.
+Collective operation measurements (AllReduce, AllGather, AllToAll) are measured at the Ethernet fabric boundary; intra-node NVLink contributions <span class="bcp14">MUST</span> be reported separately when characterizing wide-EP or multi-node onfigurations.<a href="#section-1.2-3" class="pilcrow">¶</a></p>
+<p id="section-1.2-4">The methodology is designed for controlled laboratory environments per the BMWG charter; it is NOT intended for production network measurement.<a href="#section-1.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="relationship-to-existing-bmwg-work">
