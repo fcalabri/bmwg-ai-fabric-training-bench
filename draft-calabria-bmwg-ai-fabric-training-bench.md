@@ -141,6 +141,9 @@ This document applies to Ethernet-based AI training backend network fabrics empl
 
 InfiniBand fabrics are explicitly **out of scope**, though many KPIs defined herein may be adapted for IB benchmarking by future documents. The DUT is the network fabric itself (the collection of switches and interconnecting links), not individual accelerators or host NICs, though host-side configuration MUST be documented as it materially affects results.
 
+The DUT boundary for all measurements in this document is the NIC-to-NIC Ethernet fabric segment.  Intra-node communication (NVLink, PCIe) and Individual GPU/accelerator performance are explicitly out of scope.
+Collective operation measurements (AllReduce, AllGather, AllToAll) are measured at the Ethernet fabric boundary; intra-node NVLink contributions MUST be reported separately when characterizing wide-EP or multi-node onfigurations.
+
 The methodology is designed for controlled laboratory environments per the BMWG charter; it is NOT intended for production network measurement.
 
 ## Relationship to Existing BMWG Work
