@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-24T02:44:43.690767+00:00",
+  "timestamp": "2026-03-26T02:56:30.409557+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -78,6 +78,51 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDORX7w2M7NHGu6",
+      "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/2",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "cpignata",
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "1.2 DUT Boundary - consistency with companion docs",
+      "createdAt": "2026-03-24T19:17:54Z",
+      "updatedAt": "2026-03-24T20:01:21Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "a885acc4a4ce6c15aaa74fea6ab8cf00caf76ec8",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "DUT_Definition",
+      "headRefOid": "47aa1d8e431399d3ed198ad280c14973d82f638b",
+      "closedAt": "2026-03-24T20:01:15Z",
+      "mergedAt": "2026-03-24T20:01:15Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "3ee154413f1cc130b523e0ab7f1d9b40ec490faa"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M7uiKp7",
+          "commit": {
+            "abbreviatedOid": "47aa1d8"
+          },
+          "author": "cpignata",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-03-24T19:58:46Z",
+          "updatedAt": "2026-03-24T19:58:46Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
