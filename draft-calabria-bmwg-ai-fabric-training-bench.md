@@ -74,7 +74,7 @@ informative:
       - ins: Gaikwad, et al.
     date: 2026-01
     seriesinfo:
-      Internet-Draft: draft-gaikwad-llm-benchmarking-methodology-00
+      Internet-Draft: draft-gaikwad-llm-benchmarking-methodology
   META-ROCE:
     title: "RDMA over Ethernet for Distributed AI Training at Meta Scale"
     author:
