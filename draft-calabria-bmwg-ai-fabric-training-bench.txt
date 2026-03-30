@@ -5,11 +5,11 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 25 September 2026                          Blue Fern Consulting
+Expires: 1 October 2026                             Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
-                                                           24 March 2026
+                                                           30 March 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 September 2026.
+   This Internet-Draft will expire on 1 October 2026.
 
 Copyright Notice
 
@@ -1352,9 +1352,9 @@ Table of Contents
    [LLM-BENCH]
               Gaikwad, et al, "Benchmarking Methodology for Large
               Language Model Serving", Work in Progress, Internet-Draft,
-              draft-gaikwad-llm-benchmarking-methodology-00, January
-              2026, <https://datatracker.ietf.org/doc/html/draft-
-              gaikwad-llm-benchmarking-methodology-00>.
+              draft-gaikwad-llm-benchmarking-methodology, January 2026,
+              <https://datatracker.ietf.org/doc/html/draft-gaikwad-llm-
+              benchmarking-methodology>.
 
    [META-ROCE]
               Gangidi, A., "RDMA over Ethernet for Distributed AI
