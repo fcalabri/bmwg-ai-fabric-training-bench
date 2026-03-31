@@ -662,7 +662,7 @@ JCT is the single most important user-facing KPI for AI training fabrics, direct
 >
 > ~~~
 > Overlap_Fraction = 1 - (Measured_JCT - C_total) / Comm_time
-> 
+>
 >   where:
 >     C_total   = Iterations x C
 >     Comm_time = Iterations x S x algo_factor / NIC_line_rate
