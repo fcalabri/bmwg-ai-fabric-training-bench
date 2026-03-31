@@ -42,9 +42,11 @@ author:
 
 normative:
   RFC1242:
+  RFC2119:
   RFC2544:
   RFC2889:
   RFC8238:
+  RFC8174:
   RFC8239:
   RFC9004:
   UEC-1.0:
