@@ -291,7 +291,17 @@ The traffic generator MUST support: RoCEv2 transport emulation (QP establishment
 
 ### Acceptable Implementations
 
-Qualifying platforms: (a) dedicated hardware traffic generators at line-rate RDMA emulation meeting the accuracy requirements of {{minimum-measurement-accuracy-requirements}}, or (b) instrumented GPU clusters with RDMA tooling with fully documented host configuration. When GPU clusters are used, any non-fabric overhead MUST be quantified and reported separately.
+The platform used MUST be identified in all test reports.
+
+**(a) Hardware Traffic Generator** — dedicated hardware capable of line-rate RDMA emulation meeting Section 3.3.2 accuracy requirements. Suitable for point-to-point RDMA tests (Sections 5 and 6).  For collective tests (Section 9), the following limitations MUST be documented: whether synchronization barriers are reproduced, whether flow patterns are schedule-driven or gradient-driven, and whether
+straggler behavior is modeled.
+
+**(b) Accelerator Cluster** — cluster running an actual collective communication library with RDMA tooling.  Preferred for Section 9 collective benchmarks.  Host configuration (accelerator model,
+collective library name and version, PCIe topology, BIOS power management settings) MUST be documented.  Any non-fabric overhead in timing measurements MUST be quantified and reported separately.
+
+When a hardware generator is used for collective benchmarks, results SHOULD be cross-validated against an accelerator cluster at one or more overlapping (message_size, N) configurations.
+
+Discrepancies exceeding 10% in BusBW or JCT Ratio MUST be investigated and reported.
 
 # KPI Framework and Metrics Taxonomy
 
@@ -644,7 +654,7 @@ JCT is the single most important user-facing KPI for AI training fabrics, direct
 > | Message size S                                               | 256 MB, 1 GB, 4 GB           |
 > | Accelerator count N                                          | 64, 128, 256, 512, 1024      |
 > | Iterations                                                   | 1000                         |
-> | {: #tab-synthetic-jct-params title="Synthetic JCT Test Parameters"} |                              |
+> {: #tab-synthetic-jct-params title="Synthetic JCT Test Parameters"}
 >
 > Execute 1000 iterations and measure total wall-clock JCT.
 >
