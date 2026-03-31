@@ -631,28 +631,57 @@ JCT is the single most important user-facing KPI for AI training fabrics, direct
 
 ## Synthetic JCT Under Controlled Conditions
 
-**Objective:** Measure JCT for a defined synthetic workload with a known computation-to-communication ratio to isolate fabric-induced overhead.
-
-**Procedure:** Define a synthetic training iteration as:
-
-1. Computation phase of C milliseconds (simulated sleep or GPU compute kernel)
-2. Communication phase: AllReduce of S bytes across N accelerators
-
-| Parameter | Values |
-|---|---|
-| Computation time C | 10ms, 50ms, 100ms, 500ms |
-| Message size S | 256MB, 1GB, 4GB |
-| Accelerator count N | 64, 128, 256, 512, 1024 |
-| Iterations | 1000 |
-{: #tab-synthetic-jct-params title="Synthetic JCT Test Parameters"}
-
-~~~ ascii-art
-Roofline JCT = Iterations x (C + S x algo_factor / NIC_line_rate)
-JCT Ratio    = Measured_JCT / Roofline_JCT
-~~~
-{: #fig-jct-formula title="JCT Ratio Calculation"}
-
-> JCT Ratio < 1.05 = excellent fabric performance; > 1.15 = significant fabric-induced overhead.
+> **Objective:** Measure JCT for a defined synthetic workload with a known computation-to-communication ratio to isolate fabric-induced overhead.
+>
+> **Procedure:** Define a synthetic training iteration as a strictly sequential model:
+>
+> 1. Computation phase of C milliseconds (simulated sleep or GPU compute kernel)
+> 2. Communication phase: AllReduce of S bytes across N accelerators
+>
+> | Parameter                                                    | Values                       |
+> | ------------------------------------------------------------ | ---------------------------- |
+> | Computation time C                                           | 10 ms, 50 ms, 100 ms, 500 ms |
+> | Message size S                                               | 256 MB, 1 GB, 4 GB           |
+> | Accelerator count N                                          | 64, 128, 256, 512, 1024      |
+> | Iterations                                                   | 1000                         |
+> | {: #tab-synthetic-jct-params title="Synthetic JCT Test Parameters"} |                              |
+>
+> Execute 1000 iterations and measure total wall-clock JCT.
+>
+> ~~~
+> Roofline_seq = Iterations x (C + S x algo_factor / NIC_line_rate)
+> JCT Ratio    = Measured_JCT / Roofline_seq
+> ~~~
+> {: #fig-jct-formula title="JCT Ratio Calculation"}
+>
+> This model assumes strictly sequential compute and communication phases
+> and represents a conservative upper bound on communication overhead.
+> Many frameworks overlap these phases via gradient bucketing or asynchronous collectives, reducing the effective communication overhead visible in wall-clock JCT.
+>
+> Implementations using overlapped execution SHOULD additionally report:
+>
+> ~~~
+> Overlap_Fraction = 1 - (Measured_JCT - C_total) / Comm_time
+> 
+>   where:
+>     C_total   = Iterations x C
+>     Comm_time = Iterations x S x algo_factor / NIC_line_rate
+> ~~~
+> {: #fig-overlap-formula title="Overlap Fraction Calculation"}
+>
+> An Overlap_Fraction of 0 indicates fully sequential execution; 1.0 indicates communication is perfectly hidden behind compute.
+>
+> When overlap is present, the residual fabric overhead SHOULD be reported as:
+>
+> ~~~
+> Effective_Comm_Overhead = Measured_JCT - C_total
+> ~~~
+>
+> The Overlap_Fraction and communication library overlap configuration (e.g., bucket size, number of async streams) MUST be documented as part of the test configuration when this optional measurement is reported.
+>
+> **Reporting:** Tabulate JCT Ratio for each (C, S, N, LB_strategy combination.  Plot JCT Ratio vs. N to characterize fabric scalability.
+>
+> > NOTE: JCT Ratio < 1.05 indicates excellent fabric performance; 1.15 indicates significant fabric-induced overhead. These are non-normative illustrative reference values only.
 
 ## MLPerf-Aligned JCT
 
