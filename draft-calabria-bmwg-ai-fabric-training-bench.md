@@ -45,8 +45,8 @@ normative:
   RFC2119:
   RFC2544:
   RFC2889:
-  RFC8174:
   RFC8238:
+  RFC8174:
   RFC8239:
   RFC9004:
   UEC-1.0:
@@ -171,7 +171,7 @@ The following terms are defined for use in this document. Where a term overlaps 
 | **DUT Fabric** | All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric |
 | **Roofline JCT** | Theoretical minimum JCT assuming perfect (zero-contention) network behavior |
 | **JCT Ratio** | Measured JCT / Roofline JCT; 1.0 = no network overhead; >1.0 = fabric inefficiency |
-| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective: (data_size x algo_factor) / time |
+| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput; algo_factor is collective- and algorithm-specific (see {{test-collective}}). Reports MUST state collective type, algorithm, and algo_factor |
 | **QP** (Queue Pair) | RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy |
 | **Incast Ratio** | Ratio of senders to receivers (e.g., N:1 incast) |
 | **MMR** (Max-Mean Ratio) | Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect) |
@@ -303,7 +303,7 @@ Qualifying platforms: (a) dedicated hardware traffic generators at line-rate RDM
 |---|---|---|---|
 | Job Completion Time (JCT) | seconds | Wall-clock time for benchmark iteration (compute + communication) | Minimize |
 | JCT Ratio | dimensionless | Measured JCT / Roofline JCT | <= 1.05 (<= 1.15 acceptable) |
-| Bus Bandwidth (BusBW) | Gbps/accelerator | Effective per-accelerator throughput during collective | >= 90% of NIC line rate (intra-pod) |
+| Bus Bandwidth (BusBW) | Gbps/accelerator | Effective per-accelerator throughput during collective; algo_factor is collective- and algorithm-specific; see {{test-collective}}. Reports MUST state collective type, algorithm, and algo_factor | >= 90% of NIC line rate (intra-pod) |
 | Aggregate Throughput | Tbps | Total fabric goodput during collective phase | >= 95% of bisection BW |
 | Packet Drop Rate | ppm | Frames lost end-to-end not retransmitted | 0 ppm (lossless) |
 | Tail Latency (P99/P99.9) | us | 99th/99.9th percentile one-way fabric latency | Minimize |
@@ -463,9 +463,17 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 
 ## UET Collective Communication Performance
 
-**Objective:** Measure collective communication (AllReduce, AlltoAll, AllGather) performance over UET and compare to RoCEv2.
+**Objective:** Measure collective communication (AllReduce, AllToAll, AllGather) performance over UET and compare directly to RoCEv2, isolating the transport protocol contribution to collective efficiency.
 
-**Procedure:** Execute the collective benchmark suite from {{test-collective}} over UET RUD transport using a UEC-compliant collective library. Same accelerator count, message sizes, and fabric topology. Run UET RUD + packet spray as primary; UET ROD + ECMP as secondary baseline.
+**Procedure:** Execute the collective benchmark suite from {{test-collective}} over UET RUD transport using a UEC-compliant collective library. The same accelerator count (N), message sizes, and fabric topology MUST be used for both UET and RoCEv2 runs to ensure a valid comparison. Run UET RUD + packet spray as the primary configuration and UET ROD + ECMP as the secondary baseline.
+
+For AllReduce, if UET group keying (transport-layer reduction support per UEC Spec 1.0) is active on the DUT NIC, this MUST be noted explicitly.
+
+When group keying is active, algo_factor MUST be recomputed from observed bytes transferred rather than applying the closed-form formula, since group keying alters the effective number of pass-through hops.
+
+Document the group keying state (active / inactive) as a required result field. For all collectives, the algo_factor used MUST be stated per message-size bucket. See {{test-collective}} for reference values.
+
+ **Reporting:**  Report the percentage improvement in BusBW and JCT attributable to UET native packet spray and congestion control.
 
 **Reporting template:**
 
@@ -556,27 +564,52 @@ These tests evaluate the fabric's performance under realistic collective communi
 
 ## AllReduce Benchmark
 
-**Objective:** Measure fabric performance during AllReduce operations -- the dominant collective for gradient synchronization in data-parallel training.
+**Objective:** Measure fabric performance during AllReduce operations,the dominant collective for gradient synchronization in data-parallel training.
 
-**Procedure:**
+**Procedure:** Using N accelerators connected through the DUT fabric, execute AllReduce (sum) operations using the collective communication library benchmark suite (e.g., nccl-tests or equivalent).
 
-- Message sizes: 1MB, 8MB, 64MB, 256MB, 1GB, 4GB
-- Accelerator counts: N = {8, 16, 32, 64, 128, 256, 512, 1024}
-- Execute at least 100 iterations per (message_size, N) pair
-- Report average, P50, P95, P99 BusBW
-- Run under each load balancing strategy (ECMP, DLB, spray)
+Test parameters:
+
+* Message sizes: 1 MB, 8 MB, 64 MB, 256 MB, 1 GB, 4 GB
+* Accelerator counts (N): 8, 16, 32, 64, 128, 256, 512, 1024
+* Minimum iterations per (message_size, N) pair: 100
+* Load balancing strategies: ECMP, DLB, packet spray
+
+For each (message_size, N) pair, record average, P50, P95, and P99 BusBW, ECN marking ratio, PFC pause count, and per-link utilization. The collective algorithm in use MUST be verified via library tracing for each message size bucket and reported alongside the BusBW result. If the library selects the algorithm dynamically (e.g., tree-based for small messages, ring for large messages), algo_factor varies with message size and MUST be reported per bucket, not as a single value.
+For ring AllReduce, algo_factor = 2*(n-1)/n.  See {{test-collective}} for the full algo_factor reference table and mandatory reporting requirements.
+
+**Reporting** : Tabulate BusBW for each (message_size, N, LB_strategy, algo_factor) combination.  The algo_factor column is REQUIRED; results without it are incomplete.  Plot BusBW vs. N for each message size. Report BusBW efficiency = BusBW / NIC_line_rate.
 
 ## AlltoAll Benchmark
 
-**Objective:** Measure fabric performance during AlltoAll operations -- used in Mixture-of-Experts (MoE) models and expert parallelism.
+**Objective:** Measure fabric performance during AllToAll operations the dominant collective for Mixture-of-Experts (MoE) expert parallelism dispatch and pipeline-parallel communication.
 
-**Procedure:** Execute AlltoAll with same parameters as {{allreduce-benchmark}}. AlltoAll creates the worst-case congestion scenario: every accelerator simultaneously sends to every other participating accelerator. Report JCT per iteration -- the most sensitive indicator of fabric congestion management quality.
+**Procedure:** Using the same message sizes, accelerator counts, iteration count, and load balancing strategies as {{allreduce-benchmark}}, execute AllToAll operations via the collective communication library.
+
+AllToAll generates the worst-case fabric stress pattern: every accelerator simultaneously sends a unique payload to every other accelerator in the group, creating maximum entropy and N-to-N incast
+at every fabric link.  This makes AllToAll JCT the most sensitive single indicator of fabric congestion management quality.
+
+For AllToAll, algo_factor = (n-1)/n regardless of topology or library implementation.  BusBW reports MUST state this value explicitly. See {{test-collective}}.
+
+**Measurement:**  Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.
+
+**Reporting:** Same table format as {{allreduce-benchmark}}, with algo_factor column required.  Additionally report JCT for each configuration; JCT degradation relative to the ECMP baseline SHOULD
+be highlighted as the primary congestion sensitivity indicator.
 
 ## AllGather Benchmark
 
-**Objective:** Measure fabric performance during AllGather operations -- used for parameter distribution in tensor-parallel and pipeline-parallel training.
+**Objective:** Measure fabric performance during AllGather operations, the dominant collective for weight and activation distribution in tensor-parallel and pipeline-parallel training.
 
-**Procedure:** Execute AllGather with same parameter sweeps as {{allreduce-benchmark}}. Measure BusBW, JCT, and fabric health indicators.
+**Procedure:** Using the same message sizes, accelerator counts, iteration count, and load balancing strategies as {{allreduce-benchmark}}, execute AllGather operations via the collective communication library.
+
+AllGather consists of a gather phase only — each accelerator contributes a shard and receives the full concatenated tensor.
+There is no reduce phase, which produces lower peak fabric load than AllReduce at equivalent message size and N.  This makes AllGather a useful baseline for isolating the gather-path fabric contribution from the combined send-and-reduce cost.
+
+For ring AllGather, algo_factor = (n-1)/n.  BusBW reports MUST state this value explicitly.  See {{test-collective}}.
+
+**Measurement:** Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.
+
+**Reporting:** Same table format as {{allreduce-benchmark}}, with algo_factor column required.  Report BusBW efficiency = BusBW / NIC_line_rate.  Where results are compared to AllReduce under identical parameters, the BusBW ratio (AllGather / AllReduce) quantifies the fabric overhead attributable to the reduce phase.
 
 ## Collective Communication Library Bus Bandwidth Summary
 
