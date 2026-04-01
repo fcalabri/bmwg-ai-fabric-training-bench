@@ -1924,7 +1924,13 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
           <h4 id="name-acceptable-implementations">
 <a href="#section-3.3.3" class="section-number selfRef">3.3.3. </a><a href="#name-acceptable-implementations" class="section-name selfRef">Acceptable Implementations</a>
           </h4>
-<p id="section-3.3.3-1">Qualifying platforms: (a) dedicated hardware traffic generators at line-rate RDMA emulation meeting the accuracy requirements of <a href="#minimum-measurement-accuracy-requirements" class="auto internal xref">Section 3.3.2</a>, or (b) instrumented GPU clusters with RDMA tooling with fully documented host configuration. When GPU clusters are used, any non-fabric overhead <span class="bcp14">MUST</span> be quantified and reported separately.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-1">The platform used <span class="bcp14">MUST</span> be identified in all test reports.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-2"><strong>(a) Hardware Traffic Generator</strong> — dedicated hardware capable of line-rate RDMA emulation meeting Section 3.3.2 accuracy requirements. Suitable for point-to-point RDMA tests (Sections 5 and 6).  For collective tests (Section 9), the following limitations <span class="bcp14">MUST</span> be documented: whether synchronization barriers are reproduced, whether flow patterns are schedule-driven or gradient-driven, and whether
+straggler behavior is modeled.<a href="#section-3.3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-3"><strong>(b) Accelerator Cluster</strong> — cluster running an actual collective communication library with RDMA tooling.  Preferred for Section 9 collective benchmarks.  Host configuration (accelerator model,
+collective library name and version, PCIe topology, BIOS power management settings) <span class="bcp14">MUST</span> be documented.  Any non-fabric overhead in timing measurements <span class="bcp14">MUST</span> be quantified and reported separately.<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-4">When a hardware generator is used for collective benchmarks, results <span class="bcp14">SHOULD</span> be cross-validated against an accelerator cluster at one or more overlapping (message_size, N) configurations.<a href="#section-3.3.3-4" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-5">Discrepancies exceeding 10% in BusBW or JCT Ratio <span class="bcp14">MUST</span> be investigated and reported.<a href="#section-3.3.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2785,8 +2791,12 @@ There is no reduce phase, which produces lower peak fabric load than AllReduce a
                 <p id="section-10.1-1.1.3.2.1">Communication phase: AllReduce of S bytes across N accelerators<a href="#section-10.1-1.1.3.2.1" class="pilcrow">¶</a></p>
 </li>
             </ol>
+<span id="name-synthetic-jct-test-paramete"></span><div id="tab-synthetic-jct-params">
 <table class="center" id="table-12">
-              <caption><a href="#table-12" class="selfRef">Table 12</a></caption>
+              <caption>
+<a href="#table-12" class="selfRef">Table 12</a>:
+<a href="#name-synthetic-jct-test-paramete" class="selfRef">Synthetic JCT Test Parameters</a>
+              </caption>
 <thead>
                 <tr>
                   <th class="text-left" rowspan="1" colspan="1">Parameter</th>
@@ -2810,12 +2820,9 @@ There is no reduce phase, which produces lower peak fabric load than AllReduce a
                   <td class="text-left" rowspan="1" colspan="1">Iterations</td>
                   <td class="text-left" rowspan="1" colspan="1">1000</td>
                 </tr>
-                <tr>
-                  <td class="text-left" rowspan="1" colspan="1">{: #tab-synthetic-jct-params title="Synthetic JCT Test Parameters"}</td>
-                  <td class="text-left" rowspan="1" colspan="1"> </td>
-                </tr>
               </tbody>
             </table>
+</div>
 <p id="section-10.1-1.1.5">Execute 1000 iterations and measure total wall-clock JCT.<a href="#section-10.1-1.1.5" class="pilcrow">¶</a></p>
 <span id="name-jct-ratio-calculation"></span><div id="fig-jct-formula">
 <figure id="figure-4">
