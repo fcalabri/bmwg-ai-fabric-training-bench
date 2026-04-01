@@ -2773,63 +2773,95 @@ There is no reduce phase, which produces lower peak fabric load than AllReduce a
         <h3 id="name-synthetic-jct-under-control">
 <a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-synthetic-jct-under-control" class="section-name selfRef">Synthetic JCT Under Controlled Conditions</a>
         </h3>
-<p id="section-10.1-1"><strong>Objective:</strong> Measure JCT for a defined synthetic workload with a known computation-to-communication ratio to isolate fabric-induced overhead.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
-<p id="section-10.1-2"><strong>Procedure:</strong> Define a synthetic training iteration as:<a href="#section-10.1-2" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-10.1-3">
-<li id="section-10.1-3.1">
-            <p id="section-10.1-3.1.1">Computation phase of C milliseconds (simulated sleep or GPU compute kernel)<a href="#section-10.1-3.1.1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-10.1-1.1">
+            <p id="section-10.1-1.1.1"><strong>Objective:</strong> Measure JCT for a defined synthetic workload with a known computation-to-communication ratio to isolate fabric-induced overhead.<a href="#section-10.1-1.1.1" class="pilcrow">¶</a></p>
+<p id="section-10.1-1.1.2"><strong>Procedure:</strong> Define a synthetic training iteration as a strictly sequential model:<a href="#section-10.1-1.1.2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-10.1-1.1.3">
+<li id="section-10.1-1.1.3.1">
+                <p id="section-10.1-1.1.3.1.1">Computation phase of C milliseconds (simulated sleep or GPU compute kernel)<a href="#section-10.1-1.1.3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-10.1-3.2">
-            <p id="section-10.1-3.2.1">Communication phase: AllReduce of S bytes across N accelerators<a href="#section-10.1-3.2.1" class="pilcrow">¶</a></p>
+              <li id="section-10.1-1.1.3.2">
+                <p id="section-10.1-1.1.3.2.1">Communication phase: AllReduce of S bytes across N accelerators<a href="#section-10.1-1.1.3.2.1" class="pilcrow">¶</a></p>
 </li>
-        </ol>
-<span id="name-synthetic-jct-test-paramete"></span><div id="tab-synthetic-jct-params">
+            </ol>
 <table class="center" id="table-12">
-          <caption>
-<a href="#table-12" class="selfRef">Table 12</a>:
-<a href="#name-synthetic-jct-test-paramete" class="selfRef">Synthetic JCT Test Parameters</a>
-          </caption>
+              <caption><a href="#table-12" class="selfRef">Table 12</a></caption>
 <thead>
-            <tr>
-              <th class="text-left" rowspan="1" colspan="1">Parameter</th>
-              <th class="text-left" rowspan="1" colspan="1">Values</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Computation time C</td>
-              <td class="text-left" rowspan="1" colspan="1">10ms, 50ms, 100ms, 500ms</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Message size S</td>
-              <td class="text-left" rowspan="1" colspan="1">256MB, 1GB, 4GB</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Accelerator count N</td>
-              <td class="text-left" rowspan="1" colspan="1">64, 128, 256, 512, 1024</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Iterations</td>
-              <td class="text-left" rowspan="1" colspan="1">1000</td>
-            </tr>
-          </tbody>
-        </table>
-</div>
+                <tr>
+                  <th class="text-left" rowspan="1" colspan="1">Parameter</th>
+                  <th class="text-left" rowspan="1" colspan="1">Values</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-left" rowspan="1" colspan="1">Computation time C</td>
+                  <td class="text-left" rowspan="1" colspan="1">10 ms, 50 ms, 100 ms, 500 ms</td>
+                </tr>
+                <tr>
+                  <td class="text-left" rowspan="1" colspan="1">Message size S</td>
+                  <td class="text-left" rowspan="1" colspan="1">256 MB, 1 GB, 4 GB</td>
+                </tr>
+                <tr>
+                  <td class="text-left" rowspan="1" colspan="1">Accelerator count N</td>
+                  <td class="text-left" rowspan="1" colspan="1">64, 128, 256, 512, 1024</td>
+                </tr>
+                <tr>
+                  <td class="text-left" rowspan="1" colspan="1">Iterations</td>
+                  <td class="text-left" rowspan="1" colspan="1">1000</td>
+                </tr>
+                <tr>
+                  <td class="text-left" rowspan="1" colspan="1">{: #tab-synthetic-jct-params title="Synthetic JCT Test Parameters"}</td>
+                  <td class="text-left" rowspan="1" colspan="1"> </td>
+                </tr>
+              </tbody>
+            </table>
+<p id="section-10.1-1.1.5">Execute 1000 iterations and measure total wall-clock JCT.<a href="#section-10.1-1.1.5" class="pilcrow">¶</a></p>
 <span id="name-jct-ratio-calculation"></span><div id="fig-jct-formula">
 <figure id="figure-4">
-          <div class="alignLeft art-ascii-art art-text artwork" id="section-10.1-5.1">
+              <div class="alignLeft art-text artwork" id="section-10.1-1.1.6.1">
 <pre>
-Roofline JCT = Iterations x (C + S x algo_factor / NIC_line_rate)
-JCT Ratio    = Measured_JCT / Roofline_JCT
+Roofline_seq = Iterations x (C + S x algo_factor / NIC_line_rate)
+JCT Ratio    = Measured_JCT / Roofline_seq
 </pre>
 </div>
 <figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
 <a href="#name-jct-ratio-calculation" class="selfRef">JCT Ratio Calculation</a>
-          </figcaption></figure>
+              </figcaption></figure>
 </div>
+<p id="section-10.1-1.1.7">This model assumes strictly sequential compute and communication phases
+and represents a conservative upper bound on communication overhead.
+Many frameworks overlap these phases via gradient bucketing or asynchronous collectives, reducing the effective communication overhead visible in wall-clock JCT.<a href="#section-10.1-1.1.7" class="pilcrow">¶</a></p>
+<p id="section-10.1-1.1.8">Implementations using overlapped execution <span class="bcp14">SHOULD</span> additionally report:<a href="#section-10.1-1.1.8" class="pilcrow">¶</a></p>
+<span id="name-overlap-fraction-calculatio"></span><div id="fig-overlap-formula">
+<figure id="figure-5">
+              <div class="alignLeft art-text artwork" id="section-10.1-1.1.9.1">
+<pre>
+Overlap_Fraction = 1 - (Measured_JCT - C_total) / Comm_time
+
+  where:
+    C_total   = Iterations x C
+    Comm_time = Iterations x S x algo_factor / NIC_line_rate
+</pre>
+</div>
+<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<a href="#name-overlap-fraction-calculatio" class="selfRef">Overlap Fraction Calculation</a>
+              </figcaption></figure>
+</div>
+<p id="section-10.1-1.1.10">An Overlap_Fraction of 0 indicates fully sequential execution; 1.0 indicates communication is perfectly hidden behind compute.<a href="#section-10.1-1.1.10" class="pilcrow">¶</a></p>
+<p id="section-10.1-1.1.11">When overlap is present, the residual fabric overhead <span class="bcp14">SHOULD</span> be reported as:<a href="#section-10.1-1.1.11" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-10.1-1.1.12">
+<pre>
+Effective_Comm_Overhead = Measured_JCT - C_total
+</pre><a href="#section-10.1-1.1.12" class="pilcrow">¶</a>
+</div>
+<p id="section-10.1-1.1.13">The Overlap_Fraction and communication library overlap configuration (e.g., bucket size, number of async streams) <span class="bcp14">MUST</span> be documented as part of the test configuration when this optional measurement is reported.<a href="#section-10.1-1.1.13" class="pilcrow">¶</a></p>
+<p id="section-10.1-1.1.14"><strong>Reporting:</strong> Tabulate JCT Ratio for each (C, S, N, LB_strategy combination.  Plot JCT Ratio vs. N to characterize fabric scalability.<a href="#section-10.1-1.1.14" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-10.1-6.1">
-            <p id="section-10.1-6.1.1">JCT Ratio &lt; 1.05 = excellent fabric performance; &gt; 1.15 = significant fabric-induced overhead.<a href="#section-10.1-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal ulEmpty" id="section-10.1-1.1.15.1">
+                <p id="section-10.1-1.1.15.1.1">NOTE: JCT Ratio &lt; 1.05 indicates excellent fabric performance; 1.15 indicates significant fabric-induced overhead. These are non-normative illustrative reference values only.<a href="#section-10.1-1.1.15.1.1" class="pilcrow">¶</a></p>
+</li>
+            </ul>
 </li>
         </ul>
 </section>
@@ -2851,13 +2883,13 @@ JCT Ratio    = Measured_JCT / Roofline_JCT
 <p id="section-10.3-1"><strong>Objective:</strong> Quantify JCT impact when multiple training jobs share the same fabric.<a href="#section-10.3-1" class="pilcrow">¶</a></p>
 <p id="section-10.3-2"><strong>Procedure:</strong> Configure two or more independent training jobs. Jobs <span class="bcp14">SHOULD</span> overlap in spine-layer link usage. Measure baseline JCT (isolated) and contention JCT (simultaneous).<a href="#section-10.3-2" class="pilcrow">¶</a></p>
 <span id="name-jct-interference-factor"></span><div id="fig-jct-interference">
-<figure id="figure-5">
+<figure id="figure-6">
           <div class="alignLeft art-ascii-art art-text artwork" id="section-10.3-3.1">
 <pre>
 JCT Interference Factor = Contention_JCT / Baseline_JCT
 </pre>
 </div>
-<figcaption><a href="#figure-5" class="selfRef">Figure 5</a>:
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
 <a href="#name-jct-interference-factor" class="selfRef">JCT Interference Factor</a>
           </figcaption></figure>
 </div>
