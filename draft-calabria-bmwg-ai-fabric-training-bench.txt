@@ -5,11 +5,11 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 1 October 2026                             Blue Fern Consulting
+Expires: 3 October 2026                             Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
-                                                           30 March 2026
+                                                            1 April 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 1 October 2026.
+   This Internet-Draft will expire on 3 October 2026.
 
 Copyright Notice
 
@@ -274,114 +274,108 @@ Table of Contents
    term overlaps with [RFC1242] or [RFC8238], the definition herein
    takes precedence in the context of AI fabric benchmarking.
 
-       +===============+===========================================+
-       | Term          | Definition                                |
-       +===============+===========================================+
-       | *AI Fabric*   | The dedicated Ethernet backend network    |
-       |               | interconnecting accelerators (GPUs/XPUs)  |
-       |               | for distributed AI training, typically a  |
-       |               | non-blocking Clos topology running RoCEv2 |
-       +---------------+-------------------------------------------+
-       | *JCT* (Job    | The wall-clock duration from start to     |
-       | Completion    | completion of a training job, inclusive   |
-       | Time)         | of all computation and communication      |
-       |               | phases                                    |
-       +---------------+-------------------------------------------+
-       | *DUT Fabric*  | All leaf switches, spine switches,        |
-       |               | superspine switches (if applicable), and  |
-       |               | interconnecting links forming the AI      |
-       |               | training fabric                           |
-       +---------------+-------------------------------------------+
-       | *Roofline     | Theoretical minimum JCT assuming perfect  |
-       | JCT*          | (zero-contention) network behavior        |
-       +---------------+-------------------------------------------+
-       | *JCT Ratio*   | Measured JCT / Roofline JCT; 1.0 = no     |
-       |               | network overhead; >1.0 = fabric           |
-       |               | inefficiency                              |
-       +---------------+-------------------------------------------+
-       | *BusBW* (Bus  | Effective per-accelerator throughput      |
-       | Bandwidth)    | during a collective: (data_size x         |
-       |               | algo_factor) / time                       |
-       +---------------+-------------------------------------------+
-       | *QP* (Queue   | RDMA communication endpoint (Send Queue + |
-       | Pair)         | Receive Queue); multiple QPs per src-dst  |
-       |               | pair increase ECMP entropy                |
-       +---------------+-------------------------------------------+
-       | *Incast       | Ratio of senders to receivers (e.g., N:1  |
-       | Ratio*        | incast)                                   |
-       +---------------+-------------------------------------------+
-       | *MMR* (Max-   | Flow count on most-loaded link / average  |
-       | Mean Ratio)   | flow count; quantifies ECMP imbalance     |
-       |               | (1.0 = perfect)                           |
-       +---------------+-------------------------------------------+
-       | *PFC Pause    | Single PFC PAUSE frame transmitted on a   |
-       | Event*        | priority class                            |
-       +---------------+-------------------------------------------+
-       | *ECN Marking  | % of packets marked with Congestion       |
-       | Ratio*        | Experienced (CE) over a measurement       |
-       |               | interval                                  |
-       +---------------+-------------------------------------------+
-       | *Collective   | Coordinated cross-accelerator             |
-       | Operation*    | communication: AllReduce, AlltoAll,       |
-       |               | AllGather                                 |
-       +---------------+-------------------------------------------+
-       | *DCQCN*       | Data Center Quantized Congestion          |
-       |               | Notification: ECN + PFC for end-to-end    |
-       |               | congestion control with RoCEv2            |
-       +---------------+-------------------------------------------+
-       | *Packet       | Load balancing distributing individual    |
-       | Spray*        | packets across all ECMP paths; maximizes  |
-       |               | utilization but may cause reordering      |
-       +---------------+-------------------------------------------+
-       | *DLB/Flowlet* | Dynamic Load Balancing using flowlet      |
-       |               | detection; reroutes traffic at flow idle  |
-       |               | gaps                                      |
-       +---------------+-------------------------------------------+
-       | *Zero-Impact  | Sub-microsecond path convergence upon     |
-       | Failover*     | link/switch failure with no measurable    |
-       |               | JCT impact                                |
-       +---------------+-------------------------------------------+
-       | *UET* (Ultra  | Connectionless RDMA transport defined by  |
-       | Ethernet      | UEC Spec 1.0; designed as next-generation |
-       | Transport)    | replacement for RoCEv2                    |
-       +---------------+-------------------------------------------+
-       | *PDC* (Packet | Ephemeral, connectionless UET transport   |
-       | Delivery      | endpoint; analogous to but distinct from  |
-       | Context)      | an RDMA QP                                |
-       +---------------+-------------------------------------------+
-       | *ROD*         | Reliable Ordered Delivery: UET service    |
-       |               | semantically equivalent to RoCEv2 RC mode |
-       +---------------+-------------------------------------------+
-       | *RUD*         | Reliable Unordered Delivery: UET service  |
-       |               | enabling native packet spray without      |
-       |               | receiver reorder buffer overhead          |
-       +---------------+-------------------------------------------+
-       | *RUDI*        | Reliable Unordered Delivery for           |
-       |               | Idempotent operations; simplified         |
-       |               | retransmission for RDMA Writes            |
-       +---------------+-------------------------------------------+
-       | *UUD*         | Unreliable Unordered Delivery: best-      |
-       |               | effort UET service for telemetry/         |
-       |               | speculative operations                    |
-       +---------------+-------------------------------------------+
-       | *LLR* (Link   | Optional UEC per-hop error recovery (sub- |
-       | Layer Retry)  | microsecond) at the Ethernet link layer   |
-       +---------------+-------------------------------------------+
-       | *Packet       | Optional UEC enhancement; congested       |
-       | Trimming*     | switches transmit packet header only      |
-       |               | instead of dropping the full packet       |
-       +---------------+-------------------------------------------+
-       | *CBFC*        | Optional UEC per-destination flow         |
-       | (Credit-Based | control; alternative to PFC that avoids   |
-       | Flow Control) | head-of-line blocking                     |
-       +---------------+-------------------------------------------+
-       | *UEC Profile* | Defined UET feature subset: AI Base, AI   |
-       |               | Full, or HPC                              |
-       +---------------+-------------------------------------------+
-       | *Entropy      | Explicit per-packet UET field for ECMP    |
-       | Value*        | path selection; improves multipath        |
-       |               | utilization vs. 5-tuple hashing           |
-       +---------------+-------------------------------------------+
+     +===============+===============================================+
+     | Term          | Definition                                    |
+     +===============+===============================================+
+     | *AI Fabric*   | The dedicated Ethernet backend network        |
+     |               | interconnecting accelerators (GPUs/XPUs) for  |
+     |               | distributed AI training, typically a non-     |
+     |               | blocking Clos topology running RoCEv2         |
+     +---------------+-----------------------------------------------+
+     | *JCT* (Job    | The wall-clock duration from start to         |
+     | Completion    | completion of a training job, inclusive of    |
+     | Time)         | all computation and communication phases      |
+     +---------------+-----------------------------------------------+
+     | *DUT Fabric*  | All leaf switches, spine switches, superspine |
+     |               | switches (if applicable), and interconnecting |
+     |               | links forming the AI training fabric          |
+     +---------------+-----------------------------------------------+
+     | *Roofline     | Theoretical minimum JCT assuming perfect      |
+     | JCT*          | (zero-contention) network behavior            |
+     +---------------+-----------------------------------------------+
+     | *JCT Ratio*   | Measured JCT / Roofline JCT; 1.0 = no network |
+     |               | overhead; >1.0 = fabric inefficiency          |
+     +---------------+-----------------------------------------------+
+     | *BusBW* (Bus  | Effective per-accelerator throughput;         |
+     | Bandwidth)    | algo_factor is collective- and algorithm-     |
+     |               | specific (see Section 9).  Reports MUST state |
+     |               | collective type, algorithm, and algo_factor   |
+     +---------------+-----------------------------------------------+
+     | *QP* (Queue   | RDMA communication endpoint (Send Queue +     |
+     | Pair)         | Receive Queue); multiple QPs per src-dst pair |
+     |               | increase ECMP entropy                         |
+     +---------------+-----------------------------------------------+
+     | *Incast       | Ratio of senders to receivers (e.g., N:1      |
+     | Ratio*        | incast)                                       |
+     +---------------+-----------------------------------------------+
+     | *MMR* (Max-   | Flow count on most-loaded link / average flow |
+     | Mean Ratio)   | count; quantifies ECMP imbalance (1.0 =       |
+     |               | perfect)                                      |
+     +---------------+-----------------------------------------------+
+     | *PFC Pause    | Single PFC PAUSE frame transmitted on a       |
+     | Event*        | priority class                                |
+     +---------------+-----------------------------------------------+
+     | *ECN Marking  | % of packets marked with Congestion           |
+     | Ratio*        | Experienced (CE) over a measurement interval  |
+     +---------------+-----------------------------------------------+
+     | *Collective   | Coordinated cross-accelerator communication:  |
+     | Operation*    | AllReduce, AlltoAll, AllGather                |
+     +---------------+-----------------------------------------------+
+     | *DCQCN*       | Data Center Quantized Congestion              |
+     |               | Notification: ECN + PFC for end-to-end        |
+     |               | congestion control with RoCEv2                |
+     +---------------+-----------------------------------------------+
+     | *Packet       | Load balancing distributing individual        |
+     | Spray*        | packets across all ECMP paths; maximizes      |
+     |               | utilization but may cause reordering          |
+     +---------------+-----------------------------------------------+
+     | *DLB/Flowlet* | Dynamic Load Balancing using flowlet          |
+     |               | detection; reroutes traffic at flow idle gaps |
+     +---------------+-----------------------------------------------+
+     | *Zero-Impact  | Sub-microsecond path convergence upon link/   |
+     | Failover*     | switch failure with no measurable JCT impact  |
+     +---------------+-----------------------------------------------+
+     | *UET* (Ultra  | Connectionless RDMA transport defined by UEC  |
+     | Ethernet      | Spec 1.0; designed as next-generation         |
+     | Transport)    | replacement for RoCEv2                        |
+     +---------------+-----------------------------------------------+
+     | *PDC* (Packet | Ephemeral, connectionless UET transport       |
+     | Delivery      | endpoint; analogous to but distinct from an   |
+     | Context)      | RDMA QP                                       |
+     +---------------+-----------------------------------------------+
+     | *ROD*         | Reliable Ordered Delivery: UET service        |
+     |               | semantically equivalent to RoCEv2 RC mode     |
+     +---------------+-----------------------------------------------+
+     | *RUD*         | Reliable Unordered Delivery: UET service      |
+     |               | enabling native packet spray without receiver |
+     |               | reorder buffer overhead                       |
+     +---------------+-----------------------------------------------+
+     | *RUDI*        | Reliable Unordered Delivery for Idempotent    |
+     |               | operations; simplified retransmission for     |
+     |               | RDMA Writes                                   |
+     +---------------+-----------------------------------------------+
+     | *UUD*         | Unreliable Unordered Delivery: best-effort    |
+     |               | UET service for telemetry/speculative         |
+     |               | operations                                    |
+     +---------------+-----------------------------------------------+
+     | *LLR* (Link   | Optional UEC per-hop error recovery (sub-     |
+     | Layer Retry)  | microsecond) at the Ethernet link layer       |
+     +---------------+-----------------------------------------------+
+     | *Packet       | Optional UEC enhancement; congested switches  |
+     | Trimming*     | transmit packet header only instead of        |
+     |               | dropping the full packet                      |
+     +---------------+-----------------------------------------------+
+     | *CBFC*        | Optional UEC per-destination flow control;    |
+     | (Credit-Based | alternative to PFC that avoids head-of-line   |
+     | Flow Control) | blocking                                      |
+     +---------------+-----------------------------------------------+
+     | *UEC Profile* | Defined UET feature subset: AI Base, AI Full, |
+     |               | or HPC                                        |
+     +---------------+-----------------------------------------------+
+     | *Entropy      | Explicit per-packet UET field for ECMP path   |
+     | Value*        | selection; improves multipath utilization vs. |
+     |               | 5-tuple hashing                               |
+     +---------------+-----------------------------------------------+
 
                     Table 2: Terminology and Definitions
 
@@ -540,43 +534,48 @@ Table of Contents
 
 4.1.  Primary KPIs
 
-   +============+===============+====================+=================+
-   | KPI        | Unit          | Definition         | Reference       |
-   |            |               |                    | Target (Non-    |
-   |            |               |                    | Normative)      |
-   +============+===============+====================+=================+
-   | Job        | seconds       | Wall-clock time    | Minimize        |
-   | Completion |               | for benchmark      |                 |
-   | Time (JCT) |               | iteration          |                 |
-   |            |               | (compute +         |                 |
-   |            |               | communication)     |                 |
-   +------------+---------------+--------------------+-----------------+
-   | JCT Ratio  | dimensionless | Measured JCT /     | <= 1.05 (<=     |
-   |            |               | Roofline JCT       | 1.15            |
-   |            |               |                    | acceptable)     |
-   +------------+---------------+--------------------+-----------------+
-   | Bus        | Gbps/         | Effective per-     | >= 90% of NIC   |
-   | Bandwidth  | accelerator   | accelerator        | line rate       |
-   | (BusBW)    |               | throughput         | (intra-pod)     |
-   |            |               | during             |                 |
-   |            |               | collective         |                 |
-   +------------+---------------+--------------------+-----------------+
-   | Aggregate  | Tbps          | Total fabric       | >= 95% of       |
-   | Throughput |               | goodput during     | bisection BW    |
-   |            |               | collective         |                 |
-   |            |               | phase              |                 |
-   +------------+---------------+--------------------+-----------------+
-   | Packet     | ppm           | Frames lost        | 0 ppm           |
-   | Drop Rate  |               | end-to-end not     | (lossless)      |
-   |            |               | retransmitted      |                 |
-   +------------+---------------+--------------------+-----------------+
-   | Tail       | us            | 99th/99.9th        | Minimize        |
-   | Latency    |               | percentile one-    |                 |
-   | (P99/      |               | way fabric         |                 |
-   | P99.9)     |               | latency            |                 |
-   +------------+---------------+--------------------+-----------------+
+   +==========+===============+=====================+=================+
+   |KPI       | Unit          | Definition          | Reference       |
+   |          |               |                     | Target (Non-    |
+   |          |               |                     | Normative)      |
+   +==========+===============+=====================+=================+
+   |Job       | seconds       | Wall-clock time for | Minimize        |
+   |Completion|               | benchmark iteration |                 |
+   |Time (JCT)|               | (compute +          |                 |
+   |          |               | communication)      |                 |
+   +----------+---------------+---------------------+-----------------+
+   |JCT Ratio | dimensionless | Measured JCT /      | <= 1.05 (<=     |
+   |          |               | Roofline JCT        | 1.15            |
+   |          |               |                     | acceptable)     |
+   +----------+---------------+---------------------+-----------------+
+   |Bus       | Gbps/         | Effective per-      | >= 90% of NIC   |
+   |Bandwidth | accelerator   | accelerator         | line rate       |
+   |(BusBW)   |               | throughput during   | (intra-pod)     |
+   |          |               | collective;         |                 |
+   |          |               | algo_factor is      |                 |
+   |          |               | collective- and     |                 |
+   |          |               | algorithm-specific; |                 |
+   |          |               | see Section 9.      |                 |
+   |          |               | Reports MUST state  |                 |
+   |          |               | collective type,    |                 |
+   |          |               | algorithm, and      |                 |
+   |          |               | algo_factor         |                 |
+   +----------+---------------+---------------------+-----------------+
+   |Aggregate | Tbps          | Total fabric        | >= 95% of       |
+   |Throughput|               | goodput during      | bisection BW    |
+   |          |               | collective phase    |                 |
+   +----------+---------------+---------------------+-----------------+
+   |Packet    | ppm           | Frames lost end-to- | 0 ppm           |
+   |Drop Rate |               | end not             | (lossless)      |
+   |          |               | retransmitted       |                 |
+   +----------+---------------+---------------------+-----------------+
+   |Tail      | us            | 99th/99.9th         | Minimize        |
+   |Latency   |               | percentile one-way  |                 |
+   |(P99/     |               | fabric latency      |                 |
+   |P99.9)    |               |                     |                 |
+   +----------+---------------+---------------------+-----------------+
 
-                           Table 5: Primary KPIs
+                          Table 5: Primary KPIs
 
 4.2.  Secondary KPIs
 
@@ -878,13 +877,33 @@ Table of Contents
 
 6.6.  UET Collective Communication Performance
 
-   *Objective:* Measure collective communication (AllReduce, AlltoAll,
-   AllGather) performance over UET and compare to RoCEv2.
+   *Objective:* Measure collective communication (AllReduce, AllToAll,
+   AllGather) performance over UET and compare directly to RoCEv2,
+   isolating the transport protocol contribution to collective
+   efficiency.
 
    *Procedure:* Execute the collective benchmark suite from Section 9
-   over UET RUD transport using a UEC-compliant collective library.
-   Same accelerator count, message sizes, and fabric topology.  Run UET
-   RUD + packet spray as primary; UET ROD + ECMP as secondary baseline.
+   over UET RUD transport using a UEC-compliant collective library.  The
+   same accelerator count (N), message sizes, and fabric topology MUST
+   be used for both UET and RoCEv2 runs to ensure a valid comparison.
+   Run UET RUD + packet spray as the primary configuration and UET ROD +
+   ECMP as the secondary baseline.
+
+   For AllReduce, if UET group keying (transport-layer reduction support
+   per UEC Spec 1.0) is active on the DUT NIC, this MUST be noted
+   explicitly.
+
+   When group keying is active, algo_factor MUST be recomputed from
+   observed bytes transferred rather than applying the closed-form
+   formula, since group keying alters the effective number of pass-
+   through hops.
+
+   Document the group keying state (active / inactive) as a required
+   result field.  For all collectives, the algo_factor used MUST be
+   stated per message-size bucket.  See Section 9 for reference values.
+
+   *Reporting:* Report the percentage improvement in BusBW and JCT
+   attributable to UET native packet spray and congestion control.
 
    *Reporting template:*
 
@@ -1028,41 +1047,99 @@ Table of Contents
 
 9.1.  AllReduce Benchmark
 
-   *Objective:* Measure fabric performance during AllReduce operations
-   -- the dominant collective for gradient synchronization in data-
-   parallel training.
+   *Objective:* Measure fabric performance during AllReduce
+   operations,the dominant collective for gradient synchronization in
+   data-parallel training.
 
-   *Procedure:*
+   *Procedure:* Using N accelerators connected through the DUT fabric,
+   execute AllReduce (sum) operations using the collective communication
+   library benchmark suite (e.g., nccl-tests or equivalent).
 
-   *  Message sizes: 1MB, 8MB, 64MB, 256MB, 1GB, 4GB
+   Test parameters:
 
-   *  Accelerator counts: N = {8, 16, 32, 64, 128, 256, 512, 1024}
+   *  Message sizes: 1 MB, 8 MB, 64 MB, 256 MB, 1 GB, 4 GB
 
-   *  Execute at least 100 iterations per (message_size, N) pair
+   *  Accelerator counts (N): 8, 16, 32, 64, 128, 256, 512, 1024
 
-   *  Report average, P50, P95, P99 BusBW
+   *  Minimum iterations per (message_size, N) pair: 100
 
-   *  Run under each load balancing strategy (ECMP, DLB, spray)
+   *  Load balancing strategies: ECMP, DLB, packet spray
+
+   For each (message_size, N) pair, record average, P50, P95, and P99
+   BusBW, ECN marking ratio, PFC pause count, and per-link utilization.
+   The collective algorithm in use MUST be verified via library tracing
+   for each message size bucket and reported alongside the BusBW result.
+   If the library selects the algorithm dynamically (e.g., tree-based
+   for small messages, ring for large messages), algo_factor varies with
+   message size and MUST be reported per bucket, not as a single value.
+   For ring AllReduce, algo_factor = 2*(n-1)/n.  See Section 9 for the
+   full algo_factor reference table and mandatory reporting
+   requirements.
+
+   *Reporting* : Tabulate BusBW for each (message_size, N, LB_strategy,
+   algo_factor) combination.  The algo_factor column is REQUIRED;
+   results without it are incomplete.  Plot BusBW vs. N for each message
+   size.  Report BusBW efficiency = BusBW / NIC_line_rate.
 
 9.2.  AlltoAll Benchmark
 
-   *Objective:* Measure fabric performance during AlltoAll operations --
-   used in Mixture-of-Experts (MoE) models and expert parallelism.
+   *Objective:* Measure fabric performance during AllToAll operations
+   the dominant collective for Mixture-of-Experts (MoE) expert
+   parallelism dispatch and pipeline-parallel communication.
 
-   *Procedure:* Execute AlltoAll with same parameters as Section 9.1.
-   AlltoAll creates the worst-case congestion scenario: every
-   accelerator simultaneously sends to every other participating
-   accelerator.  Report JCT per iteration -- the most sensitive
-   indicator of fabric congestion management quality.
+   *Procedure:* Using the same message sizes, accelerator counts,
+   iteration count, and load balancing strategies as Section 9.1,
+   execute AllToAll operations via the collective communication library.
+
+   AllToAll generates the worst-case fabric stress pattern: every
+   accelerator simultaneously sends a unique payload to every other
+   accelerator in the group, creating maximum entropy and N-to-N incast
+   at every fabric link.  This makes AllToAll JCT the most sensitive
+   single indicator of fabric congestion management quality.
+
+   For AllToAll, algo_factor = (n-1)/n regardless of topology or library
+   implementation.  BusBW reports MUST state this value explicitly.  See
+   Section 9.
+
+   *Measurement:* Report BusBW (average, P50, P95, P99), JCT per
+   iteration, ECN marking ratio, PFC pause count, and per-link
+   utilization for each (message_size, N, LB_strategy) combination.
+
+   *Reporting:* Same table format as Section 9.1, with algo_factor
+   column required.  Additionally report JCT for each configuration; JCT
+   degradation relative to the ECMP baseline SHOULD be highlighted as
+   the primary congestion sensitivity indicator.
 
 9.3.  AllGather Benchmark
 
-   *Objective:* Measure fabric performance during AllGather operations
-   -- used for parameter distribution in tensor-parallel and pipeline-
-   parallel training.
+   *Objective:* Measure fabric performance during AllGather operations,
+   the dominant collective for weight and activation distribution in
+   tensor-parallel and pipeline-parallel training.
 
-   *Procedure:* Execute AllGather with same parameter sweeps as
-   Section 9.1.  Measure BusBW, JCT, and fabric health indicators.
+   *Procedure:* Using the same message sizes, accelerator counts,
+   iteration count, and load balancing strategies as Section 9.1,
+   execute AllGather operations via the collective communication
+   library.
+
+   AllGather consists of a gather phase only — each accelerator
+   contributes a shard and receives the full concatenated tensor.  There
+   is no reduce phase, which produces lower peak fabric load than
+   AllReduce at equivalent message size and N.  This makes AllGather a
+   useful baseline for isolating the gather-path fabric contribution
+   from the combined send-and-reduce cost.
+
+   For ring AllGather, algo_factor = (n-1)/n.  BusBW reports MUST state
+   this value explicitly.  See Section 9.
+
+   *Measurement:* Report BusBW (average, P50, P95, P99), JCT per
+   iteration, ECN marking ratio, PFC pause count, and per-link
+   utilization for each (message_size, N, LB_strategy) combination.
+
+   *Reporting:* Same table format as Section 9.1, with algo_factor
+   column required.  Report BusBW efficiency = BusBW / NIC_line_rate.
+   Where results are compared to AllReduce under identical parameters,
+   the BusBW ratio (AllGather / AllReduce) quantifies the fabric
+   overhead attributable to the reduce phase.
 
 9.4.  Collective Communication Library Bus Bandwidth Summary
 
