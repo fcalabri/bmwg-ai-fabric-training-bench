@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-31T03:16:39.430992+00:00",
+  "timestamp": "2026-04-02T02:54:23.417409+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -55,7 +55,7 @@
       "id": "I_kwDORX7w2M74gKgn",
       "title": "Synthetic JCT model and lack of overlap awareness (From Sowjanya)",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/3",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "billwuqin",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -64,9 +64,24 @@
       "labels": [],
       "body": "https://mailarchive.ietf.org/arch/msg/bmwg/oXnW_Mh3sFZri2epQtmADPbhB9Q/",
       "createdAt": "2026-03-30T09:35:14Z",
-      "updatedAt": "2026-03-30T09:35:14Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-03-31T16:49:45Z",
+      "closedAt": "2026-03-31T16:49:45Z",
+      "comments": [
+        {
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "body": "need to re-work entire section, het comments are correct but proposed text not aligned and needs fixing on the  Roofline formula and specify correctly Effective_Comm_Overhead = Measured_JCT - Pure_Compute_Time",
+          "createdAt": "2026-03-31T16:33:14Z",
+          "updatedAt": "2026-03-31T16:33:14Z"
+        },
+        {
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "body": "addressed by 10.1 JCP PR ",
+          "createdAt": "2026-03-31T16:49:45Z",
+          "updatedAt": "2026-03-31T16:49:45Z"
+        }
+      ]
     },
     {
       "number": 4,
@@ -91,16 +106,24 @@
       "id": "I_kwDORX7w2M74gNDA",
       "title": "Traffic generator realism and limitations (From Sowjanya)",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/5",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "billwuqin",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "https://mailarchive.ietf.org/arch/msg/bmwg/oXnW_Mh3sFZri2epQtmADPbhB9Q/",
       "createdAt": "2026-03-30T09:36:30Z",
-      "updatedAt": "2026-03-30T09:36:30Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-03-31T17:04:35Z",
+      "closedAt": "2026-03-31T17:04:35Z",
+      "comments": [
+        {
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "body": "new section / updated 3.3.3 ",
+          "createdAt": "2026-03-31T17:04:35Z",
+          "updatedAt": "2026-03-31T17:04:35Z"
+        }
+      ]
     },
     {
       "number": 6,
@@ -144,16 +167,24 @@
       "id": "I_kwDORX7w2M74xnV8",
       "title": "buBW",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/8",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "\nNeed to update as per Terminology - Sections 9.1 AllReduce \u2014 Procedure & Reporting / 9.2 AllToAll, \u00a79.3 AllGather \u2014 Procedure / 6.6 UET Reporting\n",
       "createdAt": "2026-03-30T20:09:01Z",
-      "updatedAt": "2026-03-30T20:09:01Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-03-31T16:27:04Z",
+      "closedAt": "2026-03-31T16:27:04Z",
+      "comments": [
+        {
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "body": "addressed by BUBW PR ",
+          "createdAt": "2026-03-31T16:27:04Z",
+          "updatedAt": "2026-03-31T16:27:04Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -229,6 +260,137 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 9,
+      "id": "PR_kwDORX7w2M7PAKvI",
+      "title": "Busbw",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/9",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "updated not ref and lint ",
+      "createdAt": "2026-03-31T16:24:17Z",
+      "updatedAt": "2026-04-01T12:10:44Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "0e639f084ef4d5b40685a92a75dce9fc6077b349",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "BUSBW",
+      "headRefOid": "9df75e93435180ac3525f020665703ecb62250dc",
+      "closedAt": "2026-04-01T12:10:43Z",
+      "mergedAt": "2026-04-01T12:10:43Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "4fdfba12d769d2b7cfb6d9751863db96601102f9"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 10,
+      "id": "PR_kwDORX7w2M7PAc0D",
+      "title": "Jct 10.1",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/10",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "10.1 reworked and changes on BUSBW merged (cloned) ",
+      "createdAt": "2026-03-31T16:43:36Z",
+      "updatedAt": "2026-04-01T12:11:10Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "0e639f084ef4d5b40685a92a75dce9fc6077b349",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "JCT_10.1",
+      "headRefOid": "3796b79668fae8e56ceff9fb3e897b0db2c29e82",
+      "closedAt": "2026-04-01T12:11:09Z",
+      "mergedAt": "2026-04-01T12:11:09Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "11b2dbe009944f8a0425922b7d9aeaa9a418a6bb"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M7wuXo9",
+          "commit": {
+            "abbreviatedOid": "d0afdad"
+          },
+          "author": "github-actions",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-31T16:44:01Z",
+          "updatedAt": "2026-03-31T16:44:01Z",
+          "comments": [
+            {
+              "originalPosition": 169,
+              "body": "````suggestion\n>\n````",
+              "createdAt": "2026-03-31T16:44:01Z",
+              "updatedAt": "2026-03-31T16:44:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDORX7w2M7wuZgU",
+          "commit": {
+            "abbreviatedOid": "d0afdad"
+          },
+          "author": "github-actions",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-03-31T16:45:34Z",
+          "updatedAt": "2026-03-31T16:45:36Z",
+          "comments": [
+            {
+              "originalPosition": 169,
+              "body": "````suggestion\n>\n````",
+              "createdAt": "2026-03-31T16:45:34Z",
+              "updatedAt": "2026-03-31T16:45:36Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 11,
+      "id": "PR_kwDORX7w2M7PAvdA",
+      "title": "Test tool 3.3.3",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/11",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "Test tools and cluster 3.3.3 reworked ",
+      "createdAt": "2026-03-31T17:04:18Z",
+      "updatedAt": "2026-04-01T12:11:34Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "0e639f084ef4d5b40685a92a75dce9fc6077b349",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "Test_Tool_3.3.3",
+      "headRefOid": "543a199e434823145fbbe77f8d6ed2a0c5706858",
+      "closedAt": "2026-04-01T12:11:34Z",
+      "mergedAt": "2026-04-01T12:11:34Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "9e7d85b4c3bee9ebd8d1e7fb5c5aaf8a79a5b480"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
