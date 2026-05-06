@@ -125,9 +125,9 @@ The methodology enables direct, reproducible comparison across different switch 
 
 The rapid growth of distributed AI/ML training workloads has fundamentally changed the performance requirements for data center network fabrics. Unlike traditional data center traffic characterized by diverse flow sizes and protocols, AI training workloads generate highly synchronized, bandwidth-intensive, east-west traffic patterns dominated by collective communication operations (AllReduce, AlltoAll, AllGather). These workloads impose unique demands: lossless transport (via RoCEv2 over RDMA), ultra-low tail latency, near-perfect load balancing across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously.
 
-Existing BMWG methodologies, while foundational, do not adequately address the characteristics of AI training fabrics. {{RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the unique congestion dynamics of GPU-to-GPU traffic. {{RFC8238}} and {{RFC8239}} establish data center benchmarking terminology and methodology but predate the AI fabric paradigm and do not address RoCEv2-specific behaviors such as Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{META-ROCE}} further highlights the need for standardized benchmarking methodology.
+Existing BMWG methodologies, while foundational, do not adequately address the characteristics of AI training fabrics. {{!RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the unique congestion dynamics of GPU-to-GPU traffic. {{?RFC8238}} and {{?RFC8239}} establish data center benchmarking terminology and methodology but predate the AI fabric paradigm and do not address RoCEv2-specific behaviors such as Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{?DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{?META-ROCE}} further highlights the need for standardized benchmarking methodology.
 
-The EVPN benchmarking methodology {{EVPN-BENCH}} provides a structural template for service-oriented benchmarking but is scoped to L2VPN services rather than RDMA fabrics.
+The EVPN benchmarking methodology {{?EVPN-BENCH}} provides a structural template for service-oriented benchmarking but is scoped to L2VPN services rather than RDMA fabrics.
 
 This document fills the gap by defining a comprehensive benchmarking methodology specifically designed for AI training network fabrics.
 
@@ -150,19 +150,19 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 
 | Document | Relationship |
 |---|---|
-| {{RFC1242}} | Base terminology for network benchmarking; terms reused herein |
-| {{RFC2544}} | Base methodology; throughput/latency/loss tests adapted for RDMA |
-| {{RFC2889}} | LAN switching methodology; MAC learning concepts adapted for ARP/ND scale |
-| {{RFC8238}} | Data center terminology; buffer, congestion, and microburst terms extended |
-| {{RFC8239}} | Data center methodology; line-rate and buffer tests adapted for RoCEv2 |
-| {{RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
-| {{LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT. This document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. |
-| {{UEC-1.0}} | UET protocol specification; transport services, congestion control, and link-layer enhancements benchmarked in {{test-uec}} |
+| {{!RFC1242}} | Base terminology for network benchmarking; terms reused herein |
+| {{!RFC2544}} | Base methodology; throughput/latency/loss tests adapted for RDMA |
+| {{?RFC2889}} | LAN switching methodology; MAC learning concepts adapted for ARP/ND scale |
+| {{?RFC8238}} | Data center terminology; buffer, congestion, and microburst terms extended |
+| {{?RFC8239}} | Data center methodology; line-rate and buffer tests adapted for RoCEv2 |
+| {{?RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
+| {{?LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT. This document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. |
+| {{?UEC-1.0}} | UET protocol specification; transport services, congestion control, and link-layer enhancements benchmarked in {{test-uec}} |
 {: #tab-existing-work title="Relationship to Existing BMWG Work"}
 
 # Terminology and Definitions
 
-The following terms are defined for use in this document. Where a term overlaps with {{RFC1242}} or {{RFC8238}}, the definition herein takes precedence in the context of AI fabric benchmarking.
+The following terms are defined for use in this document. Where a term overlaps with {{!RFC1242}} or {{?RFC8238}}, the definition herein takes precedence in the context of AI fabric benchmarking.
 
 | Term | Definition |
 |---|---|
@@ -773,7 +773,7 @@ Test reports MUST include the following sections:
 
 This document defines benchmarking methodologies for controlled laboratory environments and does not introduce new security mechanisms or protocols.
 
-Per {{RFC6815}}, the tests defined herein MUST NOT be performed on production networks. The use of dedicated test IP address ranges per {{RFC2544}} Appendix C (198.18.0.0/15) is RECOMMENDED to prevent accidental interaction with production infrastructure.
+Per {{?RFC6815}}, the tests defined herein MUST NOT be performed on production networks. The use of dedicated test IP address ranges per {{!RFC2544}} Appendix C (198.18.0.0/15) is RECOMMENDED to prevent accidental interaction with production infrastructure.
 
 When RDMA/RoCEv2 traffic is used, the test environment SHOULD be isolated from production RDMA fabrics to prevent QP number space collisions or inadvertent PFC propagation. When UET traffic is used ({{test-uec}}), the test environment MUST ensure that UDP port 4793 traffic does not leak to production networks and that PDC identifier spaces are isolated. UET's optional transport security sub-layer (TSS) SHOULD NOT be enabled during performance benchmarking unless transport security overhead is explicitly being measured.
 
