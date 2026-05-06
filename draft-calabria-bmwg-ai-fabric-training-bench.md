@@ -115,7 +115,7 @@ This document defines benchmarking terminology, methodologies, and Key Performan
 
 As large-scale distributed AI/ML training clusters grow to tens of thousands of accelerators (GPUs/XPUs), the backend network fabric becomes the critical bottleneck determining job completion time (JCT), training throughput, and accelerator utilization.
 
-This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads, covering RDMA/RoCEv2 transport, the Ultra Ethernet Transport (UET) protocol defined by the UEC Specification 1.0 {{!UEC-1.0}}, congestion management (PFC, ECN, DCQCN, CBFC), load balancing strategies (ECMP, DLB, packet spraying), collective communication patterns (AllReduce, AlltoAll, AllGather), and scale/soak testing.
+This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads, covering RDMA/RoCEv2 transport, the Ultra Ethernet Transport (UET) protocol defined by the UEC Specification 1.0 {{UEC-1.0}}, congestion management (PFC, ECN, DCQCN, CBFC), load balancing strategies (ECMP, DLB, packet spraying), collective communication patterns (AllReduce, AlltoAll, AllGather), and scale/soak testing.
 
 The methodology enables direct, reproducible comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized).
 
@@ -125,9 +125,9 @@ The methodology enables direct, reproducible comparison across different switch 
 
 The rapid growth of distributed AI/ML training workloads has fundamentally changed the performance requirements for data center network fabrics. Unlike traditional data center traffic characterized by diverse flow sizes and protocols, AI training workloads generate highly synchronized, bandwidth-intensive, east-west traffic patterns dominated by collective communication operations (AllReduce, AlltoAll, AllGather). These workloads impose unique demands: lossless transport (via RoCEv2 over RDMA), ultra-low tail latency, near-perfect load balancing across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously.
 
-Existing BMWG methodologies, while foundational, do not adequately address the characteristics of AI training fabrics. {{!RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the unique congestion dynamics of GPU-to-GPU traffic. {{!RFC8238}} and {{!RFC8239}} establish data center benchmarking terminology and methodology but predate the AI fabric paradigm and do not address RoCEv2-specific behaviors such as Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{?DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{?META-ROCE}} further highlights the need for standardized benchmarking methodology.
+Existing BMWG methodologies, while foundational, do not adequately address the characteristics of AI training fabrics. {{!RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the unique congestion dynamics of GPU-to-GPU traffic. {{!RFC8238}} and {{!RFC8239}} establish data center benchmarking terminology and methodology but predate the AI fabric paradigm and do not address RoCEv2-specific behaviors such as Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{META-ROCE}} further highlights the need for standardized benchmarking methodology.
 
-The EVPN benchmarking methodology {{?EVPN-BENCH}} provides a structural template for service-oriented benchmarking but is scoped to L2VPN services rather than RDMA fabrics.
+The EVPN benchmarking methodology {{EVPN-BENCH}} provides a structural template for service-oriented benchmarking but is scoped to L2VPN services rather than RDMA fabrics.
 
 This document fills the gap by defining a comprehensive benchmarking methodology specifically designed for AI training network fabrics.
 
@@ -156,8 +156,8 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 | {{!RFC8238}} | Data center terminology; buffer, congestion, and microburst terms extended |
 | {{!RFC8239}} | Data center methodology; line-rate and buffer tests adapted for RoCEv2 |
 | {{!RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
-| {{?LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT. This document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. |
-| {{!UEC-1.0}} | UET protocol specification; transport services, congestion control, and link-layer enhancements benchmarked in {{test-uec}} |
+| {{LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT. This document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. |
+| {{UEC-1.0}} | UET protocol specification; transport services, congestion control, and link-layer enhancements benchmarked in {{test-uec}} |
 {: #tab-existing-work title="Relationship to Existing BMWG Work"}
 
 # Terminology and Definitions
@@ -396,7 +396,7 @@ These tests establish baseline fabric performance for RDMA traffic independent o
 
 # Test Category 1A: UEC Transport Protocol Benchmarks {#test-uec}
 
-The Ultra Ethernet Consortium (UEC) Specification 1.0 {{!UEC-1.0}} defines UET, a connectionless RDMA transport designed to replace RoCEv2 for AI/HPC workloads. All UET tests use the libfabric API {{?LIBFABRIC}} and run on UEC 1.0-compliant NICs.
+The Ultra Ethernet Consortium (UEC) Specification 1.0 {{UEC-1.0}} defines UET, a connectionless RDMA transport designed to replace RoCEv2 for AI/HPC workloads. All UET tests use the libfabric API {{LIBFABRIC}} and run on UEC 1.0-compliant NICs.
 
 The UEC compliance profile (AI Base, AI Full, or HPC) used during testing MUST be documented.
 
@@ -499,7 +499,7 @@ Document the group keying state (active / inactive) as a required result field. 
 
 **Objective:** Measure PDC establishment rate and maximum concurrent PDC count vs. RoCEv2 QP-based connections.
 
-**Procedure:** (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification {{!UEC-1.0}} targets up to 1 million endpoints.
+**Procedure:** (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification {{UEC-1.0}} targets up to 1 million endpoints.
 
 # Test Category 2: Congestion Management {#test-congestion}
 
@@ -570,7 +570,7 @@ where LinkTx_i = transmitted traffic on fabric link i, N = total parallel links.
 
 # Test Category 4: Collective Communication Benchmarks {#test-collective}
 
-These tests evaluate the fabric's performance under realistic collective communication patterns. Unlike synthetic RDMA tests in {{test-rdma}} and {{test-uec}}, these exercise the full stack including the collective library (NCCL {{?NCCL}}, RCCL, or equivalent).
+These tests evaluate the fabric's performance under realistic collective communication patterns. Unlike synthetic RDMA tests in {{test-rdma}} and {{test-uec}}, these exercise the full stack including the collective library (NCCL {{NCCL}}, RCCL, or equivalent).
 
 ## AllReduce Benchmark
 
@@ -695,7 +695,7 @@ JCT is the single most important user-facing KPI for AI training fabrics, direct
 
 ## MLPerf-Aligned JCT
 
-**Objective:** Measure JCT using MLPerf Training benchmark workloads {{?MLPERF}} to enable comparison with published industry results.
+**Objective:** Measure JCT using MLPerf Training benchmark workloads {{MLPERF}} to enable comparison with published industry results.
 
 **Procedure:** Execute MLPerf Training closed-division workloads (e.g., BERT, ResNet, GPT-3 175B) per MLPerf submission rules. Simultaneously capture all fabric KPIs from {{kpi-framework-and-metrics-taxonomy}}. Report time-to-train and/or tokens-per-second.
 
@@ -718,7 +718,7 @@ Test with spine link overlap: 0%, 25%, 50%, 75%.
 
 **Objective:** Determine the maximum fabric scale at which the DUT maintains acceptable KPI performance.
 
-**Procedure:** Progressively increase active accelerator endpoints from N=64 to maximum topology support while running AllReduce ({{allreduce-benchmark}}, S=1GB). At each scale point record JCT Ratio, BusBW, ECN ratio, PFC count, CPU and memory utilization. Also measure BGP/routing convergence time after clearing all adjacencies (analogous to {{?EVPN-BENCH}} Sections 3.10, 3.11, 4.9, 4.10).
+**Procedure:** Progressively increase active accelerator endpoints from N=64 to maximum topology support while running AllReduce ({{allreduce-benchmark}}, S=1GB). At each scale point record JCT Ratio, BusBW, ECN ratio, PFC count, CPU and memory utilization. Also measure BGP/routing convergence time after clearing all adjacencies (analogous to {{EVPN-BENCH}} Sections 3.10, 3.11, 4.9, 4.10).
 
 ## Link Failure Convergence
 
@@ -743,7 +743,7 @@ Repeat for: leaf uplink failure, spine switch failure, superspine link failure (
 
 ## 24-Hour Sustained Load {#soak-24h}
 
-**Objective:** Verify DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from {{?EVPN-BENCH}} Sections 3.12, 4.11.
+**Objective:** Verify DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from {{EVPN-BENCH}} Sections 3.12, 4.11.
 
 **Procedure:** Configure DUT at maximum validated scale from {{fabric-scale-limits}}. Generate bidirectional collective communication traffic (alternating AllReduce and AlltoAll). Run continuously for 24 hours. Sample all KPIs from {{kpi-framework-and-metrics-taxonomy}} every 60 seconds.
 
@@ -890,7 +890,7 @@ UET runs over UDP/IP using IANA-assigned destination port 4793.
 2. **Entropy Value:** Explicit entropy field for ECMP path selection. Test equipment MUST vary this field to achieve uniform path distribution.
 3. **Transport Service Indicator:** Header encodes transport service (ROD/RUD/RUDI/UUD). Tests MUST set this to match the service being benchmarked.
 4. **PDC Identifier:** Connectionless PDC ID replaces RoCEv2's Destination QP. Test equipment MUST track PDC lifecycle for accurate measurement.
-5. **Layered Sub-Headers:** UET uses four sub-layers (SES, PDS, CMS, TSS) with variable-length headers. Implementations MUST follow {{!UEC-1.0}} Section 4 for wire format details.
+5. **Layered Sub-Headers:** UET uses four sub-layers (SES, PDS, CMS, TSS) with variable-length headers. Implementations MUST follow {{UEC-1.0}} Section 4 for wire format details.
 6. **Optional Link Layer Headers:** When LLR, Packet Trimming, or PRI features are enabled, additional link-layer framing may be present. Test equipment MUST be configured to recognize and parse these.
 
 # Acknowledgments
