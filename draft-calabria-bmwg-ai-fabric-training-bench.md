@@ -162,7 +162,9 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 
 # Terminology and Definitions
 
-The following terms are defined for use in this document. Where a term overlaps with {{RFC1242}} or {{RFC8238}}, the definition herein takes precedence in the context of AI fabric benchmarking.
+This document uses terms defined in {{!RFC1242}} and {{!RFC8238}}.
+Where a term overlaps with {{!RFC1242}} or {{!RFC8238}}, the definition herein takes precedence in the context of AI fabric benchmarking.
+This document makes use of the following terms defined in {{?I-D.calabria-bmwg-ai-fabric-terminology}}:
 
 | Term | Definition |
 |---|---|
