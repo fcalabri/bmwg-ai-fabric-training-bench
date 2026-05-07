@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-02T02:54:23.417409+00:00",
+  "timestamp": "2026-05-07T03:49:02.492958+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -389,6 +389,58 @@
       "mergeCommit": {
         "oid": "9e7d85b4c3bee9ebd8d1e7fb5c5aaf8a79a5b480"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDORX7w2M7YnPZZ",
+      "title": "Terminologies align with Terminology draft",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/12",
+      "state": "OPEN",
+      "author": "billwuqin",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-05-06T02:50:11Z",
+      "updatedAt": "2026-05-06T02:50:11Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "9e7d85b4c3bee9ebd8d1e7fb5c5aaf8a79a5b480",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "billwuqin-patch-1",
+      "headRefOid": "2df6c0fa2aa5bde32fa4835459e885b7817258a5",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 13,
+      "id": "PR_kwDORX7w2M7YnVvd",
+      "title": "Separate normative references from informative references",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/13",
+      "state": "OPEN",
+      "author": "billwuqin",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-05-06T02:59:01Z",
+      "updatedAt": "2026-05-06T03:21:33Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "9e7d85b4c3bee9ebd8d1e7fb5c5aaf8a79a5b480",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "billwuqin-patch-2",
+      "headRefOid": "4199f675c0ef9fa3ca1600fbe76f32b2eb88f531",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
