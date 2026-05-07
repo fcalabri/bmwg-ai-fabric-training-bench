@@ -5,11 +5,11 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 7 November 2026                            Blue Fern Consulting
+Expires: 8 November 2026                            Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
-                                                              6 May 2026
+                                                              7 May 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 November 2026.
+   This Internet-Draft will expire on 8 November 2026.
 
 Copyright Notice
 
@@ -270,11 +270,9 @@ Table of Contents
 
 2.  Terminology and Definitions
 
-   This document uses terms defined in [RFC1242] and [RFC8238].  Where a
+   The following terms are defined for use in this document.  Where a
    term overlaps with [RFC1242] or [RFC8238], the definition herein
-   takes precedence in the context of AI fabric benchmarking.  This
-   document makes use of the following terms defined in
-   [I-D.calabria-bmwg-ai-fabric-terminology]:
+   takes precedence in the context of AI fabric benchmarking.
 
      +===============+===============================================+
      | Term          | Definition                                    |
@@ -1478,14 +1476,6 @@ Table of Contents
               draft-ietf-bmwg-evpntest-11, August 2023,
               <https://datatracker.ietf.org/doc/html/draft-ietf-bmwg-
               evpntest-11>.
-
-   [I-D.calabria-bmwg-ai-fabric-terminology]
-              Calabria, F., Pignataro, C., Wu, Q., and G. Fioccola,
-              "Benchmarking Terminology for AI Network Fabrics", Work in
-              Progress, Internet-Draft, draft-calabria-bmwg-ai-fabric-
-              terminology-01, 21 April 2026,
-              <https://datatracker.ietf.org/doc/html/draft-calabria-
-              bmwg-ai-fabric-terminology-01>.
 
    [LIBFABRIC]
               OpenFabrics Interfaces Working Group, "libfabric: Open
