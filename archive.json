@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-07T03:49:02.492958+00:00",
+  "timestamp": "2026-05-10T03:58:12.278908+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -397,50 +397,68 @@
       "id": "PR_kwDORX7w2M7YnPZZ",
       "title": "Terminologies align with Terminology draft",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/12",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "billwuqin",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-05-06T02:50:11Z",
-      "updatedAt": "2026-05-06T02:50:11Z",
+      "updatedAt": "2026-05-07T19:22:20Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
-      "baseRefOid": "9e7d85b4c3bee9ebd8d1e7fb5c5aaf8a79a5b480",
+      "baseRefOid": "f74dcfff887ae24092aa13c95f91fad5855ff367",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "billwuqin-patch-1",
-      "headRefOid": "2df6c0fa2aa5bde32fa4835459e885b7817258a5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "742ae49e97dc6db31afb5398d5d898d5417ec321",
+      "closedAt": "2026-05-07T19:22:19Z",
+      "mergedAt": "2026-05-07T19:22:19Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "158d46985969d634c8e17a5b85fa36394f20afca"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M79JTAS",
+          "commit": {
+            "abbreviatedOid": "742ae49"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-05-07T19:21:41Z",
+          "updatedAt": "2026-05-07T19:21:41Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 13,
       "id": "PR_kwDORX7w2M7YnVvd",
       "title": "Separate normative references from informative references",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/13",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "billwuqin",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-05-06T02:59:01Z",
-      "updatedAt": "2026-05-06T03:21:33Z",
+      "updatedAt": "2026-05-07T19:20:09Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "9e7d85b4c3bee9ebd8d1e7fb5c5aaf8a79a5b480",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "billwuqin-patch-2",
       "headRefOid": "4199f675c0ef9fa3ca1600fbe76f32b2eb88f531",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-05-07T19:20:09Z",
+      "mergedAt": "2026-05-07T19:20:09Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "f74dcfff887ae24092aa13c95f91fad5855ff367"
+      },
       "comments": [],
       "reviews": []
     }
