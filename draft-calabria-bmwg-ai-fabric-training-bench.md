@@ -55,6 +55,7 @@ normative:
       - org: Ultra Ethernet Consortium
     date: 2025-06
     target: "https://ultraethernet.org"
+  TERMINOLOGY: I-D.calabria-bmwg-ai-fabric-terminology
 
 informative:
   RFC6815:
@@ -171,7 +172,7 @@ The following terms are defined for use in this document. Where a term overlaps 
 | **DUT Fabric** | All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric |
 | **Roofline JCT** | Theoretical minimum JCT assuming perfect (zero-contention) network behavior |
 | **JCT Ratio** | Measured JCT / Roofline JCT; 1.0 = no network overhead; >1.0 = fabric inefficiency |
-| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput; algo_factor is collective- and algorithm-specific (see {{test-collective}}). Reports MUST state collective type, algorithm, and algo_factor |
+| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective operation. See the BusBW definition in {{!TERMINOLOGY}}. Reports MUST follow the reporting requirements specified there; additionally, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions |
 | **QP** (Queue Pair) | RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy |
 | **Incast Ratio** | Ratio of senders to receivers (e.g., N:1 incast) |
 | **MMR** (Max-Mean Ratio) | Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect) |
@@ -313,7 +314,7 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio MUST be investigated and repor
 |---|---|---|---|
 | Job Completion Time (JCT) | seconds | Wall-clock time for benchmark iteration (compute + communication) | Minimize |
 | JCT Ratio | dimensionless | Measured JCT / Roofline JCT | <= 1.05 (<= 1.15 acceptable) |
-| Bus Bandwidth (BusBW) | Gbps/accelerator | Effective per-accelerator throughput during collective; algo_factor is collective- and algorithm-specific; see {{test-collective}}. Reports MUST state collective type, algorithm, and algo_factor | >= 90% of NIC line rate (intra-pod) |
+| Bus Bandwidth (BusBW) | Gbps/accelerator | Effective per-accelerator throughput during collective. See the BusBW definition in {{!TERMINOLOGY}} | >= 90% of NIC line rate (intra-pod) |
 | Aggregate Throughput | Tbps | Total fabric goodput during collective phase | >= 95% of bisection BW |
 | Packet Drop Rate | ppm | Frames lost end-to-end not retransmitted | 0 ppm (lossless) |
 | Tail Latency (P99/P99.9) | us | 99th/99.9th percentile one-way fabric latency | Minimize |
@@ -479,9 +480,9 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 
 For AllReduce, if UET group keying (transport-layer reduction support per UEC Spec 1.0) is active on the DUT NIC, this MUST be noted explicitly.
 
-When group keying is active, algo_factor MUST be recomputed from observed bytes transferred rather than applying the closed-form formula, since group keying alters the effective number of pass-through hops.
+When UET group keying is active during testing, report the observed BusBW computed from measured bytes transferred. The algo_factor defined in {{!TERMINOLOGY}} (fixed per collective type) still applies to the formula; the observed transfer volume reflects group keying behavior.
 
-Document the group keying state (active / inactive) as a required result field. For all collectives, the algo_factor used MUST be stated per message-size bucket. See {{test-collective}} for reference values.
+Document the group keying state (active / inactive) as a required result field. The runtime algorithm in use MUST be reported per message-size bucket. See {{!TERMINOLOGY}} for the BusBW definition and algo_factor values.
 
  **Reporting:**  Report the percentage improvement in BusBW and JCT attributable to UET native packet spray and congestion control.
 
@@ -585,10 +586,9 @@ Test parameters:
 * Minimum iterations per (message_size, N) pair: 100
 * Load balancing strategies: ECMP, DLB, packet spray
 
-For each (message_size, N) pair, record average, P50, P95, and P99 BusBW, ECN marking ratio, PFC pause count, and per-link utilization. The collective algorithm in use MUST be verified via library tracing for each message size bucket and reported alongside the BusBW result. If the library selects the algorithm dynamically (e.g., tree-based for small messages, ring for large messages), algo_factor varies with message size and MUST be reported per bucket, not as a single value.
-For ring AllReduce, algo_factor = 2*(n-1)/n.  See {{test-collective}} for the full algo_factor reference table and mandatory reporting requirements.
+For each (message_size, N) pair, record average, P50, P95, and P99 BusBW, ECN marking ratio, PFC pause count, and per-link utilization. BusBW MUST be computed per the BusBW definition in {{!TERMINOLOGY}}; algo_factor is fixed per collective type and does not vary with the algorithm the library selects at runtime. The runtime algorithm selected by the library for each message-size bucket MUST be verified via library tracing and documented as part of the test conditions.
 
-**Reporting** : Tabulate BusBW for each (message_size, N, LB_strategy, algo_factor) combination.  The algo_factor column is REQUIRED; results without it are incomplete.  Plot BusBW vs. N for each message size. Report BusBW efficiency = BusBW / NIC_line_rate.
+**Reporting** : Tabulate BusBW for each (message_size, N, LB_strategy, Algorithm (verified)) combination.  The "Algorithm (verified)" column is REQUIRED; results without it are incomplete.  Plot BusBW vs. N for each message size. Report BusBW efficiency = BusBW / NIC_line_rate.
 
 ## AlltoAll Benchmark
 
@@ -599,11 +599,11 @@ For ring AllReduce, algo_factor = 2*(n-1)/n.  See {{test-collective}} for the fu
 AllToAll generates the worst-case fabric stress pattern: every accelerator simultaneously sends a unique payload to every other accelerator in the group, creating maximum entropy and N-to-N incast
 at every fabric link.  This makes AllToAll JCT the most sensitive single indicator of fabric congestion management quality.
 
-For AllToAll, algo_factor = (n-1)/n regardless of topology or library implementation.  BusBW reports MUST state this value explicitly. See {{test-collective}}.
+BusBW MUST be computed per the BusBW definition in {{!TERMINOLOGY}}; algo_factor is fixed per collective type and does not depend on topology or library implementation. The runtime algorithm in use MUST be verified via library tracing and documented as part of the test conditions.
 
 **Measurement:**  Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.
 
-**Reporting:** Same table format as {{allreduce-benchmark}}, with algo_factor column required.  Additionally report JCT for each configuration; JCT degradation relative to the ECMP baseline SHOULD
+**Reporting:** Same table format as {{allreduce-benchmark}}, with the "Algorithm (verified)" column required.  Additionally report JCT for each configuration; JCT degradation relative to the ECMP baseline SHOULD
 be highlighted as the primary congestion sensitivity indicator.
 
 ## AllGather Benchmark
@@ -615,11 +615,11 @@ be highlighted as the primary congestion sensitivity indicator.
 AllGather consists of a gather phase only — each accelerator contributes a shard and receives the full concatenated tensor.
 There is no reduce phase, which produces lower peak fabric load than AllReduce at equivalent message size and N.  This makes AllGather a useful baseline for isolating the gather-path fabric contribution from the combined send-and-reduce cost.
 
-For ring AllGather, algo_factor = (n-1)/n.  BusBW reports MUST state this value explicitly.  See {{test-collective}}.
+BusBW MUST be computed per the BusBW definition in {{!TERMINOLOGY}}; algo_factor is fixed per collective type and does not depend on the library's algorithm selection. The runtime algorithm in use MUST be verified via library tracing and documented as part of the test conditions.
 
 **Measurement:** Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.
 
-**Reporting:** Same table format as {{allreduce-benchmark}}, with algo_factor column required.  Report BusBW efficiency = BusBW / NIC_line_rate.  Where results are compared to AllReduce under identical parameters, the BusBW ratio (AllGather / AllReduce) quantifies the fabric overhead attributable to the reduce phase.
+**Reporting:** Same table format as {{allreduce-benchmark}}, with the "Algorithm (verified)" column required.  Report BusBW efficiency = BusBW / NIC_line_rate.  Where results are compared to AllReduce under identical parameters, the BusBW ratio (AllGather / AllReduce) quantifies the fabric overhead attributable to the reduce phase.
 
 ## Collective Communication Library Bus Bandwidth Summary
 
