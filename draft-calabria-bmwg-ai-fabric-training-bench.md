@@ -114,9 +114,9 @@ informative:
 
 This document defines benchmarking terminology, methodologies, and Key Performance Indicators (KPIs) for evaluating Ethernet-based AI training network fabrics.
 
-As large-scale distributed AI/ML training clusters grow to tens of thousands of accelerators (GPUs/XPUs), the backend network fabric becomes the critical bottleneck determining job completion time (JCT), training throughput, and accelerator utilization.
+As large-scale distributed Artificial Intelligence / Machine Learning (AI/ML) training clusters grow to tens of thousands of accelerators (GPUs or generic accelerator processing units (XPUs)), the backend network fabric becomes the critical bottleneck determining Job Completion Time (JCT), training throughput, and accelerator utilization.
 
-This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads, covering RDMA/RoCEv2 transport, the Ultra Ethernet Transport (UET) protocol defined by the UEC Specification 1.0 {{UEC-1.0}}, congestion management (PFC, ECN, DCQCN, CBFC), load balancing strategies (ECMP, DLB, packet spraying), collective communication patterns (AllReduce, AlltoAll, AllGather), and scale/soak testing.
+This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads, covering Remote Direct Memory Access (RDMA) over Converged Ethernet version 2 (RoCEv2) transport, the Ultra Ethernet Transport (UET) protocol defined by the Ultra Ethernet Consortium (UEC) Specification 1.0 {{UEC-1.0}}, congestion management (Priority Flow Control (PFC), Explicit Congestion Notification (ECN), Data Center Quantized Congestion Notification (DCQCN), Credit-Based Flow Control (CBFC)), load balancing strategies (Equal-Cost Multi-Path (ECMP), Dynamic Load Balancing (DLB), packet spraying), collective communication patterns (AllReduce, AllToAll, AllGather), and scale/soak testing.
 
 The methodology enables direct, reproducible comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized).
 
@@ -128,7 +128,7 @@ The rapid growth of distributed AI/ML training workloads has fundamentally chang
 
 Existing BMWG methodologies, while foundational, do not adequately address the characteristics of AI training fabrics. {{!RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the unique congestion dynamics of GPU-to-GPU traffic. {{!RFC8238}} and {{!RFC8239}} establish data center benchmarking terminology and methodology but predate the AI fabric paradigm and do not address RoCEv2-specific behaviors such as Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{META-ROCE}} further highlights the need for standardized benchmarking methodology.
 
-The EVPN benchmarking methodology {{EVPN-BENCH}} provides a structural template for service-oriented benchmarking but is scoped to L2VPN services rather than RDMA fabrics.
+The Ethernet Virtual Private Network (EVPN) benchmarking methodology {{EVPN-BENCH}} provides a structural template for service-oriented benchmarking but is scoped to L2VPN services rather than RDMA fabrics.
 
 This document fills the gap by defining a comprehensive benchmarking methodology specifically designed for AI training network fabrics.
 
@@ -143,7 +143,7 @@ This document applies to Ethernet-based AI training backend network fabrics empl
 InfiniBand fabrics are explicitly **out of scope**, though many KPIs defined herein may be adapted for IB benchmarking by future documents. The DUT is the network fabric itself (the collection of switches and interconnecting links), not individual accelerators or host NICs; host-side configuration is documented in the test report as it materially affects results.
 
 The DUT boundary for all measurements in this document is the NIC-to-NIC Ethernet fabric segment.  Intra-node communication (proprietary accelerator interconnects, e.g., NVLink, Infinity Fabric/xGMI, or PCIe) and individual GPU/accelerator performance are explicitly out of scope.
-Collective operation measurements (AllReduce, AllGather, AllToAll) are measured at the Ethernet fabric boundary; intra-node accelerator-interconnect contributions are reported separately when characterizing wide-EP or multi-node configurations.
+Collective operation measurements (AllReduce, AllGather, AllToAll) are measured at the Ethernet fabric boundary; intra-node accelerator-interconnect contributions are reported separately when characterizing wide Expert Parallelism (wide-EP) or multi-node configurations.
 
 The methodology is designed for controlled laboratory environments per the BMWG charter; it is NOT intended for production network measurement.
 
@@ -153,7 +153,7 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 |---|---|
 | {{!RFC1242}} | Base terminology for network benchmarking; terms reused herein |
 | {{!RFC2544}} | Base methodology; throughput/latency/loss tests adapted for RDMA |
-| {{!RFC2889}} | LAN switching methodology; MAC learning concepts adapted for ARP/ND scale |
+| {{!RFC2889}} | LAN switching methodology; MAC learning concepts adapted for Address Resolution Protocol (ARP) / Neighbor Discovery (ND) scale |
 | {{!RFC8238}} | Data center terminology; buffer, congestion, and microburst terms extended |
 | {{!RFC8239}} | Data center methodology; line-rate and buffer tests adapted for RoCEv2 |
 | {{!RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
@@ -173,6 +173,10 @@ The following terms are bench-specific extensions used only in this document and
 {: #tab-terminology title="Bench-Specific Terminology Extensions"}
 
 The scope of the DUT for the tests defined in this document is the set of leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric, consistent with the Fabric DUT Boundary defined in {{!TERMINOLOGY}}.
+
+## Acronyms
+
+Acronyms used in this document are expanded in the Acronyms appendix of {{!TERMINOLOGY}}. Acronyms unique to the methodology defined herein are expanded on first use in the body of this document.
 
 # Test Topology and Architecture
 
@@ -243,7 +247,7 @@ In rail-optimized topologies, each NIC on a multi-NIC host connects to a dedicat
 | NOS Version | Network operating system name and version | NOS Name Version |
 | Port Speed | Per-port line rate | 400GbE, 800GbE |
 | Buffer Architecture | Shared/dedicated, total buffer per ASIC/port | 32MB shared + 16MB VOQ per port |
-| Optics/Cables | Transceiver type, cable type and length | OSFP 400G-DR4, DAC 3m copper |
+| Optics/Cables | Transceiver type, cable type and length | Octal Small Form-factor Pluggable (OSFP) 400G-DR4, Direct Attach Copper (DAC) 3m cable |
 | NIC Vendor/Model | RDMA NIC vendor, model, firmware | NIC Vendor Model Speed |
 | NIC Firmware | NIC firmware version | Firmware Version |
 | Host Config | OS, CCL lib version, driver, BIOS settings | OS Version, CCL Version, OFED Version |
@@ -309,7 +313,7 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio are investigated and reported.
 | Queue Depth (P95/Max) | bytes or cells | 95th percentile and maximum egress queue occupancy per port |
 | Congestion Control Convergence | us | Time from congestion onset to DCQCN rate stabilization |
 | Out-of-Order Packet Rate | pkt/sec | Packets delivered out of sequence (relevant for packet spray) |
-| CTS/ACK Delay | us | Delay for control messages (Clear-to-Send, ACKs) |
+| Clear-to-Send (CTS) / Acknowledgment (ACK) Delay | us | Delay for control messages (Clear-to-Send, ACKs) |
 {: #tab-secondary-kpis title="Secondary KPIs"}
 
 ## Fabric Health Indicators
@@ -318,7 +322,7 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio are investigated and reported.
 |---|---|---|
 | Switch CPU Utilization | % | Average and peak CPU usage on DUT control plane during test |
 | Switch Memory Utilization | % | Average and peak memory usage, including FIB/MAC table occupancy |
-| FIB/Route Convergence Time | ms | Time to converge routing after topology change |
+| Forwarding Information Base (FIB) / Route Convergence Time | ms | Time to converge routing after topology change |
 | Link Flap Count | events | Spurious link state changes during test period |
 | CRC/FCS Error Rate | errors/sec | Physical layer errors indicating cable or optics issues |
 | Power Consumption | Watts | Per-switch and per-port power draw under test load |
@@ -379,7 +383,7 @@ The UEC compliance profile (AI Base, AI Full, or HPC) used during testing is doc
 
 ## UET Throughput by Transport Service
 
-**Objective:** Determine maximum sustainable throughput under each UET transport service (ROD, RUD, RUDI, UUD) and compare to RoCEv2 RC/UC on the same DUT fabric.
+**Objective:** Determine maximum sustainable throughput under each UET transport service (ROD, RUD, RUDI, UUD) and compare to RoCEv2 Reliable Connected (RC) / Unreliable Connected (UC) on the same DUT fabric.
 
 **Procedure:** Use UEC 1.0-compliant NICs; establish PDCs; use libfabric fi_write. Apply binary search ({{!RFC2544}} Section 26.1). Vary PDC counts: 1, 4, 16, 32. A parallel RoCEv2 test series is executed for comparison. Both unidirectional and bidirectional configurations are tested.
 
@@ -486,7 +490,7 @@ AI training workloads generate repetitive micro-congestion during the back-propa
 
 **Objective:** Verify that the DUT marks packets with ECN CE at the configured threshold with correct granularity.
 
-**Procedure:** Configure threshold T on DUT egress queue. Verify: (a) no packets marked below T; (b) 100% marked above maximum threshold; (c) appropriate WRED/RED probability ramp between thresholds. Test thresholds: low (~100KB), medium (~1MB), high (~5MB).
+**Procedure:** Configure threshold T on DUT egress queue. Verify: (a) no packets marked below T; (b) 100% marked above maximum threshold; (c) appropriate Weighted Random Early Detection (WRED) / Random Early Detection (RED) probability ramp between thresholds. Test thresholds: low (~100KB), medium (~1MB), high (~5MB).
 
 **Reporting:** Plot ECN marking probability vs. instantaneous queue depth. Report measured threshold accuracy (deviation from configured).
 
@@ -843,12 +847,12 @@ All values are reported based on vendor documentation or measured capability. Ad
 |---|---|---|---|
 | 00 | Ethernet Dst MAC | 6B | DUT next-hop MAC |
 | 06 | Ethernet Src MAC | 6B | Test equipment MAC |
-| 12 | EtherType / TPID | 2B | 0x0800 (IPv4) when untagged; 0x8100 (TPID) when 802.1Q-tagged |
-| 14 | 802.1Q Tag (optional) | 4B | When tagged: TCI (PCP=3 for RoCEv2 priority, VID) followed by inner EtherType 0x0800. Omit this row entirely when untagged and shift subsequent offsets back by 4B |
-| 18 | IPv4 Header | 20B | DSCP=26 (AF31), ECN=ECT(0), Proto=17 (UDP) |
+| 12 | EtherType / TPID | 2B | 0x0800 (IPv4) when untagged; 0x8100 (Tag Protocol Identifier — TPID) when 802.1Q-tagged |
+| 14 | 802.1Q Tag (optional) | 4B | When tagged: Tag Control Information (TCI: Priority Code Point (PCP)=3 for RoCEv2 priority, VLAN Identifier (VID)) followed by inner EtherType 0x0800. Omit this row entirely when untagged and shift subsequent offsets back by 4B |
+| 18 | IPv4 Header | 20B | DSCP=26 (AF31, Assured Forwarding class 31), ECN=ECT(0) (ECN-Capable Transport), Proto=17 (UDP) |
 | 38 | UDP Header | 8B | DstPort=4791 (RoCEv2), SrcPort=var |
 | 46 | BTH (Base Transport Header) | 12B | OpCode, DstQP, PSN, P_Key |
-| 58 | RETH (if Write) | 16B | VA, R_Key, DMA Length |
+| 58 | RDMA Extended Transport Header (RETH; if Write) | 16B | Virtual Address (VA), R_Key, Direct Memory Access (DMA) Length |
 | 74 | Payload | var | Test data (incrementing octets) |
 | var | ICRC | 4B | Invariant CRC |
 | var+4 | FCS | 4B | Ethernet Frame Check Sequence |
