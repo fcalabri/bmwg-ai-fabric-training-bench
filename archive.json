@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-10T03:58:12.278908+00:00",
+  "timestamp": "2026-05-12T03:52:51.628739+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -185,6 +185,38 @@
           "updatedAt": "2026-03-31T16:27:04Z"
         }
       ]
+    },
+    {
+      "number": 14,
+      "id": "I_kwDORX7w2M8AAAABB4FPgg",
+      "title": "BusBW to align with terminology",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/14",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Align to new BusBW definition from terminology doc - BusBW algorithm-invariant",
+      "createdAt": "2026-05-11T12:39:59Z",
+      "updatedAt": "2026-05-11T12:39:59Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 16,
+      "id": "I_kwDORX7w2M8AAAABB4SWYw",
+      "title": "Update_Security and Editorial",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/16",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Update Security Section and Editorial changes ",
+      "createdAt": "2026-05-11T13:11:33Z",
+      "updatedAt": "2026-05-11T13:11:33Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -459,6 +491,60 @@
       "mergeCommit": {
         "oid": "f74dcfff887ae24092aa13c95f91fad5855ff367"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 15,
+      "id": "PR_kwDORX7w2M7aQtct",
+      "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/15",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "BubBW - updated definition and procedures based on last changes on terminology doc ",
+      "createdAt": "2026-05-11T13:09:25Z",
+      "updatedAt": "2026-05-11T13:09:25Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "158d46985969d634c8e17a5b85fa36394f20afca",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "BusBW_invariant",
+      "headRefOid": "8aca00325db0134ef110688d951f4627a7ec9c66",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 17,
+      "id": "PR_kwDORX7w2M7aSDBO",
+      "title": "Editorial updates",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/17",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "JCT formula update / correction \r\n\r\nBCP-14 as per feedback on BMWG ... remove capitalized keywords for Test procedures and Reporting \r\n\r\nRemove all vendor specific terminology (NCCL etc.) ",
+      "createdAt": "2026-05-11T14:06:40Z",
+      "updatedAt": "2026-05-11T14:06:40Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "158d46985969d634c8e17a5b85fa36394f20afca",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "Editorial_Updates",
+      "headRefOid": "1b4ddc678b334285473bcabcced7028202f59474",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
