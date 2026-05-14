@@ -163,38 +163,14 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 
 Terminology used in this document is defined in {{TERMINOLOGY}}. Readers should consult that document before applying the methodology defined here. Where a term overlaps with {{RFC1242}} or {{RFC8238}}, the terminology document provides AI fabric context extensions; the foundational definitions in those RFCs remain authoritative for general network benchmarking.
 
-The following terms are bench-specific extensions used only in this document and are not redefined in {{TERMINOLOGY}}:
+All terminology used in this document — including the AI fabric, RoCEv2, UET, RDMA transport, congestion control (PFC, DCQCN, ECN, CBFC), load balancing (ECMP, Packet Spray, DLB/Flowlet), collective communication, and KPI vocabulary (JCT, JCT Ratio, BusBW, MMR, etc.) — is defined normatively in {{TERMINOLOGY}} and is not redefined here. The following table lists the single bench-specific extension introduced by this document:
 
 | Term | Definition |
 |---|---|
-| **AI Fabric** | The dedicated Ethernet backend network interconnecting accelerators (GPUs/XPUs) for distributed AI training, typically a non-blocking Clos topology running RoCEv2 |
-| **JCT** (Job Completion Time) | The wall-clock duration from start to completion of a training job, inclusive of all computation and communication phases |
-| **DUT Fabric** | All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric |
-| **Roofline JCT** | Theoretical minimum JCT assuming perfect (zero-contention) network behavior |
-| **JCT Ratio** | Measured JCT / Roofline JCT; 1.0 = no network overhead; >1.0 = fabric inefficiency |
-| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective operation. See the BusBW definition and reporting requirements in {{TERMINOLOGY}}. Additionally, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions |
-| **QP** (Queue Pair) | RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy |
-| **Incast Ratio** | Ratio of senders to receivers (e.g., N:1 incast) |
-| **MMR** (Max-Mean Ratio) | Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect) |
 | **PFC Pause Event** | A single PFC PAUSE frame transmitted on a priority class. Used in this document as the unit of count for PFC event-rate metrics (events/sec, cumulative duration) reported by the methodology in {{test-congestion}}. |
-| **ECN Marking Ratio** | % of packets marked with Congestion Experienced (CE) over a measurement interval |
-| **Collective Operation** | Coordinated cross-accelerator communication: AllReduce, AlltoAll, AllGather |
-| **DCQCN** | Data Center Quantized Congestion Notification: ECN + PFC for end-to-end congestion control with RoCEv2 |
-| **Packet Spray** | Load balancing distributing individual packets across all ECMP paths; maximizes utilization but may cause reordering |
-| **DLB/Flowlet** | Dynamic Load Balancing using flowlet detection; reroutes traffic at flow idle gaps |
-| **Zero-Impact Failover** | Sub-microsecond path convergence upon link/switch failure with no measurable JCT impact |
-| **UET** (Ultra Ethernet Transport) | Connectionless RDMA transport defined by UEC Spec 1.0; designed as next-generation replacement for RoCEv2 |
-| **PDC** (Packet Delivery Context) | Ephemeral, connectionless UET transport endpoint; analogous to but distinct from an RDMA QP |
-| **ROD** | Reliable Ordered Delivery: UET service semantically equivalent to RoCEv2 RC mode |
-| **RUD** | Reliable Unordered Delivery: UET service enabling native packet spray without receiver reorder buffer overhead |
-| **RUDI** | Reliable Unordered Delivery for Idempotent operations; simplified retransmission for RDMA Writes |
-| **UUD** | Unreliable Unordered Delivery: best-effort UET service for telemetry/speculative operations |
-| **LLR** (Link Layer Retry) | Optional UEC per-hop error recovery (sub-microsecond) at the Ethernet link layer |
-| **Packet Trimming** | Optional UEC enhancement; congested switches transmit packet header only instead of dropping the full packet |
-| **CBFC** (Credit-Based Flow Control) | Optional UEC per-destination flow control; alternative to PFC that avoids head-of-line blocking |
-| **UEC Profile** | Defined UET feature subset: AI Base, AI Full, or HPC |
-| **Entropy Value** | Explicit per-packet UET field for ECMP path selection; improves multipath utilization vs. 5-tuple hashing |
 {: #tab-terminology title="Bench-Specific Terminology Extensions"}
+
+In addition to the BusBW reporting requirements specified in {{TERMINOLOGY}}, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions for any AllReduce, AllGather, ReduceScatter, or AllToAll benchmark in this document.
 
 The scope of the DUT for the tests defined in this document is the set of leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric, consistent with the Fabric DUT Boundary defined in {{TERMINOLOGY}}.
 
