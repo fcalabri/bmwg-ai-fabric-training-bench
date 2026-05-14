@@ -46,12 +46,10 @@ author:
 
 normative:
   RFC1242:
-  RFC2119:
   RFC2544:
   RFC2889:
   RFC6815:
   RFC8238:
-  RFC8174:
   RFC8239:
   RFC9004:
   UEC-1.0:
@@ -126,7 +124,7 @@ The methodology enables direct, reproducible comparison across different switch 
 
 The rapid growth of distributed AI/ML training workloads has fundamentally changed the performance requirements for data center network fabrics. Unlike traditional data center traffic characterized by diverse flow sizes and protocols, AI training workloads generate highly synchronized, bandwidth-intensive, east-west traffic patterns dominated by collective communication operations (AllReduce, AlltoAll, AllGather). These workloads impose unique demands: lossless transport (via RoCEv2 over RDMA), ultra-low tail latency, near-perfect load balancing across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously.
 
-Existing BMWG methodologies, while foundational, do not adequately address the characteristics of AI training fabrics. {{!RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the unique congestion dynamics of GPU-to-GPU traffic. {{!RFC8238}} and {{!RFC8239}} establish data center benchmarking terminology and methodology but predate the AI fabric paradigm and do not address RoCEv2-specific behaviors such as Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{META-ROCE}} further highlights the need for standardized benchmarking methodology.
+Existing BMWG methodologies, while foundational, do not adequately address the characteristics of AI training fabrics. {{RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the unique congestion dynamics of GPU-to-GPU traffic. {{RFC8238}} and {{RFC8239}} establish data center benchmarking terminology and methodology but predate the AI fabric paradigm and do not address RoCEv2-specific behaviors such as Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{META-ROCE}} further highlights the need for standardized benchmarking methodology.
 
 The Ethernet Virtual Private Network (EVPN) benchmarking methodology {{EVPN-BENCH}} provides a structural template for service-oriented benchmarking but is scoped to L2VPN services rather than RDMA fabrics.
 
@@ -151,32 +149,58 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 
 | Document | Relationship |
 |---|---|
-| {{!RFC1242}} | Base terminology for network benchmarking; terms reused herein |
-| {{!RFC2544}} | Base methodology; throughput/latency/loss tests adapted for RDMA |
-| {{!RFC2889}} | LAN switching methodology; MAC learning concepts adapted for Address Resolution Protocol (ARP) / Neighbor Discovery (ND) scale |
-| {{!RFC8238}} | Data center terminology; buffer, congestion, and microburst terms extended |
-| {{!RFC8239}} | Data center methodology; line-rate and buffer tests adapted for RoCEv2 |
-| {{!RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
+| {{RFC1242}} | Base terminology for network benchmarking; terms reused herein |
+| {{RFC2544}} | Base methodology; throughput/latency/loss tests adapted for RDMA |
+| {{RFC2889}} | LAN switching methodology; MAC learning concepts adapted for Address Resolution Protocol (ARP) / Neighbor Discovery (ND) scale |
+| {{RFC8238}} | Data center terminology; buffer, congestion, and microburst terms extended |
+| {{RFC8239}} | Data center methodology; line-rate and buffer tests adapted for RoCEv2 |
+| {{RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
 | {{LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT. This document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. |
 | {{UEC-1.0}} | UET protocol specification; transport services, congestion control, and link-layer enhancements benchmarked in {{test-uec}} |
 {: #tab-existing-work title="Relationship to Existing BMWG Work"}
 
 # Terminology
 
-Terminology used in this document is defined in {{!TERMINOLOGY}}. Readers should consult that document before applying the methodology defined here. Where a term overlaps with {{!RFC1242}} or {{!RFC8238}}, the terminology document provides AI fabric context extensions; the foundational definitions in those RFCs remain authoritative for general network benchmarking.
+Terminology used in this document is defined in {{TERMINOLOGY}}. Readers should consult that document before applying the methodology defined here. Where a term overlaps with {{RFC1242}} or {{RFC8238}}, the terminology document provides AI fabric context extensions; the foundational definitions in those RFCs remain authoritative for general network benchmarking.
 
-The following terms are bench-specific extensions used only in this document and are not redefined in {{!TERMINOLOGY}}:
+The following terms are bench-specific extensions used only in this document and are not redefined in {{TERMINOLOGY}}:
 
 | Term | Definition |
 |---|---|
+| **AI Fabric** | The dedicated Ethernet backend network interconnecting accelerators (GPUs/XPUs) for distributed AI training, typically a non-blocking Clos topology running RoCEv2 |
+| **JCT** (Job Completion Time) | The wall-clock duration from start to completion of a training job, inclusive of all computation and communication phases |
+| **DUT Fabric** | All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric |
+| **Roofline JCT** | Theoretical minimum JCT assuming perfect (zero-contention) network behavior |
+| **JCT Ratio** | Measured JCT / Roofline JCT; 1.0 = no network overhead; >1.0 = fabric inefficiency |
+| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective operation. See the BusBW definition and reporting requirements in {{TERMINOLOGY}}. Additionally, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions |
+| **QP** (Queue Pair) | RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy |
+| **Incast Ratio** | Ratio of senders to receivers (e.g., N:1 incast) |
+| **MMR** (Max-Mean Ratio) | Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect) |
 | **PFC Pause Event** | A single PFC PAUSE frame transmitted on a priority class. Used in this document as the unit of count for PFC event-rate metrics (events/sec, cumulative duration) reported by the methodology in {{test-congestion}}. |
+| **ECN Marking Ratio** | % of packets marked with Congestion Experienced (CE) over a measurement interval |
+| **Collective Operation** | Coordinated cross-accelerator communication: AllReduce, AlltoAll, AllGather |
+| **DCQCN** | Data Center Quantized Congestion Notification: ECN + PFC for end-to-end congestion control with RoCEv2 |
+| **Packet Spray** | Load balancing distributing individual packets across all ECMP paths; maximizes utilization but may cause reordering |
+| **DLB/Flowlet** | Dynamic Load Balancing using flowlet detection; reroutes traffic at flow idle gaps |
+| **Zero-Impact Failover** | Sub-microsecond path convergence upon link/switch failure with no measurable JCT impact |
+| **UET** (Ultra Ethernet Transport) | Connectionless RDMA transport defined by UEC Spec 1.0; designed as next-generation replacement for RoCEv2 |
+| **PDC** (Packet Delivery Context) | Ephemeral, connectionless UET transport endpoint; analogous to but distinct from an RDMA QP |
+| **ROD** | Reliable Ordered Delivery: UET service semantically equivalent to RoCEv2 RC mode |
+| **RUD** | Reliable Unordered Delivery: UET service enabling native packet spray without receiver reorder buffer overhead |
+| **RUDI** | Reliable Unordered Delivery for Idempotent operations; simplified retransmission for RDMA Writes |
+| **UUD** | Unreliable Unordered Delivery: best-effort UET service for telemetry/speculative operations |
+| **LLR** (Link Layer Retry) | Optional UEC per-hop error recovery (sub-microsecond) at the Ethernet link layer |
+| **Packet Trimming** | Optional UEC enhancement; congested switches transmit packet header only instead of dropping the full packet |
+| **CBFC** (Credit-Based Flow Control) | Optional UEC per-destination flow control; alternative to PFC that avoids head-of-line blocking |
+| **UEC Profile** | Defined UET feature subset: AI Base, AI Full, or HPC |
+| **Entropy Value** | Explicit per-packet UET field for ECMP path selection; improves multipath utilization vs. 5-tuple hashing |
 {: #tab-terminology title="Bench-Specific Terminology Extensions"}
 
-The scope of the DUT for the tests defined in this document is the set of leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric, consistent with the Fabric DUT Boundary defined in {{!TERMINOLOGY}}.
+The scope of the DUT for the tests defined in this document is the set of leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric, consistent with the Fabric DUT Boundary defined in {{TERMINOLOGY}}.
 
 ## Acronyms
 
-Acronyms used in this document are expanded in the Acronyms appendix of {{!TERMINOLOGY}}. Acronyms unique to the methodology defined herein are expanded on first use in the body of this document.
+Acronyms used in this document are expanded in the Acronyms appendix of {{TERMINOLOGY}}. Acronyms unique to the methodology defined herein are expanded on first use in the body of this document.
 
 # Test Topology and Architecture
 
@@ -294,7 +318,7 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio are investigated and reported.
 |---|---|---|---|
 | Job Completion Time (JCT) | seconds | Wall-clock time for benchmark iteration (compute + communication) | Minimize |
 | JCT Ratio | dimensionless | Measured JCT / Roofline JCT | <= 1.05 (<= 1.15 acceptable) |
-| Bus Bandwidth (BusBW) | Gbps/accelerator | Effective per-accelerator throughput during collective. See the BusBW definition in {{!TERMINOLOGY}} | >= 90% of NIC line rate (intra-pod) |
+| Bus Bandwidth (BusBW) | Gbps/accelerator | Effective per-accelerator throughput during collective. See the BusBW definition in {{TERMINOLOGY}} | >= 90% of NIC line rate (intra-pod) |
 | Aggregate Throughput | Tbps | Total fabric goodput during collective phase | >= 95% of bisection BW |
 | Packet Drop Rate | ppm | Frames lost end-to-end not retransmitted | 0 ppm (lossless) |
 | Tail Latency (P99/P99.9) | us | 99th/99.9th percentile one-way fabric latency | Minimize |
@@ -330,7 +354,7 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio are investigated and reported.
 
 # Test Category 1: RDMA Transport Benchmarks {#test-rdma}
 
-These tests establish baseline fabric performance for RDMA traffic independent of collective communication patterns. They extend {{!RFC2544}} and {{!RFC8239}} methodology for RoCEv2 semantics.
+These tests establish baseline fabric performance for RDMA traffic independent of collective communication patterns. They extend {{RFC2544}} and {{RFC8239}} methodology for RoCEv2 semantics.
 
 ## Baseline Throughput
 
@@ -341,7 +365,7 @@ These tests establish baseline fabric performance for RDMA traffic independent o
 - Configure N host pairs, each establishing Q Queue Pairs per pair
 - Initiate RDMA Write operations and measure aggregate goodput
 - Each test runs for at least 60 seconds at each rate
-- Binary search per {{!RFC2544}} Section 26.1 is used
+- Binary search per {{RFC2544}} Section 26.1 is used
 - Message sizes: 64B, 256B, 1KB, 4KB, 64KB, 256KB, 1MB, 4MB
 - QP counts: 1, 4, 16, 32 per src-dst pair
 - Test both unidirectional and bidirectional traffic
@@ -354,7 +378,7 @@ These tests establish baseline fabric performance for RDMA traffic independent o
 
 **Procedure:**
 
-- Inject tagged frames at 60s into a 120s stream (per {{!RFC2544}} Section 26.2)
+- Inject tagged frames at 60s into a 120s stream (per {{RFC2544}} Section 26.2)
 - Nanosecond-precision timestamping
 - Reported statistics: min, mean, P50, P95, P99, P99.9, max
 - Repeat at least 20 times; report averages
@@ -385,7 +409,7 @@ The UEC compliance profile (AI Base, AI Full, or HPC) used during testing is doc
 
 **Objective:** Determine maximum sustainable throughput under each UET transport service (ROD, RUD, RUDI, UUD) and compare to RoCEv2 Reliable Connected (RC) / Unreliable Connected (UC) on the same DUT fabric.
 
-**Procedure:** Use UEC 1.0-compliant NICs; establish PDCs; use libfabric fi_write. Apply binary search ({{!RFC2544}} Section 26.1). Vary PDC counts: 1, 4, 16, 32. A parallel RoCEv2 test series is executed for comparison. Both unidirectional and bidirectional configurations are tested.
+**Procedure:** Use UEC 1.0-compliant NICs; establish PDCs; use libfabric fi_write. Apply binary search ({{RFC2544}} Section 26.1). Vary PDC counts: 1, 4, 16, 32. A parallel RoCEv2 test series is executed for comparison. Both unidirectional and bidirectional configurations are tested.
 
 **Reporting template:**
 
@@ -460,9 +484,9 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 
 For AllReduce, if UET group keying (transport-layer reduction support per UEC Spec 1.0) is active on the DUT NIC, this is noted explicitly in the test report.
 
-When UET group keying is active during testing, report the observed BusBW computed from measured bytes transferred. The algo_factor defined in {{!TERMINOLOGY}} (fixed per collective type) still applies to the formula; the observed transfer volume reflects group keying behavior.
+When UET group keying is active during testing, report the observed BusBW computed from measured bytes transferred. The algo_factor defined in {{TERMINOLOGY}} (fixed per collective type) still applies to the formula; the observed transfer volume reflects group keying behavior.
 
-Document the group keying state (active / inactive) as a required result field. The runtime algorithm in use is reported per message-size bucket. See {{!TERMINOLOGY}} for the BusBW definition and algo_factor values.
+Document the group keying state (active / inactive) as a required result field. The runtime algorithm in use is reported per message-size bucket. See {{TERMINOLOGY}} for the BusBW definition and algo_factor values.
 
  **Reporting:**  Report the percentage improvement in BusBW and JCT attributable to UET native packet spray and congestion control.
 
@@ -566,7 +590,7 @@ Test parameters:
 * Minimum iterations per (message_size, N) pair: 100
 * Load balancing strategies: ECMP, DLB, packet spray
 
-For each (message_size, N) pair, record average, P50, P95, and P99 BusBW, ECN marking ratio, PFC pause count, and per-link utilization. BusBW is computed per the BusBW definition in {{!TERMINOLOGY}}; algo_factor is fixed per collective type and does not vary with the algorithm the library selects at runtime. The runtime algorithm selected by the library for each message-size bucket is verified via library tracing and documented as part of the test conditions.
+For each (message_size, N) pair, record average, P50, P95, and P99 BusBW, ECN marking ratio, PFC pause count, and per-link utilization. BusBW is computed per the BusBW definition in {{TERMINOLOGY}}; algo_factor is fixed per collective type and does not vary with the algorithm the library selects at runtime. The runtime algorithm selected by the library for each message-size bucket is verified via library tracing and documented as part of the test conditions.
 
 **Reporting:** Tabulate BusBW for each (message_size, N, LB_strategy, Algorithm (verified)) combination.  The "Algorithm (verified)" column is required; results without it are incomplete.  Plot BusBW vs. N for each message size. Report BusBW efficiency = BusBW / NIC_line_rate.
 
@@ -579,7 +603,7 @@ For each (message_size, N) pair, record average, P50, P95, and P99 BusBW, ECN ma
 AllToAll generates the worst-case fabric stress pattern: every accelerator simultaneously sends a unique payload to every other accelerator in the group, creating maximum entropy and N-to-N incast
 at every fabric link.  This makes AllToAll JCT the most sensitive single indicator of fabric congestion management quality.
 
-BusBW is computed per the BusBW definition in {{!TERMINOLOGY}}; algo_factor is fixed per collective type and does not depend on topology or library implementation. The runtime algorithm in use is verified via library tracing and documented as part of the test conditions.
+BusBW is computed per the BusBW definition in {{TERMINOLOGY}}; algo_factor is fixed per collective type and does not depend on topology or library implementation. The runtime algorithm in use is verified via library tracing and documented as part of the test conditions.
 
 **Measurement:**  Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.
 
@@ -594,7 +618,7 @@ BusBW is computed per the BusBW definition in {{!TERMINOLOGY}}; algo_factor is f
 AllGather consists of a gather phase only — each accelerator contributes a shard and receives the full concatenated tensor.
 There is no reduce phase, which produces lower peak fabric load than AllReduce at equivalent message size and N.  This makes AllGather a useful baseline for isolating the gather-path fabric contribution from the combined send-and-reduce cost.
 
-BusBW is computed per the BusBW definition in {{!TERMINOLOGY}}; algo_factor is fixed per collective type and does not depend on the library's algorithm selection. The runtime algorithm in use is verified via library tracing and documented as part of the test conditions.
+BusBW is computed per the BusBW definition in {{TERMINOLOGY}}; algo_factor is fixed per collective type and does not depend on the library's algorithm selection. The runtime algorithm in use is verified via library tracing and documented as part of the test conditions.
 
 **Measurement:** Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.
 
@@ -645,7 +669,7 @@ JCT is the single most important user-facing KPI for AI training fabrics, direct
 >     C            = compute time per iteration (seconds)
 >     S            = message size per iteration (bytes)
 >     algo_factor  = fixed normalization constant per collective type;
->                    see the BusBW definition in {{!TERMINOLOGY}}
+>                    see the BusBW definition in {{TERMINOLOGY}}
 >     B_acc        = aggregate per-accelerator NIC line rate (bits/second);
 >                    sum across all NICs serving the accelerator (e.g., in
 >                    rail-optimised topologies, the sum of all rail NIC speeds)
@@ -763,17 +787,17 @@ Test reports include the following sections:
 
 # Security Considerations
 
-This document defines benchmarking methodology for controlled laboratory environments and does not specify any protocol mechanism. It therefore introduces no new protocol-level security considerations beyond those of the underlying technologies it references. The considerations below follow the BMWG convention established in {{!RFC8238}} and align with the companion terminology document {{!TERMINOLOGY}}.
+This document defines benchmarking methodology for controlled laboratory environments and does not specify any protocol mechanism. It therefore introduces no new protocol-level security considerations beyond those of the underlying technologies it references. The considerations below follow the BMWG convention established in {{RFC8238}} and align with the companion terminology document {{TERMINOLOGY}}.
 
 Benchmarking activities as described in this document are limited to technology characterization of AI training fabrics using controlled stimuli in a laboratory environment, with dedicated address space and the constraints specified herein.
 
 The benchmarking network topology will be an independent test setup and MUST NOT be connected to devices that may forward the test traffic into a production network or misroute traffic to the test management network. This isolation requirement is particularly important for AI fabric benchmarking because the lossless transport modes referenced in this document (PFC, DCQCN, CBFC) propagate congestion hop-by-hop and can extend the blast radius of a misconfigured test beyond the immediate DUT.
 
-Benchmarking is performed on a "black-box" basis, relying solely on measurements observable external to the DUT as defined in {{!TERMINOLOGY}}.
+Benchmarking is performed on a "black-box" basis, relying solely on measurements observable external to the DUT as defined in {{TERMINOLOGY}}.
 
 Special capabilities SHOULD NOT exist in the DUT specifically for benchmarking purposes. Any implications for network security arising from the DUT SHOULD be identical in the lab and in production networks. In particular, RDMA memory-region permissions are properties of the deployed configuration, not of the benchmarking methodology, and SHOULD reflect production posture during testing.
 
-Per {{!RFC6815}}, the tests defined herein MUST NOT be performed on production networks. The use of dedicated test IP address ranges per {{!RFC2544}} Appendix C (198.18.0.0/15 for IPv4; 2001:db8::/32 per {{?RFC3849}} for IPv6) is RECOMMENDED to prevent accidental interaction with production infrastructure.
+Per {{RFC6815}}, the tests defined herein MUST NOT be performed on production networks. The use of dedicated test IP address ranges per {{RFC2544}} Appendix C (198.18.0.0/15 for IPv4; 2001:db8::/32 per {{RFC3849}} for IPv6) is RECOMMENDED to prevent accidental interaction with production infrastructure.
 
 The following considerations are specific to the methodology defined in this document:
 
