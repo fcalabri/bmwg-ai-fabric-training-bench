@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-12T03:52:51.628739+00:00",
+  "timestamp": "2026-05-14T03:59:54.078568+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -215,6 +215,22 @@
       "body": "Update Security Section and Editorial changes ",
       "createdAt": "2026-05-11T13:11:33Z",
       "updatedAt": "2026-05-11T13:11:33Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 18,
+      "id": "I_kwDORX7w2M8AAAABCAHvlw",
+      "title": "Acronyms - drift from terminology",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/18",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "address GAP for  acronyms (b4 first appearance) with terminology ",
+      "createdAt": "2026-05-12T13:00:28Z",
+      "updatedAt": "2026-05-12T13:00:28Z",
       "closedAt": null,
       "comments": []
     }
@@ -508,7 +524,7 @@
       "labels": [],
       "body": "BubBW - updated definition and procedures based on last changes on terminology doc ",
       "createdAt": "2026-05-11T13:09:25Z",
-      "updatedAt": "2026-05-11T13:09:25Z",
+      "updatedAt": "2026-05-13T03:30:22Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "158d46985969d634c8e17a5b85fa36394f20afca",
@@ -520,7 +536,46 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M7-_LcA",
+          "commit": {
+            "abbreviatedOid": "8aca003"
+          },
+          "author": "billwuqin",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-05-13T03:20:10Z",
+          "updatedAt": "2026-05-13T03:30:22Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "```suggestion\n| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective operation. See the BusBW definition and reporting requirements in {{!TERMINOLOGY}}. Additionally, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions |\n```",
+              "createdAt": "2026-05-13T03:20:11Z",
+              "updatedAt": "2026-05-13T03:30:22Z"
+            },
+            {
+              "originalPosition": 13,
+              "body": "Not clear requirements should be documented using terminology document.",
+              "createdAt": "2026-05-13T03:20:57Z",
+              "updatedAt": "2026-05-13T03:30:22Z"
+            },
+            {
+              "originalPosition": 31,
+              "body": "```suggestion\nWhen UET group keying is active during testing, the observed BusBW computed from measured bytes transferred is reported. The observed transfer volume reflects group keying behavior.The algo_factor defined in {{!TERMINOLOGY}} (fixed per collective type) still applies to the formula; \n```",
+              "createdAt": "2026-05-13T03:25:09Z",
+              "updatedAt": "2026-05-13T03:30:22Z"
+            },
+            {
+              "originalPosition": 31,
+              "body": "which formula, which the formula is defined?",
+              "createdAt": "2026-05-13T03:25:31Z",
+              "updatedAt": "2026-05-13T03:30:22Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 17,
@@ -534,13 +589,62 @@
       "labels": [],
       "body": "JCT formula update / correction \r\n\r\nBCP-14 as per feedback on BMWG ... remove capitalized keywords for Test procedures and Reporting \r\n\r\nRemove all vendor specific terminology (NCCL etc.) ",
       "createdAt": "2026-05-11T14:06:40Z",
-      "updatedAt": "2026-05-11T14:06:40Z",
+      "updatedAt": "2026-05-13T03:46:22Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "158d46985969d634c8e17a5b85fa36394f20afca",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "Editorial_Updates",
       "headRefOid": "1b4ddc678b334285473bcabcced7028202f59474",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M7-_it6",
+          "commit": {
+            "abbreviatedOid": "1b4ddc6"
+          },
+          "author": "billwuqin",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-05-13T03:44:04Z",
+          "updatedAt": "2026-05-13T03:46:22Z",
+          "comments": [
+            {
+              "originalPosition": 71,
+              "body": "Are you sure we should remove all RFC2119 language, see section 1.1 of RFC 8238, which use RFC2119 Language.",
+              "createdAt": "2026-05-13T03:44:04Z",
+              "updatedAt": "2026-05-13T03:46:22Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "id": "PR_kwDORX7w2M7ayt6T",
+      "title": "Acronyms from editorial updates",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/19",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "Taken from Editorial update one (dependencies on terms and definitions) - Align with Terminology Draft ",
+      "createdAt": "2026-05-12T18:07:10Z",
+      "updatedAt": "2026-05-12T18:07:10Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "158d46985969d634c8e17a5b85fa36394f20afca",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "Acronyms_from_Editorial_Updates",
+      "headRefOid": "c7a81db819deee7a4324ee470463a0d3984e7018",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
