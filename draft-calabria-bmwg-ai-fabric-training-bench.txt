@@ -291,14 +291,116 @@ Table of Contents
    The following terms are bench-specific extensions used only in this
    document and are not redefined in [TERMINOLOGY]:
 
-     +========+=====================================================+
-     | Term   | Definition                                          |
-     +========+=====================================================+
-     | *PFC   | A single PFC PAUSE frame transmitted on a priority  |
-     | Pause  | class.  Used in this document as the unit of count  |
-     | Event* | for PFC event-rate metrics (events/sec, cumulative  |
-     |        | duration) reported by the methodology in Section 7. |
-     +--------+-----------------------------------------------------+
+     +===============+==============================================+
+     | Term          | Definition                                   |
+     +===============+==============================================+
+     | *AI Fabric*   | The dedicated Ethernet backend network       |
+     |               | interconnecting accelerators (GPUs/XPUs) for |
+     |               | distributed AI training, typically a non-    |
+     |               | blocking Clos topology running RoCEv2        |
+     +---------------+----------------------------------------------+
+     | *JCT* (Job    | The wall-clock duration from start to        |
+     | Completion    | completion of a training job, inclusive of   |
+     | Time)         | all computation and communication phases     |
+     +---------------+----------------------------------------------+
+     | *DUT Fabric*  | All leaf switches, spine switches,           |
+     |               | superspine switches (if applicable), and     |
+     |               | interconnecting links forming the AI         |
+     |               | training fabric                              |
+     +---------------+----------------------------------------------+
+     | *Roofline     | Theoretical minimum JCT assuming perfect     |
+     | JCT*          | (zero-contention) network behavior           |
+     +---------------+----------------------------------------------+
+     | *JCT Ratio*   | Measured JCT / Roofline JCT; 1.0 = no        |
+     |               | network overhead; >1.0 = fabric inefficiency |
+     +---------------+----------------------------------------------+
+     | *BusBW* (Bus  | Effective per-accelerator throughput during  |
+     | Bandwidth)    | a collective operation.  See the BusBW       |
+     |               | definition and reporting requirements in     |
+     |               | [TERMINOLOGY].  Additionally, the runtime    |
+     |               | algorithm selected by the collective library |
+     |               | MUST be verified via library tracing and     |
+     |               | documented as part of the test conditions    |
+     +---------------+----------------------------------------------+
+     | *QP* (Queue   | RDMA communication endpoint (Send Queue +    |
+     | Pair)         | Receive Queue); multiple QPs per src-dst     |
+     |               | pair increase ECMP entropy                   |
+     +---------------+----------------------------------------------+
+     | *Incast       | Ratio of senders to receivers (e.g., N:1     |
+     | Ratio*        | incast)                                      |
+     +---------------+----------------------------------------------+
+     | *MMR* (Max-   | Flow count on most-loaded link / average     |
+     | Mean Ratio)   | flow count; quantifies ECMP imbalance (1.0 = |
+     |               | perfect)                                     |
+     +---------------+----------------------------------------------+
+     | *PFC Pause    | A single PFC PAUSE frame transmitted on a    |
+     | Event*        | priority class.  Used in this document as    |
+     |               | the unit of count for PFC event-rate metrics |
+     |               | (events/sec, cumulative duration) reported   |
+     |               | by the methodology in Section 7.             |
+     +---------------+----------------------------------------------+
+     | *ECN Marking  | % of packets marked with Congestion          |
+     | Ratio*        | Experienced (CE) over a measurement interval |
+     +---------------+----------------------------------------------+
+     | *Collective   | Coordinated cross-accelerator communication: |
+     | Operation*    | AllReduce, AlltoAll, AllGather               |
+     +---------------+----------------------------------------------+
+     | *DCQCN*       | Data Center Quantized Congestion             |
+     |               | Notification: ECN + PFC for end-to-end       |
+     |               | congestion control with RoCEv2               |
+     +---------------+----------------------------------------------+
+     | *Packet       | Load balancing distributing individual       |
+     | Spray*        | packets across all ECMP paths; maximizes     |
+     |               | utilization but may cause reordering         |
+     +---------------+----------------------------------------------+
+     | *DLB/Flowlet* | Dynamic Load Balancing using flowlet         |
+     |               | detection; reroutes traffic at flow idle     |
+     |               | gaps                                         |
+     +---------------+----------------------------------------------+
+     | *Zero-Impact  | Sub-microsecond path convergence upon link/  |
+     | Failover*     | switch failure with no measurable JCT impact |
+     +---------------+----------------------------------------------+
+     | *UET* (Ultra  | Connectionless RDMA transport defined by UEC |
+     | Ethernet      | Spec 1.0; designed as next-generation        |
+     | Transport)    | replacement for RoCEv2                       |
+     +---------------+----------------------------------------------+
+     | *PDC* (Packet | Ephemeral, connectionless UET transport      |
+     | Delivery      | endpoint; analogous to but distinct from an  |
+     | Context)      | RDMA QP                                      |
+     +---------------+----------------------------------------------+
+     | *ROD*         | Reliable Ordered Delivery: UET service       |
+     |               | semantically equivalent to RoCEv2 RC mode    |
+     +---------------+----------------------------------------------+
+     | *RUD*         | Reliable Unordered Delivery: UET service     |
+     |               | enabling native packet spray without         |
+     |               | receiver reorder buffer overhead             |
+     +---------------+----------------------------------------------+
+     | *RUDI*        | Reliable Unordered Delivery for Idempotent   |
+     |               | operations; simplified retransmission for    |
+     |               | RDMA Writes                                  |
+     +---------------+----------------------------------------------+
+     | *UUD*         | Unreliable Unordered Delivery: best-effort   |
+     |               | UET service for telemetry/speculative        |
+     |               | operations                                   |
+     +---------------+----------------------------------------------+
+     | *LLR* (Link   | Optional UEC per-hop error recovery (sub-    |
+     | Layer Retry)  | microsecond) at the Ethernet link layer      |
+     +---------------+----------------------------------------------+
+     | *Packet       | Optional UEC enhancement; congested switches |
+     | Trimming*     | transmit packet header only instead of       |
+     |               | dropping the full packet                     |
+     +---------------+----------------------------------------------+
+     | *CBFC*        | Optional UEC per-destination flow control;   |
+     | (Credit-Based | alternative to PFC that avoids head-of-line  |
+     | Flow Control) | blocking                                     |
+     +---------------+----------------------------------------------+
+     | *UEC Profile* | Defined UET feature subset: AI Base, AI      |
+     |               | Full, or HPC                                 |
+     +---------------+----------------------------------------------+
+     | *Entropy      | Explicit per-packet UET field for ECMP path  |
+     | Value*        | selection; improves multipath utilization    |
+     |               | vs. 5-tuple hashing                          |
+     +---------------+----------------------------------------------+
 
               Table 2: Bench-Specific Terminology Extensions
 

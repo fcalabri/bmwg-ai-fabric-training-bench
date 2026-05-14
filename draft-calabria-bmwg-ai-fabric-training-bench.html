@@ -1544,9 +1544,157 @@ Collective operation measurements (AllReduce, AllGather, AllToAll) are measured 
         <tbody>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">
+              <strong>AI Fabric</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">The dedicated Ethernet backend network interconnecting accelerators (GPUs/XPUs) for distributed AI training, typically a non-blocking Clos topology running RoCEv2</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>JCT</strong> (Job Completion Time)</td>
+            <td class="text-left" rowspan="1" colspan="1">The wall-clock duration from start to completion of a training job, inclusive of all computation and communication phases</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>DUT Fabric</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>Roofline JCT</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Theoretical minimum JCT assuming perfect (zero-contention) network behavior</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>JCT Ratio</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Measured JCT / Roofline JCT; 1.0 = no network overhead; &gt;1.0 = fabric inefficiency</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>BusBW</strong> (Bus Bandwidth)</td>
+            <td class="text-left" rowspan="1" colspan="1">Effective per-accelerator throughput during a collective operation. See the BusBW definition and reporting requirements in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>. Additionally, the runtime algorithm selected by the collective library <span class="bcp14">MUST</span> be verified via library tracing and documented as part of the test conditions</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>QP</strong> (Queue Pair)</td>
+            <td class="text-left" rowspan="1" colspan="1">RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>Incast Ratio</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Ratio of senders to receivers (e.g., N:1 incast)</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>MMR</strong> (Max-Mean Ratio)</td>
+            <td class="text-left" rowspan="1" colspan="1">Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect)</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
               <strong>PFC Pause Event</strong>
 </td>
             <td class="text-left" rowspan="1" colspan="1">A single PFC PAUSE frame transmitted on a priority class. Used in this document as the unit of count for PFC event-rate metrics (events/sec, cumulative duration) reported by the methodology in <a href="#test-congestion" class="auto internal xref">Section 7</a>.</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>ECN Marking Ratio</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">% of packets marked with Congestion Experienced (CE) over a measurement interval</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>Collective Operation</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Coordinated cross-accelerator communication: AllReduce, AlltoAll, AllGather</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>DCQCN</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Data Center Quantized Congestion Notification: ECN + PFC for end-to-end congestion control with RoCEv2</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>Packet Spray</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Load balancing distributing individual packets across all ECMP paths; maximizes utilization but may cause reordering</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>DLB/Flowlet</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Dynamic Load Balancing using flowlet detection; reroutes traffic at flow idle gaps</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>Zero-Impact Failover</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Sub-microsecond path convergence upon link/switch failure with no measurable JCT impact</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>UET</strong> (Ultra Ethernet Transport)</td>
+            <td class="text-left" rowspan="1" colspan="1">Connectionless RDMA transport defined by UEC Spec 1.0; designed as next-generation replacement for RoCEv2</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>PDC</strong> (Packet Delivery Context)</td>
+            <td class="text-left" rowspan="1" colspan="1">Ephemeral, connectionless UET transport endpoint; analogous to but distinct from an RDMA QP</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>ROD</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Reliable Ordered Delivery: UET service semantically equivalent to RoCEv2 RC mode</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>RUD</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Reliable Unordered Delivery: UET service enabling native packet spray without receiver reorder buffer overhead</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>RUDI</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Reliable Unordered Delivery for Idempotent operations; simplified retransmission for RDMA Writes</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>UUD</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Unreliable Unordered Delivery: best-effort UET service for telemetry/speculative operations</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>LLR</strong> (Link Layer Retry)</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional UEC per-hop error recovery (sub-microsecond) at the Ethernet link layer</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>Packet Trimming</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional UEC enhancement; congested switches transmit packet header only instead of dropping the full packet</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>CBFC</strong> (Credit-Based Flow Control)</td>
+            <td class="text-left" rowspan="1" colspan="1">Optional UEC per-destination flow control; alternative to PFC that avoids head-of-line blocking</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>UEC Profile</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Defined UET feature subset: AI Base, AI Full, or HPC</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">
+              <strong>Entropy Value</strong>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Explicit per-packet UET field for ECMP path selection; improves multipath utilization vs. 5-tuple hashing</td>
           </tr>
         </tbody>
       </table>
