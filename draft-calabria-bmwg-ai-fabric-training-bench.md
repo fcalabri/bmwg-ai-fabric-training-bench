@@ -172,7 +172,7 @@ The following terms are defined for use in this document. Where a term overlaps 
 | **DUT Fabric** | All leaf switches, spine switches, superspine switches (if applicable), and interconnecting links forming the AI training fabric |
 | **Roofline JCT** | Theoretical minimum JCT assuming perfect (zero-contention) network behavior |
 | **JCT Ratio** | Measured JCT / Roofline JCT; 1.0 = no network overhead; >1.0 = fabric inefficiency |
-| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective operation. See the BusBW definition in {{!TERMINOLOGY}}. Reports MUST follow the reporting requirements specified there; additionally, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions |
+| **BusBW** (Bus Bandwidth) | Effective per-accelerator throughput during a collective operation. See the BusBW definition and reporting requirements in {{!TERMINOLOGY}}. Additionally, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions |
 | **QP** (Queue Pair) | RDMA communication endpoint (Send Queue + Receive Queue); multiple QPs per src-dst pair increase ECMP entropy |
 | **Incast Ratio** | Ratio of senders to receivers (e.g., N:1 incast) |
 | **MMR** (Max-Mean Ratio) | Flow count on most-loaded link / average flow count; quantifies ECMP imbalance (1.0 = perfect) |
