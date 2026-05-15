@@ -78,7 +78,7 @@ informative:
       - ins: Gaikwad, et al.
     date: 2026-01
     seriesinfo:
-      Internet-Draft: draft-gaikwad-llm-benchmarking-methodology
+      Internet-Draft: draft-gaikwad-llm-benchmarking-methodology-00
   META-ROCE:
     title: "RDMA over Ethernet for Distributed AI Training at Meta Scale"
     author:
@@ -276,9 +276,9 @@ The traffic generator supports: RoCEv2 transport emulation (QP establishment, RD
 
 The platform used is identified in all test reports.
 
-**(a) Hardware Traffic Generator** — dedicated hardware capable of line-rate RDMA emulation meeting Section 3.3.2 accuracy requirements. Suitable for point-to-point RDMA tests (Sections 5 and 6).  For collective tests (Section 9), the following limitations are documented: whether synchronization barriers are reproduced, whether flow patterns are schedule-driven or gradient-driven, and whether straggler behavior is modeled.
+**(a) Hardware Traffic Generator** — dedicated hardware capable of line-rate RDMA emulation meeting the Measurement Accuracy Requirements specified in this document. Suitable for point-to-point RDMA tests ({{test-rdma}} and {{test-uec}}).  For collective tests ({{test-collective}}), the following limitations are documented: whether synchronization barriers are reproduced, whether flow patterns are schedule-driven or gradient-driven, and whether straggler behavior is modeled.
 
-**(b) Accelerator Cluster** — cluster running an actual collective communication library with RDMA tooling.  Preferred for Section 9 collective benchmarks.  Host configuration (accelerator model, collective library name and version, PCIe topology, BIOS power management settings) is documented.  Any non-fabric overhead in timing measurements is quantified and reported separately.
+**(b) Accelerator Cluster** — cluster running an actual collective communication library with RDMA tooling.  Preferred for the collective benchmarks in {{test-collective}}.  Host configuration (accelerator model, collective library name and version, PCIe topology, BIOS power management settings) is documented.  Any non-fabric overhead in timing measurements is quantified and reported separately.
 
 When a hardware generator is used for collective benchmarks, results should be cross-validated against an accelerator cluster at one or more overlapping (message_size, N) configurations.
 
@@ -286,18 +286,18 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio are investigated and reported.
 
 # KPI Framework and Metrics Taxonomy {#kpi-framework-and-metrics-taxonomy}
 
-> Target values in this section are NON-NORMATIVE illustrative reference points derived from current industry practice. They do NOT constitute benchmarking acceptance criteria. Per BMWG charter, defining acceptance criteria is explicitly out of scope. Implementers MAY use these values as contextual references; they MUST NOT be used as pass/fail thresholds.
+> NOTE: Per BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. The KPI tables in this section define what is measured and how it is reported; they do not set thresholds. Indicative non-normative reference values reflecting current industry observations are provided in {{indicative-reference-values}}; those values MUST NOT be used as pass/fail thresholds in vendor evaluations.
 
 ## Primary KPIs
 
-| KPI | Unit | Definition | Reference Target (Non-Normative) |
-|---|---|---|---|
-| Job Completion Time (JCT) | seconds | Wall-clock time for benchmark iteration (compute + communication) | Minimize |
-| JCT Ratio | dimensionless | Measured JCT / Roofline JCT | <= 1.05 (<= 1.15 acceptable) |
-| Bus Bandwidth (BusBW) | Gbps/accelerator | Effective per-accelerator throughput during collective. See the BusBW definition in {{TERMINOLOGY}} | >= 90% of NIC line rate (intra-pod) |
-| Aggregate Throughput | Tbps | Total fabric goodput during collective phase | >= 95% of bisection BW |
-| Packet Drop Rate | ppm | Frames lost end-to-end not retransmitted | 0 ppm (lossless) |
-| Tail Latency (P99/P99.9) | us | 99th/99.9th percentile one-way fabric latency | Minimize |
+| KPI | Unit | Definition |
+|---|---|---|
+| Job Completion Time (JCT) | seconds | Wall-clock time for benchmark iteration (compute + communication) |
+| JCT Ratio | dimensionless | Measured JCT / Roofline JCT |
+| Bus Bandwidth (BusBW) | Gbps/accelerator | Effective per-accelerator throughput during collective. See the BusBW definition in {{TERMINOLOGY}} |
+| Aggregate Throughput | Tbps | Total fabric goodput during collective phase |
+| Packet Drop Rate | ppm | Frames lost end-to-end not retransmitted |
+| Tail Latency (P99/P99.9) | us | 99th/99.9th percentile one-way fabric latency |
 {: #tab-primary-kpis title="Primary KPIs"}
 
 ## Secondary KPIs
@@ -823,6 +823,18 @@ This document makes no request of IANA.
 | PDC Establishment Rate | {{uet-pdc-scalability-and-connection-setup-rate}} | Sustained PDC creation rate | PDCs/second |
 | Max Concurrent PDCs | {{uet-pdc-scalability-and-connection-setup-rate}} | Scale limit per NIC | count |
 {: #tab-kpi-mapping title="KPI-to-Test Mapping Summary"}
+
+# Indicative Reference Values (Non-Normative) {#indicative-reference-values}
+
+This appendix provides indicative reference values for the KPIs defined in {{kpi-framework-and-metrics-taxonomy}}, reflecting current industry observations for distributed AI training workloads as of 2025-2026. These values are NON-NORMATIVE and do not constitute benchmarking acceptance criteria or performance requirements. Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. Implementers may use these values as contextual references when interpreting results; they MUST NOT be used as pass/fail thresholds in vendor evaluations. Deployment-specific targets will vary by topology, accelerator architecture, collective library, and operator requirements.
+
+| KPI | Indicative Reference |
+|---|---|
+| JCT Ratio | <= 1.05 (<= 1.15 acceptable) |
+| BusBW | >= 90% of NIC line rate (intra-pod) |
+| Aggregate Throughput | >= 95% of bisection BW |
+| Packet Drop Rate | 0 ppm (lossless) |
+{: #tab-indicative-values title="Indicative Reference Values for Distributed AI Training Fabrics (Non-Normative)"}
 
 # ASIC Feature Categories (Informational) {#asic-features}
 
