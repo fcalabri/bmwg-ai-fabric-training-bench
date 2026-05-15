@@ -5,11 +5,11 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 15 November 2026                           Blue Fern Consulting
+Expires: 16 November 2026                           Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
-                                                             14 May 2026
+                                                             15 May 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 November 2026.
+   This Internet-Draft will expire on 16 November 2026.
 
 Copyright Notice
 
@@ -217,8 +217,9 @@ Table of Contents
 1.2.  Scope and Applicability
 
    This document applies to Ethernet-based AI training backend network
-   fabrics employing RoCEv2 and/or UEC Ultra Ethernet Transport (UET)
-   protocols.  The scope includes leaf-spine (2-tier Clos) and leaf-
+   fabrics employing RoCEv2 and/or Ultra Ethernet Transport (UET)
+   defined by the Ultra Ethernet Consortium (UEC) Specification 1.0
+   [UEC-1.0].  The scope includes leaf-spine (2-tier Clos) and leaf-
    spine-superspine (3-tier Clos) topologies.
 
    InfiniBand fabrics are explicitly *out of scope*, though many KPIs
