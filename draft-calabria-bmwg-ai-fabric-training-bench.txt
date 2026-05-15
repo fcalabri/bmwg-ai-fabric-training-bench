@@ -5,11 +5,11 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 15 November 2026                           Blue Fern Consulting
+Expires: 16 November 2026                           Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
-                                                             14 May 2026
+                                                             15 May 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 November 2026.
+   This Internet-Draft will expire on 16 November 2026.
 
 Copyright Notice
 
@@ -162,10 +162,11 @@ Table of Contents
      16.1.  Normative References
      16.2.  Informative References
    Appendix A.  KPI-to-Test Mapping Summary
-   Appendix B.  ASIC Feature Categories (Informational)
-   Appendix C.  RoCEv2 Test Frame Format
-   Appendix D.  UET (Ultra Ethernet Transport) Frame Format
-     D.1.  Key Differences from RoCEv2
+   Appendix B.  Indicative Reference Values (Non-Normative)
+   Appendix C.  ASIC Feature Categories (Informational)
+   Appendix D.  RoCEv2 Test Frame Format
+   Appendix E.  UET (Ultra Ethernet Transport) Frame Format
+     E.1.  Key Differences from RoCEv2
    Acknowledgments
    Authors' Addresses
 
@@ -475,17 +476,18 @@ Table of Contents
    The platform used is identified in all test reports.
 
    *(a) Hardware Traffic Generator* — dedicated hardware capable of
-   line-rate RDMA emulation meeting Section 3.3.2 accuracy requirements.
-   Suitable for point-to-point RDMA tests (Sections 5 and 6).  For
-   collective tests (Section 9), the following limitations are
-   documented: whether synchronization barriers are reproduced, whether
-   flow patterns are schedule-driven or gradient-driven, and whether
-   straggler behavior is modeled.
+   line-rate RDMA emulation meeting the Measurement Accuracy
+   Requirements specified in this document.  Suitable for point-to-point
+   RDMA tests (Section 5 and Section 6).  For collective tests
+   (Section 9), the following limitations are documented: whether
+   synchronization barriers are reproduced, whether flow patterns are
+   schedule-driven or gradient-driven, and whether straggler behavior is
+   modeled.
 
    *(b) Accelerator Cluster* — cluster running an actual collective
-   communication library with RDMA tooling.  Preferred for Section 9
-   collective benchmarks.  Host configuration (accelerator model,
-   collective library name and version, PCIe topology, BIOS power
+   communication library with RDMA tooling.  Preferred for the
+   collective benchmarks in Section 9.  Host configuration (accelerator
+   model, collective library name and version, PCIe topology, BIOS power
    management settings) is documented.  Any non-fabric overhead in
    timing measurements is quantified and reported separately.
 
@@ -498,53 +500,43 @@ Table of Contents
 
 4.  KPI Framework and Metrics Taxonomy
 
-      Target values in this section are NON-NORMATIVE illustrative
-      reference points derived from current industry practice.  They do
-      NOT constitute benchmarking acceptance criteria.  Per BMWG
-      charter, defining acceptance criteria is explicitly out of scope.
-      Implementers MAY use these values as contextual references; they
-      MUST NOT be used as pass/fail thresholds.
+      NOTE: Per BMWG charter, the definition of acceptance criteria or
+      performance requirements is explicitly outside the scope of this
+      Working Group.  The KPI tables in this section define what is
+      measured and how it is reported; they do not set thresholds.
+      Indicative non-normative reference values reflecting current
+      industry observations are provided in Appendix B; those values
+      MUST NOT be used as pass/fail thresholds in vendor evaluations.
 
 4.1.  Primary KPIs
 
-   +============+===============+===================+=================+
-   | KPI        | Unit          | Definition        | Reference       |
-   |            |               |                   | Target (Non-    |
-   |            |               |                   | Normative)      |
-   +============+===============+===================+=================+
-   | Job        | seconds       | Wall-clock time   | Minimize        |
-   | Completion |               | for benchmark     |                 |
-   | Time (JCT) |               | iteration         |                 |
-   |            |               | (compute +        |                 |
-   |            |               | communication)    |                 |
-   +------------+---------------+-------------------+-----------------+
-   | JCT Ratio  | dimensionless | Measured JCT /    | <= 1.05 (<=     |
-   |            |               | Roofline JCT      | 1.15            |
-   |            |               |                   | acceptable)     |
-   +------------+---------------+-------------------+-----------------+
-   | Bus        | Gbps/         | Effective per-    | >= 90% of NIC   |
-   | Bandwidth  | accelerator   | accelerator       | line rate       |
-   | (BusBW)    |               | throughput during | (intra-pod)     |
-   |            |               | collective.  See  |                 |
-   |            |               | the BusBW         |                 |
-   |            |               | definition in     |                 |
-   |            |               | [TERMINOLOGY]     |                 |
-   +------------+---------------+-------------------+-----------------+
-   | Aggregate  | Tbps          | Total fabric      | >= 95% of       |
-   | Throughput |               | goodput during    | bisection BW    |
-   |            |               | collective phase  |                 |
-   +------------+---------------+-------------------+-----------------+
-   | Packet     | ppm           | Frames lost end-  | 0 ppm           |
-   | Drop Rate  |               | to-end not        | (lossless)      |
-   |            |               | retransmitted     |                 |
-   +------------+---------------+-------------------+-----------------+
-   | Tail       | us            | 99th/99.9th       | Minimize        |
-   | Latency    |               | percentile one-   |                 |
-   | (P99/      |               | way fabric        |                 |
-   | P99.9)     |               | latency           |                 |
-   +------------+---------------+-------------------+-----------------+
+   +============+===============+======================================+
+   | KPI        | Unit          | Definition                           |
+   +============+===============+======================================+
+   | Job        | seconds       | Wall-clock time for                  |
+   | Completion |               | benchmark iteration                  |
+   | Time (JCT) |               | (compute + communication)            |
+   +------------+---------------+--------------------------------------+
+   | JCT Ratio  | dimensionless | Measured JCT / Roofline JCT          |
+   +------------+---------------+--------------------------------------+
+   | Bus        | Gbps/         | Effective per-accelerator            |
+   | Bandwidth  | accelerator   | throughput during                    |
+   | (BusBW)    |               | collective.  See the BusBW           |
+   |            |               | definition in [TERMINOLOGY]          |
+   +------------+---------------+--------------------------------------+
+   | Aggregate  | Tbps          | Total fabric goodput during          |
+   | Throughput |               | collective phase                     |
+   +------------+---------------+--------------------------------------+
+   | Packet     | ppm           | Frames lost end-to-end not           |
+   | Drop Rate  |               | retransmitted                        |
+   +------------+---------------+--------------------------------------+
+   | Tail       | us            | 99th/99.9th percentile one-          |
+   | Latency    |               | way fabric latency                   |
+   | (P99/      |               |                                      |
+   | P99.9)     |               |                                      |
+   +------------+---------------+--------------------------------------+
 
-                          Table 5: Primary KPIs
+                           Table 5: Primary KPIs
 
 4.2.  Secondary KPIs
 
@@ -1002,7 +994,7 @@ Table of Contents
    *Procedure:* Configure per-packet load balancing.  Measure MMR
    (expected ~1.0), JFI (expected ~1.0), out-of-order rate, and RDMA
    retransmission impact.  If the DUT provides an in-fabric reorder
-   buffer, document per Appendix B.
+   buffer, document per Appendix C.
 
 8.4.  Jain Fairness Index Measurement
 
@@ -1533,9 +1525,9 @@ JCT Ratio    = Measured_JCT / Roofline_seq
    [LLM-BENCH]
               Gaikwad, et al, "Benchmarking Methodology for Large
               Language Model Serving", Work in Progress, Internet-Draft,
-              draft-gaikwad-llm-benchmarking-methodology, January 2026,
-              <https://datatracker.ietf.org/doc/html/draft-gaikwad-llm-
-              benchmarking-methodology>.
+              draft-gaikwad-llm-benchmarking-methodology-00, January
+              2026, <https://datatracker.ietf.org/doc/html/draft-
+              gaikwad-llm-benchmarking-methodology-00>.
 
    [META-ROCE]
               Gangidi, A., "RDMA over Ethernet for Distributed AI
@@ -1655,7 +1647,36 @@ Appendix A.  KPI-to-Test Mapping Summary
 
                    Table 13: KPI-to-Test Mapping Summary
 
-Appendix B.  ASIC Feature Categories (Informational)
+Appendix B.  Indicative Reference Values (Non-Normative)
+
+   This appendix provides indicative reference values for the KPIs
+   defined in Section 4, reflecting current industry observations for
+   distributed AI training workloads as of 2025-2026.  These values are
+   NON-NORMATIVE and do not constitute benchmarking acceptance criteria
+   or performance requirements.  Per the BMWG charter, the definition of
+   acceptance criteria or performance requirements is explicitly outside
+   the scope of this Working Group.  Implementers may use these values
+   as contextual references when interpreting results; they MUST NOT be
+   used as pass/fail thresholds in vendor evaluations.  Deployment-
+   specific targets will vary by topology, accelerator architecture,
+   collective library, and operator requirements.
+
+      +======================+=====================================+
+      | KPI                  | Indicative Reference                |
+      +======================+=====================================+
+      | JCT Ratio            | <= 1.05 (<= 1.15 acceptable)        |
+      +----------------------+-------------------------------------+
+      | BusBW                | >= 90% of NIC line rate (intra-pod) |
+      +----------------------+-------------------------------------+
+      | Aggregate Throughput | >= 95% of bisection BW              |
+      +----------------------+-------------------------------------+
+      | Packet Drop Rate     | 0 ppm (lossless)                    |
+      +----------------------+-------------------------------------+
+
+         Table 14: Indicative Reference Values for Distributed AI
+                    Training Fabrics (Non- Normative)
+
+Appendix C.  ASIC Feature Categories (Informational)
 
    This appendix identifies ASIC feature categories relevant to AI
    fabric performance.  Implementers document which categories are
@@ -1707,13 +1728,13 @@ Appendix B.  ASIC Feature Categories (Informational)
    | Support      |                | scales        | ASIC count       |
    +--------------+----------------+---------------+------------------+
 
-                    Table 14: ASIC Feature Categories
+                    Table 15: ASIC Feature Categories
 
    All values are reported based on vendor documentation or measured
    capability.  Additional DUT capabilities affecting benchmark results
    are also documented.
 
-Appendix C.  RoCEv2 Test Frame Format
+Appendix D.  RoCEv2 Test Frame Format
 
    +========+============+======+=====================================+
    | Offset | Field      | Size | Value / Description                 |
@@ -1760,9 +1781,9 @@ Appendix C.  RoCEv2 Test Frame Format
    | var+4  | FCS        | 4B   | Ethernet Frame Check Sequence       |
    +--------+------------+------+-------------------------------------+
 
-                    Table 15: RoCEv2 Test Frame Format
+                    Table 16: RoCEv2 Test Frame Format
 
-Appendix D.  UET (Ultra Ethernet Transport) Frame Format
+Appendix E.  UET (Ultra Ethernet Transport) Frame Format
 
    UET runs over UDP/IP using IANA-assigned destination port 4793.
 
@@ -1810,9 +1831,9 @@ Appendix D.  UET (Ultra Ethernet Transport) Frame Format
    | var+4  | FCS        | 4B   | Ethernet Frame Check Sequence       |
    +--------+------------+------+-------------------------------------+
 
-                        Table 16: UET Frame Format
+                        Table 17: UET Frame Format
 
-D.1.  Key Differences from RoCEv2
+E.1.  Key Differences from RoCEv2
 
    +==============+==============+===============+=====================+
    | Field        | RoCEv2 Value | UET Value     | Notes               |
@@ -1839,7 +1860,7 @@ D.1.  Key Differences from RoCEv2
    | Overhead     |              | Write)        | sub-layer headers   |
    +--------------+--------------+---------------+---------------------+
 
-                    Table 17: RoCEv2 vs. UET Comparison
+                    Table 18: RoCEv2 vs. UET Comparison
 
    1.  *UDP Destination Port:* UET uses port 4793 vs. RoCEv2 port 4791.
 
