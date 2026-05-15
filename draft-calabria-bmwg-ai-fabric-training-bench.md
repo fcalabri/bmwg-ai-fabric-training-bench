@@ -136,7 +136,7 @@ This document fills the gap by defining a comprehensive benchmarking methodology
 
 ## Scope and Applicability
 
-This document applies to Ethernet-based AI training backend network fabrics employing RoCEv2 and/or UEC Ultra Ethernet Transport (UET) protocols. The scope includes leaf-spine (2-tier Clos) and leaf-spine-superspine (3-tier Clos) topologies.
+This document applies to Ethernet-based AI training backend network fabrics employing RoCEv2 and/or Ultra Ethernet Transport (UET) defined by the Ultra Ethernet Consortium (UEC) Specification 1.0 {{UEC-1.0}}. The scope includes leaf-spine (2-tier Clos) and leaf-spine-superspine (3-tier Clos) topologies.
 
 InfiniBand fabrics are explicitly **out of scope**, though many KPIs defined herein may be adapted for IB benchmarking by future documents. The DUT is the network fabric itself (the collection of switches and interconnecting links), not individual accelerators or host NICs; host-side configuration is documented in the test report as it materially affects results.
 
