@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-14T03:59:54.078568+00:00",
+  "timestamp": "2026-05-17T04:04:56.632562+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -191,15 +191,15 @@
       "id": "I_kwDORX7w2M8AAAABB4FPgg",
       "title": "BusBW to align with terminology",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/14",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Align to new BusBW definition from terminology doc - BusBW algorithm-invariant",
       "createdAt": "2026-05-11T12:39:59Z",
-      "updatedAt": "2026-05-11T12:39:59Z",
-      "closedAt": null,
+      "updatedAt": "2026-05-14T14:43:19Z",
+      "closedAt": "2026-05-14T14:43:19Z",
       "comments": []
     },
     {
@@ -207,15 +207,15 @@
       "id": "I_kwDORX7w2M8AAAABB4SWYw",
       "title": "Update_Security and Editorial",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/16",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Update Security Section and Editorial changes ",
       "createdAt": "2026-05-11T13:11:33Z",
-      "updatedAt": "2026-05-11T13:11:33Z",
-      "closedAt": null,
+      "updatedAt": "2026-05-14T14:43:20Z",
+      "closedAt": "2026-05-14T14:43:20Z",
       "comments": []
     },
     {
@@ -223,15 +223,15 @@
       "id": "I_kwDORX7w2M8AAAABCAHvlw",
       "title": "Acronyms - drift from terminology",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/18",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "address GAP for  acronyms (b4 first appearance) with terminology ",
       "createdAt": "2026-05-12T13:00:28Z",
-      "updatedAt": "2026-05-12T13:00:28Z",
-      "closedAt": null,
+      "updatedAt": "2026-05-14T14:43:21Z",
+      "closedAt": "2026-05-14T14:43:21Z",
       "comments": []
     }
   ],
@@ -248,7 +248,7 @@
       "labels": [],
       "body": "## Summary\n\n- Replace colloquialism \"apples-to-apples\" with \"direct, reproducible comparison\" per NIST IR 8366 inclusive language guidance\n- Fix copy-paste error in Collective Communication Library Bus Bandwidth Summary table (was incorrectly showing the UET spray efficacy template; now correctly shows BusBW per collective operation, accelerator count, and load balancing strategy)\n- Normalize ASCII art box widths in Topology A for consistent rendering across HTML/PDF\n- Clarify AlltoAll description: \"every other participating accelerator\" (removes ambiguity)\n- Add `{{UEC-1.0}}` citation for the 1 million endpoint scalability claim in PDC Scalability section\n\n## Test plan\n\n- [ ] Verify rendered HTML output of Topology A ASCII art looks correct\n- [ ] Confirm CCL BusBW Summary table structure matches intent of the section\n- [ ] Review inclusive language changes against NIST IR 8366",
       "createdAt": "2026-03-21T09:51:37Z",
-      "updatedAt": "2026-03-21T11:54:42Z",
+      "updatedAt": "2026-05-14T16:23:38Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "e19e0180f9d2bb6ad8c1a34cae3d0f30e2821c47",
@@ -323,7 +323,7 @@
       "labels": [],
       "body": "updated not ref and lint ",
       "createdAt": "2026-03-31T16:24:17Z",
-      "updatedAt": "2026-04-01T12:10:44Z",
+      "updatedAt": "2026-05-14T16:23:40Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "0e639f084ef4d5b40685a92a75dce9fc6077b349",
@@ -353,7 +353,7 @@
       "labels": [],
       "body": "10.1 reworked and changes on BUSBW merged (cloned) ",
       "createdAt": "2026-03-31T16:43:36Z",
-      "updatedAt": "2026-04-01T12:11:10Z",
+      "updatedAt": "2026-05-14T16:23:43Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "0e639f084ef4d5b40685a92a75dce9fc6077b349",
@@ -424,7 +424,7 @@
       "labels": [],
       "body": "Test tools and cluster 3.3.3 reworked ",
       "createdAt": "2026-03-31T17:04:18Z",
-      "updatedAt": "2026-04-01T12:11:34Z",
+      "updatedAt": "2026-05-14T16:23:46Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "0e639f084ef4d5b40685a92a75dce9fc6077b349",
@@ -515,7 +515,7 @@
       "id": "PR_kwDORX7w2M7aQtct",
       "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/15",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -524,17 +524,19 @@
       "labels": [],
       "body": "BubBW - updated definition and procedures based on last changes on terminology doc ",
       "createdAt": "2026-05-11T13:09:25Z",
-      "updatedAt": "2026-05-13T03:30:22Z",
+      "updatedAt": "2026-05-14T14:45:30Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
-      "baseRefOid": "158d46985969d634c8e17a5b85fa36394f20afca",
+      "baseRefOid": "280ac4ff3e947237acfcdc2ee3b0ad50c48788a5",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "BusBW_invariant",
-      "headRefOid": "8aca00325db0134ef110688d951f4627a7ec9c66",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "a486721eebd408d666b98f840749e0401c271108",
+      "closedAt": "2026-05-14T14:42:27Z",
+      "mergedAt": "2026-05-14T14:42:27Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "cdf7b5515f31fd99c6e1fc6ed6036040824c6389"
+      },
       "comments": [],
       "reviews": [
         {
@@ -574,6 +576,46 @@
               "updatedAt": "2026-05-13T03:30:22Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDORX7w2M7_vVq6",
+          "commit": {
+            "abbreviatedOid": "8aca003"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-14T14:07:56Z",
+          "updatedAt": "2026-05-14T14:07:57Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "100% agree Thank you ! ",
+              "createdAt": "2026-05-14T14:07:56Z",
+              "updatedAt": "2026-05-14T14:07:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDORX7w2M7_vkiQ",
+          "commit": {
+            "abbreviatedOid": "8aca003"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-14T14:16:03Z",
+          "updatedAt": "2026-05-14T14:16:03Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "Thanks for the look. I'd prefer to keep the active voice (\"report ...\")  since it matches the directive style used in the rest of this section's measurement procedures.\r\n\r\nIs your  goal was to separate the algo_factor-invariance point from the transfer-volume-reflects-keying point, I can do that with:\r\n\r\n>  When UET group keying is active during testing, reports MUST present the observed BusBW computed from measured bytes transferred. The algo_factor defined in {{!TERMINOLOGY}} (fixed per collective type) still applies to the BusBW formula; group keying affects only the observed transfer volume, not algo_factor.\r\n\r\nHappy to apply that variant if it addresses your concern \u2014 otherwise I'll leave the current text as-is.\r\n",
+              "createdAt": "2026-05-14T14:16:03Z",
+              "updatedAt": "2026-05-14T14:16:03Z"
+            }
+          ]
         }
       ]
     },
@@ -582,24 +624,26 @@
       "id": "PR_kwDORX7w2M7aSDBO",
       "title": "Editorial updates",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/17",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "JCT formula update / correction \r\n\r\nBCP-14 as per feedback on BMWG ... remove capitalized keywords for Test procedures and Reporting \r\n\r\nRemove all vendor specific terminology (NCCL etc.) ",
       "createdAt": "2026-05-11T14:06:40Z",
-      "updatedAt": "2026-05-13T03:46:22Z",
+      "updatedAt": "2026-05-14T14:25:32Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "158d46985969d634c8e17a5b85fa36394f20afca",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "Editorial_Updates",
       "headRefOid": "1b4ddc678b334285473bcabcced7028202f59474",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-05-14T14:16:54Z",
+      "mergedAt": "2026-05-14T14:16:54Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "1b4ddc678b334285473bcabcced7028202f59474"
+      },
       "comments": [],
       "reviews": [
         {
@@ -621,6 +665,26 @@
               "updatedAt": "2026-05-13T03:46:22Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDORX7w2M7_v2DO",
+          "commit": {
+            "abbreviatedOid": "1b4ddc6"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-14T14:25:32Z",
+          "updatedAt": "2026-05-14T14:25:32Z",
+          "comments": [
+            {
+              "originalPosition": 71,
+              "body": "Good catch \u2014 you're right, let me push a change .. \r\n\r\n -...not individual accelerators or host NICs; host-side configuration is documented in the test report as it materially affects\r\n  results.\r\n  +...not individual accelerators or host NICs; host-side configuration MUST be documented in the test report as it materially\r\n  affects results.",
+              "createdAt": "2026-05-14T14:25:32Z",
+              "updatedAt": "2026-05-14T14:25:32Z"
+            }
+          ]
         }
       ]
     },
@@ -629,7 +693,7 @@
       "id": "PR_kwDORX7w2M7ayt6T",
       "title": "Acronyms from editorial updates",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/19",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -638,19 +702,163 @@
       "labels": [],
       "body": "Taken from Editorial update one (dependencies on terms and definitions) - Align with Terminology Draft ",
       "createdAt": "2026-05-12T18:07:10Z",
-      "updatedAt": "2026-05-12T18:07:10Z",
+      "updatedAt": "2026-05-14T16:22:57Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "158d46985969d634c8e17a5b85fa36394f20afca",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "Acronyms_from_Editorial_Updates",
       "headRefOid": "c7a81db819deee7a4324ee470463a0d3984e7018",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-05-14T14:16:52Z",
+      "mergedAt": "2026-05-14T14:16:52Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "280ac4ff3e947237acfcdc2ee3b0ad50c48788a5"
+      },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 20,
+      "id": "PR_kwDORX7w2M7blTP4",
+      "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/20",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "Duplicated terms removed - left table for training only document acronyms (avoid drift) and provide consistency ",
+      "createdAt": "2026-05-14T15:48:32Z",
+      "updatedAt": "2026-05-14T17:36:44Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "cdf7b5515f31fd99c6e1fc6ed6036040824c6389",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "Terminology_no_Dups",
+      "headRefOid": "1094a37347dcf980907ff3fe792422e9d8082ac3",
+      "closedAt": "2026-05-14T17:36:22Z",
+      "mergedAt": "2026-05-14T17:36:22Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "1931a913a777eeff0b141cd6b4c0a1351fe6fa27"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 21,
+      "id": "PR_kwDORX7w2M7bmEIK",
+      "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/21",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "same as Inference (all documents aligned)",
+      "createdAt": "2026-05-14T16:26:11Z",
+      "updatedAt": "2026-05-14T17:35:57Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "cdf7b5515f31fd99c6e1fc6ed6036040824c6389",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "explicit-anchors",
+      "headRefOid": "2e9155531ea70381b2418a04609b9d7c0b79c126",
+      "closedAt": "2026-05-14T17:35:57Z",
+      "mergedAt": "2026-05-14T17:35:57Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "d9f4a1fd54c113b5241a5b9966c6e13f1292b32e"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 22,
+      "id": "PR_kwDORX7w2M7botoQ",
+      "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/22",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "02_Edits and consistency between docs",
+      "createdAt": "2026-05-14T18:36:58Z",
+      "updatedAt": "2026-05-15T12:51:51Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "1931a913a777eeff0b141cd6b4c0a1351fe6fa27",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "02_Edits",
+      "headRefOid": "d2dd78d34cb4b9644577dddd71dbf1d0bc91c0fa",
+      "closedAt": "2026-05-15T12:51:46Z",
+      "mergedAt": "2026-05-15T12:51:46Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "1ad7371e0dc801ed7922ed781bc4d2511e81e890"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M7_9nQQ",
+          "commit": {
+            "abbreviatedOid": "d2dd78d"
+          },
+          "author": "billwuqin",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-15T00:12:07Z",
+          "updatedAt": "2026-05-15T00:12:07Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "seriesinfo is not mandatory, keep track of version number is painful, no?:-)",
+              "createdAt": "2026-05-15T00:12:07Z",
+              "updatedAt": "2026-05-15T00:12:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDORX7w2M7_9nXr",
+          "commit": {
+            "abbreviatedOid": "d2dd78d"
+          },
+          "author": "billwuqin",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-05-15T00:12:13Z",
+          "updatedAt": "2026-05-15T00:12:13Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDORX7w2M8AAAABADC__Q",
+          "commit": {
+            "abbreviatedOid": "d2dd78d"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-05-15T12:40:40Z",
+          "updatedAt": "2026-05-15T12:40:40Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Oh you are right -  thank you !! ",
+              "createdAt": "2026-05-15T12:40:40Z",
+              "updatedAt": "2026-05-15T12:40:40Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
