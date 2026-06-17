@@ -744,7 +744,7 @@ Repeat for: leaf uplink failure, spine switch failure, superspine link failure (
 
 **Procedure:** Configure DUT at maximum validated scale from {{fabric-scale-limits}}. Generate bidirectional collective communication traffic (alternating AllReduce and AlltoAll). Run continuously for 24 hours. Sample all KPIs from {{kpi-framework-and-metrics-taxonomy}} every 60 seconds.
 
-The objective of the soak test is to monitor and document fabric behavior under extended load. The methodology does not establish pass/fail criteria for any reported metric. Any memory leaks, crashes, or other anomalies encountered during the test MUST be documented with their timestamps and durations.
+The objective of the soak test is to monitor and document fabric behavior under extended load. The methodology does not establish pass/fail criteria for any reported metric. Any memory leaks, crashes, or other anomalies encountered during the test MUST be documented as an application log file or other dedicated file with their timestamps and durations.
 
 **Reporting:** Time-series plots of JCT Ratio, BusBW, ECN ratio, PFC count, CPU, and memory over the 24-hour period. Report standard deviation of JCT Ratio (stability metric).
 
