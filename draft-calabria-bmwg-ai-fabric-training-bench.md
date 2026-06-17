@@ -291,7 +291,7 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio are investigated and reported.
 
 # KPI Framework and Metrics Taxonomy {#kpi-framework-and-metrics-taxonomy}
 
-> NOTE: Per BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. The KPI tables in this section define what is measured and how it is reported; they do not set thresholds. Indicative non-normative reference values reflecting current industry observations are provided in {{indicative-reference-values}}; those values MUST NOT be used as pass/fail thresholds in vendor evaluations.
+> NOTE: Per BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. The KPI tables in this section define what is measured and how it is reported; they do not set pass/fail criteria. Indicative non-normative reference values reflecting current industry observations are provided in {{indicative-reference-values}}; those values MUST NOT be used as pass/fail criteria in vendor evaluations.
 
 ## Primary KPIs
 
@@ -740,11 +740,11 @@ Repeat for: leaf uplink failure, spine switch failure, superspine link failure (
 
 ## 24-Hour Sustained Load {#soak-24h}
 
-**Objective:** Verify DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from {{EVPN-BENCH}} Sections 3.12, 4.11.
+**Objective:** Characterize DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from {{EVPN-BENCH}} Sections 3.12, 4.11.
 
 **Procedure:** Configure DUT at maximum validated scale from {{fabric-scale-limits}}. Generate bidirectional collective communication traffic (alternating AllReduce and AlltoAll). Run continuously for 24 hours. Sample all KPIs from {{kpi-framework-and-metrics-taxonomy}} every 60 seconds.
 
-The DUT is expected to exhibit no memory leaks, crashes, or CPU spikes; any anomaly is reported with timestamp and duration.
+The objective of the soak test is to monitor and document fabric behavior under extended load. The methodology does not establish pass/fail criteria for any reported metric. Any memory leaks, crashes, or other anomalies encountered during the test MUST be documented with their timestamps and durations.
 
 **Reporting:** Time-series plots of JCT Ratio, BusBW, ECN ratio, PFC count, CPU, and memory over the 24-hour period. Report standard deviation of JCT Ratio (stability metric).
 
@@ -752,9 +752,11 @@ The DUT is expected to exhibit no memory leaks, crashes, or CPU spikes; any anom
 
 **Objective:** Detect memory leaks, handle exhaustion, or gradual performance degradation in DUT software.
 
-**Procedure:** Record per-process memory usage at T=0, T=1h, T=6h, T=12h, T=24h. Compute linear regression slope of memory usage over time. A slope exceeding **1 MB/hour** for any process indicates a potential memory leak and is reported. Also monitor forwarding-plane counter wraparounds and hardware table occupancy trends.
+**Procedure:** Record per-process memory usage at T=0, T=1h, T=6h, T=12h, T=24h. Compute linear regression slope of memory usage over time. A slope exceeding **1 MB/hour** for any process indicates a potential memory leak and is reported; this slope is a reporting trigger for investigation, not a pass/fail criterion. Also monitor forwarding-plane counter wraparounds and hardware table occupancy trends.
 
 # Reporting Format {#reporting}
+
+Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. This methodology defines what is measured and how it is reported; it does not set minimum acceptable values, certification, or pass/fail criteria. Any deployment-specific performance objectives are outside the scope of this document.
 
 Test reports include the following sections:
 
@@ -831,7 +833,7 @@ This document makes no request of IANA.
 
 # Indicative Reference Values (Non-Normative) {#indicative-reference-values}
 
-This appendix provides indicative reference values for the KPIs defined in {{kpi-framework-and-metrics-taxonomy}}, reflecting current industry observations for distributed AI training workloads as of 2025-2026. These values are NON-NORMATIVE and do not constitute benchmarking acceptance criteria or performance requirements. Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. Implementers may use these values as contextual references when interpreting results; they MUST NOT be used as pass/fail thresholds in vendor evaluations. Deployment-specific targets will vary by topology, accelerator architecture, collective library, and operator requirements.
+This appendix provides indicative reference values for the KPIs defined in {{kpi-framework-and-metrics-taxonomy}}, reflecting current industry observations for distributed AI training workloads as of 2025-2026. These values are NON-NORMATIVE and do not constitute benchmarking acceptance criteria or performance requirements. Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. Implementers may use these values as contextual references when interpreting results; they MUST NOT be used as pass/fail criteria in vendor evaluations. Deployment-specific targets will vary by topology, accelerator architecture, collective library, and operator requirements.
 
 | KPI | Indicative Reference |
 |---|---|
