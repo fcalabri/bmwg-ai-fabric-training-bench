@@ -16,22 +16,23 @@
        This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads, covering Remote Direct Memory Access (RDMA) over Converged Ethernet version 2 (RoCEv2) transport, the Ultra Ethernet Transport (UET) protocol defined by the Ultra Ethernet Consortium (UEC) Specification 1.0  , congestion management (Priority Flow Control (PFC), Explicit Congestion Notification (ECN), Data Center Quantized Congestion Notification (DCQCN), Credit-Based Flow Control (CBFC)), load balancing strategies (Equal-Cost Multi-Path (ECMP), Dynamic Load Balancing (DLB), packet spraying), collective communication patterns (AllReduce, AllToAll, AllGather), and scale/soak testing. 
        The methodology enables direct, reproducible comparison across different switch ASICs, vendor implementations, NIC transport stacks (RoCEv2 vs. UET), and fabric architectures (2-tier Clos, 3-tier Clos, rail-optimized). 
     " name="description">
-<meta content="xml2rfc 3.33.0" name="generator">
+<meta content="xml2rfc 3.34.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
 <meta content="draft-calabria-bmwg-ai-fabric-training-bench-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.33.0
-    Python 3.12.13
-    ConfigArgParse 1.7
+  xml2rfc 3.34.0
+    Python 3.14.5
+    ConfigArgParse 1.7.5
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 6.0.2
-    platformdirs 4.9.6
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.10.0
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.7.0
+    wcwidth 0.8.1
 -->
 <link href="draft-calabria-bmwg-ai-fabric-training-bench.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1054,7 +1055,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Calabria, et al.</td>
-<td class="center">Expires 5 December 2026</td>
+<td class="center">Expires 25 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1068,12 @@ svg {
 <dd class="internet-draft">draft-calabria-bmwg-ai-fabric-training-bench-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-03" class="published">3 June 2026</time>
+<time datetime="2026-06-23" class="published">23 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-05">5 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-25">25 December 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1141,7 +1142,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1816,7 +1817,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
       </h2>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-4-1.1">
-          <p id="section-4-1.1.1">NOTE: Per BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. The KPI tables in this section define what is measured and how it is reported; they do not set thresholds. Indicative non-normative reference values reflecting current industry observations are provided in <a href="#indicative-reference-values" class="auto internal xref">Appendix B</a>; those values <span class="bcp14">MUST NOT</span> be used as pass/fail thresholds in vendor evaluations.<a href="#section-4-1.1.1" class="pilcrow">¶</a></p>
+          <p id="section-4-1.1.1">NOTE: Per BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. The KPI tables in this section define what is measured and how it is reported; they do not set pass/fail criteria. Indicative non-normative reference values reflecting current industry observations are provided in <a href="#indicative-reference-values" class="auto internal xref">Appendix B</a>; those values <span class="bcp14">MUST NOT</span> be used as pass/fail criteria in vendor evaluations.<a href="#section-4-1.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <div id="primary-kpis">
@@ -2841,9 +2842,9 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
         <h3 id="name-24-hour-sustained-load">
 <a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-24-hour-sustained-load" class="section-name selfRef">24-Hour Sustained Load</a>
         </h3>
-<p id="section-12.1-1"><strong>Objective:</strong> Verify DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> Sections 3.12, 4.11.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
+<p id="section-12.1-1"><strong>Objective:</strong> Characterize DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> Sections 3.12, 4.11.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
 <p id="section-12.1-2"><strong>Procedure:</strong> Configure DUT at maximum validated scale from <a href="#fabric-scale-limits" class="auto internal xref">Section 11.1</a>. Generate bidirectional collective communication traffic (alternating AllReduce and AlltoAll). Run continuously for 24 hours. Sample all KPIs from <a href="#kpi-framework-and-metrics-taxonomy" class="auto internal xref">Section 4</a> every 60 seconds.<a href="#section-12.1-2" class="pilcrow">¶</a></p>
-<p id="section-12.1-3">The DUT is expected to exhibit no memory leaks, crashes, or CPU spikes; any anomaly is reported with timestamp and duration.<a href="#section-12.1-3" class="pilcrow">¶</a></p>
+<p id="section-12.1-3">The objective of the soak test is to monitor and document fabric behavior under extended load. The methodology does not establish pass/fail criteria for any reported metric. Any memory leaks, crashes, or other anomalies encountered during the test <span class="bcp14">MUST</span> be documented as an application log file or other dedicated file with their timestamps and durations.<a href="#section-12.1-3" class="pilcrow">¶</a></p>
 <p id="section-12.1-4"><strong>Reporting:</strong> Time-series plots of JCT Ratio, BusBW, ECN ratio, PFC count, CPU, and memory over the 24-hour period. Report standard deviation of JCT Ratio (stability metric).<a href="#section-12.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2853,7 +2854,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-resource-leak-detection" class="section-name selfRef">Resource Leak Detection</a>
         </h3>
 <p id="section-12.2-1"><strong>Objective:</strong> Detect memory leaks, handle exhaustion, or gradual performance degradation in DUT software.<a href="#section-12.2-1" class="pilcrow">¶</a></p>
-<p id="section-12.2-2"><strong>Procedure:</strong> Record per-process memory usage at T=0, T=1h, T=6h, T=12h, T=24h. Compute linear regression slope of memory usage over time. A slope exceeding <strong>1 MB/hour</strong> for any process indicates a potential memory leak and is reported. Also monitor forwarding-plane counter wraparounds and hardware table occupancy trends.<a href="#section-12.2-2" class="pilcrow">¶</a></p>
+<p id="section-12.2-2"><strong>Procedure:</strong> Record per-process memory usage at T=0, T=1h, T=6h, T=12h, T=24h. Compute linear regression slope of memory usage over time. A slope exceeding <strong>1 MB/hour</strong> for any process indicates a potential memory leak and is reported; this slope is a reporting trigger for investigation, not a pass/fail criterion. Also monitor forwarding-plane counter wraparounds and hardware table occupancy trends.<a href="#section-12.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2863,28 +2864,29 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
       <h2 id="name-reporting-format">
 <a href="#section-13" class="section-number selfRef">13. </a><a href="#name-reporting-format" class="section-name selfRef">Reporting Format</a>
       </h2>
-<p id="section-13-1">Test reports include the following sections:<a href="#section-13-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-13-2">
-<li id="section-13-2.1">
-          <p id="section-13-2.1.1"><strong>DUT Identification:</strong> Complete parameters from <a href="#device-under-test-dut-identification" class="auto internal xref">Section 3.2</a> for all fabric components.<a href="#section-13-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-13-1">Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. This methodology defines what is measured and how it is reported; it does not set minimum acceptable values, certification, or pass/fail criteria. Any deployment-specific performance objectives are outside the scope of this document.<a href="#section-13-1" class="pilcrow">¶</a></p>
+<p id="section-13-2">Test reports include the following sections:<a href="#section-13-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-13-3">
+<li id="section-13-3.1">
+          <p id="section-13-3.1.1"><strong>DUT Identification:</strong> Complete parameters from <a href="#device-under-test-dut-identification" class="auto internal xref">Section 3.2</a> for all fabric components.<a href="#section-13-3.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-13-2.2">
-          <p id="section-13-2.2.1"><strong>Test Topology:</strong> Diagram and description per <a href="#reference-fabric-topologies" class="auto internal xref">Section 3.1</a>, including physical cabling.<a href="#section-13-2.2.1" class="pilcrow">¶</a></p>
+        <li id="section-13-3.2">
+          <p id="section-13-3.2.1"><strong>Test Topology:</strong> Diagram and description per <a href="#reference-fabric-topologies" class="auto internal xref">Section 3.1</a>, including physical cabling.<a href="#section-13-3.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-13-2.3">
-          <p id="section-13-2.3.1"><strong>Test Configuration:</strong> All DUT configuration parameters: QoS policies (ECN thresholds, PFC headroom, DCQCN parameters), load balancing mode, buffer allocation, and vendor-specific tuning.<a href="#section-13-2.3.1" class="pilcrow">¶</a></p>
+        <li id="section-13-3.3">
+          <p id="section-13-3.3.1"><strong>Test Configuration:</strong> All DUT configuration parameters: QoS policies (ECN thresholds, PFC headroom, DCQCN parameters), load balancing mode, buffer allocation, and vendor-specific tuning.<a href="#section-13-3.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-13-2.4">
-          <p id="section-13-2.4.1"><strong>Host Configuration:</strong> Complete host stack description per <a href="#device-under-test-dut-identification" class="auto internal xref">Section 3.2</a> including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional link-layer features (LLR, Packet Trimming, PRI, CBFC).<a href="#section-13-2.4.1" class="pilcrow">¶</a></p>
+        <li id="section-13-3.4">
+          <p id="section-13-3.4.1"><strong>Host Configuration:</strong> Complete host stack description per <a href="#device-under-test-dut-identification" class="auto internal xref">Section 3.2</a> including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional link-layer features (LLR, Packet Trimming, PRI, CBFC).<a href="#section-13-3.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-13-2.5">
-          <p id="section-13-2.5.1"><strong>Test Results:</strong> For each test from <a href="#test-rdma" class="auto internal xref">Section 5</a> through <a href="#test-soak" class="auto internal xref">Section 12</a>, provide specified tables, graphs, and statistical summaries. For <a href="#test-uec" class="auto internal xref">Section 6</a> tests, results include side-by-side UET vs. RoCEv2 comparison data on the identical DUT fabric.<a href="#section-13-2.5.1" class="pilcrow">¶</a></p>
+        <li id="section-13-3.5">
+          <p id="section-13-3.5.1"><strong>Test Results:</strong> For each test from <a href="#test-rdma" class="auto internal xref">Section 5</a> through <a href="#test-soak" class="auto internal xref">Section 12</a>, provide specified tables, graphs, and statistical summaries. For <a href="#test-uec" class="auto internal xref">Section 6</a> tests, results include side-by-side UET vs. RoCEv2 comparison data on the identical DUT fabric.<a href="#section-13-3.5.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-13-2.6">
-          <p id="section-13-2.6.1"><strong>Anomalies:</strong> Any deviations from specified procedures, test failures, or unexpected behaviors are documented.<a href="#section-13-2.6.1" class="pilcrow">¶</a></p>
+        <li id="section-13-3.6">
+          <p id="section-13-3.6.1"><strong>Anomalies:</strong> Any deviations from specified procedures, test failures, or unexpected behaviors are documented.<a href="#section-13-3.6.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-13-2.7">
-          <p id="section-13-2.7.1"><strong>Repeatability Statement:</strong> Report iteration count and coefficient of variation (std deviation / mean) for each test's primary metric. A CV below 5% is recommended for test validity.<a href="#section-13-2.7.1" class="pilcrow">¶</a></p>
+        <li id="section-13-3.7">
+          <p id="section-13-3.7.1"><strong>Repeatability Statement:</strong> Report iteration count and coefficient of variation (std deviation / mean) for each test's primary metric. A CV below 5% is recommended for test validity.<a href="#section-13-3.7.1" class="pilcrow">¶</a></p>
 </li>
       </ol>
 </section>
@@ -2977,7 +2979,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <dd class="break"></dd>
 <dt id="TERMINOLOGY">[TERMINOLOGY]</dt>
         <dd>
-<span class="refAuthor">Calabria, F.</span>, <span class="refAuthor">Pignataro, C.</span>, <span class="refAuthor">Wu, Q.</span>, and <span class="refAuthor">G. Fioccola</span>, <span class="refTitle">"Benchmarking Terminology for AI Network Fabrics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-calabria-bmwg-ai-fabric-terminology-01</span>, <time datetime="2026-04-21" class="refDate">21 April 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-terminology-01">https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-terminology-01</a>&gt;</span>. </dd>
+<span class="refAuthor">Calabria, F.</span>, <span class="refAuthor">Pignataro, C.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Fioccola, G.</span>, and <span class="refAuthor">S. Reddy</span>, <span class="refTitle">"Benchmarking Terminology for AI Network Fabrics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-calabria-bmwg-ai-fabric-terminology-02</span>, <time datetime="2026-06-04" class="refDate">4 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-terminology-02">https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-terminology-02</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="UEC-1.0">[UEC-1.0]</dt>
       <dd>
@@ -3287,7 +3289,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
       <h2 id="name-indicative-reference-values">
 <a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-indicative-reference-values" class="section-name selfRef">Indicative Reference Values (Non-Normative)</a>
       </h2>
-<p id="appendix-B-1">This appendix provides indicative reference values for the KPIs defined in <a href="#kpi-framework-and-metrics-taxonomy" class="auto internal xref">Section 4</a>, reflecting current industry observations for distributed AI training workloads as of 2025-2026. These values are NON-NORMATIVE and do not constitute benchmarking acceptance criteria or performance requirements. Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. Implementers may use these values as contextual references when interpreting results; they <span class="bcp14">MUST NOT</span> be used as pass/fail thresholds in vendor evaluations. Deployment-specific targets will vary by topology, accelerator architecture, collective library, and operator requirements.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<p id="appendix-B-1">This appendix provides indicative reference values for the KPIs defined in <a href="#kpi-framework-and-metrics-taxonomy" class="auto internal xref">Section 4</a>, reflecting current industry observations for distributed AI training workloads as of 2025-2026. These values are NON-NORMATIVE and do not constitute benchmarking acceptance criteria or performance requirements. Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. Implementers may use these values as contextual references when interpreting results; they <span class="bcp14">MUST NOT</span> be used as pass/fail criteria in vendor evaluations. Deployment-specific targets will vary by topology, accelerator architecture, collective library, and operator requirements.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
 <span id="name-indicative-reference-values-"></span><div id="tab-indicative-values">
 <table class="center" id="table-14">
         <caption>
