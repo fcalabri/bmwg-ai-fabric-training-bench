@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-18T04:46:17.882675+00:00",
+  "timestamp": "2026-06-23T04:08:11.353432+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -888,7 +888,7 @@
       "labels": [],
       "body": "issues 4 and 5 addresses, change threshold for criteria on pass / fail .. ",
       "createdAt": "2026-06-17T13:42:21Z",
-      "updatedAt": "2026-06-17T23:49:03Z",
+      "updatedAt": "2026-06-23T02:19:45Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "0a4b3a2c622787e09454a82ea81710852445f54e",
@@ -931,6 +931,46 @@
               "body": "```suggestion\nThe objective of the soak test is to monitor and document fabric behavior under extended load. The methodology does not establish pass/fail criteria for any reported metric. Any memory leaks, crashes, or other anomalies encountered during the test MUST be documented as an application log file or other dedicated file with their timestamps and durations.\n```",
               "createdAt": "2026-06-17T23:34:29Z",
               "updatedAt": "2026-06-17T23:34:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDORX7w2M8AAAABDyu-IQ",
+          "commit": {
+            "abbreviatedOid": "0281b25"
+          },
+          "author": "sowjanyadreddy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-23T02:14:27Z",
+          "updatedAt": "2026-06-23T02:14:28Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "Remove my name from this section as I was added in the author section. ",
+              "createdAt": "2026-06-23T02:14:27Z",
+              "updatedAt": "2026-06-23T02:14:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDORX7w2M8AAAABDywAQA",
+          "commit": {
+            "abbreviatedOid": "0281b25"
+          },
+          "author": "sowjanyadreddy",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-23T02:19:45Z",
+          "updatedAt": "2026-06-23T02:19:45Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "Suggested edit \"Example reference values may place JCT Ratio measurements below 1.05 in the range commonly associated with highly efficient fabrics, while higher values may indicate increasing network overhead. These values are provided for illustrative purposes only and are not benchmark requirements, acceptance criteria, or performance classifications.\"  . ",
+              "createdAt": "2026-06-23T02:19:45Z",
+              "updatedAt": "2026-06-23T02:19:45Z"
             }
           ]
         }
