@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-23T04:08:11.353432+00:00",
+  "timestamp": "2026-06-25T04:11:36.560271+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -239,15 +239,15 @@
       "id": "I_kwDORX7w2M8AAAABFyp4eQ",
       "title": "Issues 4 and 5",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/23",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "4 Difference between KPI and acceptance criteria \n5 Soak test interpretation and purpose ",
       "createdAt": "2026-06-17T13:18:14Z",
-      "updatedAt": "2026-06-17T13:18:14Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-23T10:16:10Z",
+      "closedAt": "2026-06-23T10:16:10Z",
       "comments": []
     }
   ],
@@ -881,24 +881,26 @@
       "id": "PR_kwDORX7w2M7ngHZq",
       "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/24",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "issues 4 and 5 addresses, change threshold for criteria on pass / fail .. ",
       "createdAt": "2026-06-17T13:42:21Z",
-      "updatedAt": "2026-06-23T02:19:45Z",
+      "updatedAt": "2026-06-23T10:15:47Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "0a4b3a2c622787e09454a82ea81710852445f54e",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "issues-4-and-5",
       "headRefOid": "0281b25ce5206fdd8c38ff2fb7ec08d5672fe681",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-06-23T10:15:40Z",
+      "mergedAt": "2026-06-23T10:15:40Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "cf2cb7b88b1dff864fd2c7ce3a0f47dc56913569"
+      },
       "comments": [],
       "reviews": [
         {
