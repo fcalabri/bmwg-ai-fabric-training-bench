@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-25T04:11:36.560271+00:00",
+  "timestamp": "2026-07-05T04:06:30.343285+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -975,6 +975,46 @@
               "updatedAt": "2026-06-23T02:19:45Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 25,
+      "id": "PR_kwDORX7w2M7t7_FT",
+      "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/25",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Normalized text and voice all documents, updated JCT section\r\n\r\nUET + Flowlet as per (Keysight comments) (new fifth  test configuration) ",
+      "createdAt": "2026-07-04T22:00:55Z",
+      "updatedAt": "2026-07-04T22:08:20Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "8589eb4f78518724021c34cc19f1a4310474e51d",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "training-03-edits",
+      "headRefOid": "d3b579191cca4e56a4cb5760ee9d4a8290155741",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M8AAAABE_0itg",
+          "commit": {
+            "abbreviatedOid": "d3b5791"
+          },
+          "author": "cpignata",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-07-04T22:08:20Z",
+          "updatedAt": "2026-07-04T22:08:20Z",
+          "comments": []
         }
       ]
     }
