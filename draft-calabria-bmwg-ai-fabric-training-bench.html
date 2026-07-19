@@ -13,7 +13,7 @@
 <meta content="
        This document defines benchmarking terminology, methodologies, and Key Performance Indicators (KPIs) for evaluating Ethernet-based AI training network fabrics. 
        As large-scale distributed Artificial Intelligence / Machine Learning (AI/ML) training clusters grow to tens of thousands of accelerators (GPUs or generic accelerator processing units (XPUs)), the backend network fabric determines Job Completion Time (JCT), training throughput, and accelerator utilization. 
-       This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads. The tests cover Remote Direct Memory Access (RDMA) over Converged Ethernet version 2 (RoCEv2) transport, the Ultra Ethernet Transport (UET) protocol defined by the Ultra Ethernet Consortium (UEC) Specification 1.0  , congestion management (Priority Flow Control (PFC), Explicit Congestion Notification (ECN), Data Center Quantized Congestion Notification (DCQCN), Credit-Based Flow Control (CBFC)), load balancing strategies (Equal-Cost Multi-Path (ECMP), Dynamic Load Balancing (DLB), packet spraying), collective communication patterns (AllReduce, AllToAll, AllGather), and scale/soak testing. 
+       This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads. The tests cover Remote Direct Memory Access (RDMA) over Converged Ethernet version 2 (RoCEv2) transport, the Ultra Ethernet Transport (UET) protocol defined by the Ultra Ethernet Consortium (UEC) Specification 1.0, congestion management (Priority Flow Control (PFC), Explicit Congestion Notification (ECN), Data Center Quantized Congestion Notification (DCQCN), Credit-Based Flow Control (CBFC)), load balancing strategies (Equal-Cost Multi-Path (ECMP), Dynamic Load Balancing (DLB), packet spraying), collective communication patterns (AllReduce, AllToAll, AllGather), and scale/soak testing. 
        The methodology enables direct, reproducible comparison across switch ASICs, NIC transport stacks (RoCEv2 and UET), and fabric architectures (2-tier Clos, 3-tier Clos, and rail-optimized). 
     " name="description">
 <meta content="xml2rfc 3.34.0" name="generator">
@@ -28,7 +28,7 @@
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.10.0
+    platformdirs 4.10.1
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
@@ -1050,12 +1050,12 @@ svg {
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
-<td class="center">AI Fabric Bench</td>
+<td class="center">AI Training Fabric Benchmarking</td>
 <td class="right">July 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Calabria, et al.</td>
-<td class="center">Expires 7 January 2027</td>
+<td class="center">Expires 20 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg {
 <dd class="internet-draft">draft-calabria-bmwg-ai-fabric-training-bench-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-06" class="published">6 July 2026</time>
+<time datetime="2026-07-19" class="published">19 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-07">7 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-01-20">20 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1104,7 +1104,7 @@ svg {
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document defines benchmarking terminology, methodologies, and Key Performance Indicators (KPIs) for evaluating Ethernet-based AI training network fabrics.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">As large-scale distributed Artificial Intelligence / Machine Learning (AI/ML) training clusters grow to tens of thousands of accelerators (GPUs or generic accelerator processing units (XPUs)), the backend network fabric determines Job Completion Time (JCT), training throughput, and accelerator utilization.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads. The tests cover Remote Direct Memory Access (RDMA) over Converged Ethernet version 2 (RoCEv2) transport, the Ultra Ethernet Transport (UET) protocol defined by the Ultra Ethernet Consortium (UEC) Specification 1.0 <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span>, congestion management (Priority Flow Control (PFC), Explicit Congestion Notification (ECN), Data Center Quantized Congestion Notification (DCQCN), Credit-Based Flow Control (CBFC)), load balancing strategies (Equal-Cost Multi-Path (ECMP), Dynamic Load Balancing (DLB), packet spraying), collective communication patterns (AllReduce, AllToAll, AllGather), and scale/soak testing.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">This document establishes vendor-independent, reproducible test procedures for benchmarking fabric-level performance under realistic AI training workloads. The tests cover Remote Direct Memory Access (RDMA) over Converged Ethernet version 2 (RoCEv2) transport, the Ultra Ethernet Transport (UET) protocol defined by the Ultra Ethernet Consortium (UEC) Specification 1.0, congestion management (Priority Flow Control (PFC), Explicit Congestion Notification (ECN), Data Center Quantized Congestion Notification (DCQCN), Credit-Based Flow Control (CBFC)), load balancing strategies (Equal-Cost Multi-Path (ECMP), Dynamic Load Balancing (DLB), packet spraying), collective communication patterns (AllReduce, AllToAll, AllGather), and scale/soak testing.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
 <p id="section-abstract-4">The methodology enables direct, reproducible comparison across switch ASICs, NIC transport stacks (RoCEv2 and UET), and fabric architectures (2-tier Clos, 3-tier Clos, and rail-optimized).<a href="#section-abstract-4" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
@@ -1142,7 +1142,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 7 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 20 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1258,7 +1258,7 @@ svg {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-test-category-1a-uec-transp" class="internal xref">Test Category 1A: UEC Transport Protocol Benchmarks</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-test-category-2-uec-transpo" class="internal xref">Test Category 2: UEC Transport Protocol Benchmarks</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-uet-throughput-by-transport" class="internal xref">UET Throughput by Transport Service</a></p>
@@ -1284,7 +1284,7 @@ svg {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-test-category-2-congestion-" class="internal xref">Test Category 2: Congestion Management</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-test-category-3-congestion-" class="internal xref">Test Category 3: Congestion Management</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
                 <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-ecn-marking-accuracy-and-th" class="internal xref">ECN Marking Accuracy and Threshold</a></p>
@@ -1301,7 +1301,7 @@ svg {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-test-category-3-load-balanc" class="internal xref">Test Category 3: Load Balancing Efficacy</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-test-category-4-load-balanc" class="internal xref">Test Category 4: Load Balancing Efficacy</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
                 <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-ecmp-entropy-and-polarizati" class="internal xref">ECMP Entropy and Polarization</a></p>
@@ -1313,12 +1313,12 @@ svg {
                 <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-packet-spraying" class="internal xref">Packet Spraying</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
-                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-jain-fairness-index-measure" class="internal xref">Jain Fairness Index Measurement</a></p>
+                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-jains-fairness-index-measur" class="internal xref">Jain's Fairness Index Measurement</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-test-category-4-collective-" class="internal xref">Test Category 4: Collective Communication Benchmarks</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-test-category-5-collective-" class="internal xref">Test Category 5: Collective Communication Benchmarks</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
                 <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-allreduce-benchmark" class="internal xref">AllReduce Benchmark</a></p>
@@ -1335,7 +1335,7 @@ svg {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-test-category-5-job-complet" class="internal xref">Test Category 5: Job Completion Time (JCT) Benchmarks</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-test-category-6-job-complet" class="internal xref">Test Category 6: Job Completion Time (JCT) Benchmarks</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
                 <p id="section-toc.1-1.10.2.1.1"><a href="#section-10.1" class="auto internal xref">10.1</a>.  <a href="#name-synthetic-jct-under-control" class="internal xref">Synthetic JCT Under Controlled Conditions</a></p>
@@ -1349,7 +1349,7 @@ svg {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-test-category-6-scale-and-c" class="internal xref">Test Category 6: Scale and Convergence</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-test-category-7-scale-and-c" class="internal xref">Test Category 7: Scale and Convergence</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
                 <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-fabric-scale-limits" class="internal xref">Fabric Scale Limits</a></p>
@@ -1363,7 +1363,7 @@ svg {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-test-category-7-soak-and-st" class="internal xref">Test Category 7: Soak and Stability</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-test-category-8-soak-and-st" class="internal xref">Test Category 8: Soak and Stability</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
                 <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-24-hour-sustained-load" class="internal xref">24-Hour Sustained Load</a></p>
@@ -1582,7 +1582,7 @@ Collective operation measurements (AllReduce, AllGather, AllToAll) are measured 
           </h4>
 <span id="name-topology-a-2-tier-clos-leaf-"></span><div id="fig-topo-a">
 <figure id="figure-1">
-            <div class="alignLeft art-ascii-art art-text artwork" id="section-3.1.1-1.1">
+            <div class="alignCenter art-ascii-art art-text artwork" id="section-3.1.1-1.1">
 <pre>
 +--------+ +--------+ +--------+ +--------+
 | Spine1 | | Spine2 | | Spine3 | | SpineN |
@@ -1620,9 +1620,9 @@ RoCEv2 NIC             RoCEv2 NIC
           <h4 id="name-topology-c-rail-optimized">
 <a href="#section-3.1.3" class="section-number selfRef">3.1.3. </a><a href="#name-topology-c-rail-optimized" class="section-name selfRef">Topology C: Rail-Optimized</a>
           </h4>
-<span id="name-topology-c-rail-optimized-2"></span><div id="fig-topo-c">
+<span id="name-topology-c-rail-optimized-s"></span><div id="fig-topo-c">
 <figure id="figure-2">
-            <div class="alignLeft art-ascii-art art-text artwork" id="section-3.1.3-1.1">
+            <div class="alignCenter art-ascii-art art-text artwork" id="section-3.1.3-1.1">
 <pre>
                        SPINE LAYER
 +--------+ +--------+ +--------+ +--------+
@@ -1643,14 +1643,13 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 |  ...   | |  ...   | |  ...   | |  ...   |   per rail)
 | GPU[7] | | GPU[7] | | GPU[7] | | GPU[7] |
 +--------+ +--------+ +--------+ +--------+
-|&lt;------ Rail-0 -------&gt;|         |&lt;-Rail-7-&gt;|
 </pre>
 </div>
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
-<a href="#name-topology-c-rail-optimized-2" class="selfRef">Topology C: Rail-Optimized</a>
+<a href="#name-topology-c-rail-optimized-s" class="selfRef">Topology C: Rail-Optimized (schematic; only 4 of N rails and hosts shown)</a>
             </figcaption></figure>
 </div>
-<p id="section-3.1.3-2">In rail-optimized topologies, each NIC on a multi-NIC host connects to a dedicated leaf switch ("rail"); this co-optimizes network locality with the collective communications library (CCL) in use (e.g., NCCL, RCCL, oneCCL). The DUT boundary and rail mapping are fully documented in the test report.<a href="#section-3.1.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.1.3-2">In rail-optimized topologies, each NIC on a multi-NIC host connects to a dedicated leaf switch ("rail"); this co-optimizes network locality with the collective communications library (CCL) in use (e.g., NCCL, RCCL, oneCCL). The diagram is schematic: it depicts a representative subset of rails and hosts, not the full cross-host fan-out; in the complete topology, the Rail-N leaf switch connects to GPU[N] of every host. The DUT boundary and rail mapping are fully documented in the test report.<a href="#section-3.1.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1757,7 +1756,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
             <tbody>
               <tr>
                 <td class="text-left" rowspan="1" colspan="1">Timestamp accuracy</td>
-                <td class="text-left" rowspan="1" colspan="1">&lt;= 100 nanoseconds</td>
+                <td class="text-left" rowspan="1" colspan="1">≤ 100 nanoseconds</td>
               </tr>
               <tr>
                 <td class="text-left" rowspan="1" colspan="1">Frame rate accuracy</td>
@@ -1777,7 +1776,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
               </tr>
               <tr>
                 <td class="text-left" rowspan="1" colspan="1">Loss measurement</td>
-                <td class="text-left" rowspan="1" colspan="1">0 ppm resolution</td>
+                <td class="text-left" rowspan="1" colspan="1">Exact per-packet loss counting</td>
               </tr>
               <tr>
                 <td class="text-left" rowspan="1" colspan="1">Burst generation</td>
@@ -1914,9 +1913,9 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
               <td class="text-left" rowspan="1" colspan="1">Max-Mean Ratio of flow counts across parallel uplinks</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">Jain Fairness Index (JFI)</td>
-              <td class="text-left" rowspan="1" colspan="1">0.0-1.0</td>
-              <td class="text-left" rowspan="1" colspan="1">Fairness of traffic distribution; 1.0 = perfect</td>
+              <td class="text-left" rowspan="1" colspan="1">Jain's Fairness Index (JFI)</td>
+              <td class="text-left" rowspan="1" colspan="1">1/N-1.0</td>
+              <td class="text-left" rowspan="1" colspan="1">Fairness of traffic distribution; 1.0 = perfect, 1/N = worst (N = number of parallel links)</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Queue Depth (P95/Max)</td>
@@ -2030,7 +2029,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
             <p id="section-5.1-3.7.1">Test both unidirectional and bidirectional traffic<a href="#section-5.1-3.7.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-5.1-4"><strong>Reporting:</strong> Report aggregate throughput (Tbps), per-port utilization (%), and throughput efficiency (measured/theoretical). Present as table indexed by message size x QP count, and as graph (message size on X-axis).<a href="#section-5.1-4" class="pilcrow">¶</a></p>
+<p id="section-5.1-4"><strong>Reporting:</strong> Report aggregate throughput (Tbps), per-port utilization (%), and throughput efficiency (measured/theoretical). Present as table indexed by message size × QP count, and as graph (message size on X-axis).<a href="#section-5.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="latency-characterization">
@@ -2051,10 +2050,13 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
             <p id="section-5.2-3.3.1">Reported statistics: min, mean, P50, P95, P99, P99.9, max<a href="#section-5.2-3.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.2-3.4">
-            <p id="section-5.2-3.4.1">Repeat at least 20 times; report averages<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.4.1">Each run <span class="bcp14">MUST</span> capture at least 10,000 latency samples to support a statistically meaningful P99.9<a href="#section-5.2-3.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-5.2-3.5">
-            <p id="section-5.2-3.5.1">Test under both zero-load (single QP) and loaded (full fabric utilization) conditions<a href="#section-5.2-3.5.1" class="pilcrow">¶</a></p>
+            <p id="section-5.2-3.5.1">Repeat at least 20 times; pool all samples across runs and compute percentiles from the pooled distribution, and report the per-run variability (e.g., min/max across runs) alongside the pooled statistics<a href="#section-5.2-3.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.2-3.6">
+            <p id="section-5.2-3.6.1">Test under both zero-load (single QP) and loaded (full fabric utilization) conditions<a href="#section-5.2-3.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-5.2-4"><strong>Reporting:</strong> Tabulate latency statistics per message size. Provide histogram and CDF plot. Report latency increase factor (loaded/unloaded).<a href="#section-5.2-4" class="pilcrow">¶</a></p>
@@ -2088,10 +2090,10 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 </div>
 <div id="test-uec">
 <section id="section-6">
-      <h2 id="name-test-category-1a-uec-transp">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-test-category-1a-uec-transp" class="section-name selfRef">Test Category 1A: UEC Transport Protocol Benchmarks</a>
+      <h2 id="name-test-category-2-uec-transpo">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-test-category-2-uec-transpo" class="section-name selfRef">Test Category 2: UEC Transport Protocol Benchmarks</a>
       </h2>
-<p id="section-6-1">The Ultra Ethernet Consortium (UEC) Specification 1.0 <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> defines UET, a connectionless RDMA transport designed to replace RoCEv2 for AI/HPC workloads. All UET tests use the libfabric API <span>[<a href="#LIBFABRIC" class="cite xref">LIBFABRIC</a>]</span> and run on UEC 1.0-compliant NICs.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">The Ultra Ethernet Consortium (UEC) Specification 1.0 <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> defines UET, an RDMA transport positioned as an alternative to RoCEv2 for AI/HPC workloads. All UET tests use the libfabric API <span>[<a href="#LIBFABRIC" class="cite xref">LIBFABRIC</a>]</span> and run on UEC 1.0-compliant NICs.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">The UEC compliance profile (AI Base, AI Full, or HPC) used during testing is documented in the test report.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div id="uet-throughput-by-transport-service">
 <section id="section-6.1">
@@ -2147,7 +2149,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">PDC/QP Setup Time (us)</td>
+              <td class="text-left" rowspan="1" colspan="1">Connection/PDC Initiation Latency (us) (see note)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
               <td class="text-left" rowspan="1" colspan="1">(meas)</td>
@@ -2167,6 +2169,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
           </tbody>
         </table>
 </div>
+<p id="section-6.1-5">NOTE: For RoCEv2 RC/UC, this measures QP connection setup time (handshake round-trip). For UET (ROD/RUD/RUDI/UUD), PDCs have no separate setup handshake; this measures the first-packet latency reflecting in-band PDC initiation instead.<a href="#section-6.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="uet-latency-characterization">
@@ -2267,7 +2270,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 </div>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-6.3-7.1">
-            <p id="section-6.3-7.1.1">UET RUD is expected to achieve zero host-visible reordering despite per-packet spray because the transport layer natively tolerates unordered delivery.<a href="#section-6.3-7.1.1" class="pilcrow">¶</a></p>
+            <p id="section-6.3-7.1.1">This test evaluates whether UET RUD achieves zero host-visible reordering despite per-packet spray, since the transport layer is designed to tolerate unordered delivery.<a href="#section-6.3-7.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2279,7 +2282,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
         </h3>
 <p id="section-6.4-1"><strong>Objective:</strong> Evaluate UET's dual-sided (sender + receiver) congestion control under N:1 incast conditions vs. RoCEv2 DCQCN.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
 <p id="section-6.4-2"><strong>Procedure:</strong> Measure: (a) incast throughput at N = {2, 4, 8, 16, 32, 64}; (b) convergence time after doubling active senders (until all flows within 10% of fair share); (c) PFC avoidance with PFC disabled on the DUT; (d) receiver credit utilization.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
-<p id="section-6.4-3"><strong>Reporting:</strong> Tabulate incast throughput, convergence time, peak queue depth, PFC event count, and packet drop rate for UET vs. DCQCN per incast ratio. <strong>Critical differentiator:</strong> report whether UET achieves zero application-visible loss without PFC.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
+<p id="section-6.4-3"><strong>Reporting:</strong> Tabulate incast throughput, convergence time, peak queue depth, PFC event count, and packet drop rate for UET vs. DCQCN per incast ratio. <strong>Key metric:</strong> report whether UET achieves zero application-visible loss without PFC.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="link-layer-enhancement-benchmarks">
@@ -2380,15 +2383,15 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-uet-pdc-scalability-and-con" class="section-name selfRef">UET PDC Scalability and Connection Setup Rate</a>
         </h3>
 <p id="section-6.7-1"><strong>Objective:</strong> Measure PDC establishment rate and maximum concurrent PDC count vs. RoCEv2 QP-based connections.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
-<p id="section-6.7-2"><strong>Procedure:</strong> (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> targets up to 1 million endpoints.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
+<p id="section-6.7-2"><strong>Procedure:</strong> (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> targets millions of endpoints.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="test-congestion">
 <section id="section-7">
-      <h2 id="name-test-category-2-congestion-">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-test-category-2-congestion-" class="section-name selfRef">Test Category 2: Congestion Management</a>
+      <h2 id="name-test-category-3-congestion-">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-test-category-3-congestion-" class="section-name selfRef">Test Category 3: Congestion Management</a>
       </h2>
 <p id="section-7-1">AI training workloads generate repetitive micro-congestion during the back-propagation gradient synchronization phase.<a href="#section-7-1" class="pilcrow">¶</a></p>
 <div id="ecn-marking-accuracy-and-threshold">
@@ -2432,8 +2435,8 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 </div>
 <div id="test-lb">
 <section id="section-8">
-      <h2 id="name-test-category-3-load-balanc">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-test-category-3-load-balanc" class="section-name selfRef">Test Category 3: Load Balancing Efficacy</a>
+      <h2 id="name-test-category-4-load-balanc">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-test-category-4-load-balanc" class="section-name selfRef">Test Category 4: Load Balancing Efficacy</a>
       </h2>
 <p id="section-8-1">Load balancing across parallel fabric paths is critical for AI training fabrics because the traffic consists of a small number of high-bandwidth, long-lived elephant flows.<a href="#section-8-1" class="pilcrow">¶</a></p>
 <div id="ecmp-entropy-and-polarization">
@@ -2442,7 +2445,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-ecmp-entropy-and-polarizati" class="section-name selfRef">ECMP Entropy and Polarization</a>
         </h3>
 <p id="section-8.1-1"><strong>Objective:</strong> Quantify traffic polarization under standard ECMP hashing for AI training flow patterns.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
-<p id="section-8.1-2"><strong>Procedure:</strong> Configure standard 5-tuple ECMP. Generate traffic with Q = {1, 4, 8, 16, 32} QPs per src-dst pair. Measure per-link utilization, MMR, and JFI. Test with and without BTH-aware hashing. Repeat for fabric sizes of 8, 16, 32, and 64 leaf switches.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<p id="section-8.1-2"><strong>Procedure:</strong> Configure standard 5-tuple ECMP. Generate traffic with Q = {1, 4, 8, 16, 32} QPs per src-dst pair. Measure per-link utilization, MMR, and JFI. Test with and without ECMP hashing that includes the BTH destination QP field as a hash input (in addition to the standard 5-tuple). Repeat for fabric sizes of 8, 16, 32, and 64 leaf switches.<a href="#section-8.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="dynamic-load-balancing-flowlet">
@@ -2463,22 +2466,22 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 <p id="section-8.3-2"><strong>Procedure:</strong> Configure per-packet load balancing. Measure MMR (expected ~1.0), JFI (expected ~1.0), out-of-order rate, and RDMA retransmission impact. If the DUT provides an in-fabric reorder buffer, document per <a href="#asic-features" class="auto internal xref">Appendix C</a>.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="jain-fairness-index-measurement">
+<div id="jains-fairness-index-measurement">
 <section id="section-8.4">
-        <h3 id="name-jain-fairness-index-measure">
-<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-jain-fairness-index-measure" class="section-name selfRef">Jain Fairness Index Measurement</a>
+        <h3 id="name-jains-fairness-index-measur">
+<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-jains-fairness-index-measur" class="section-name selfRef">Jain's Fairness Index Measurement</a>
         </h3>
 <p id="section-8.4-1"><strong>Objective:</strong> Single-number summary of load balancing quality comparable across all strategies.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
 <p id="section-8.4-2"><strong>Formula:</strong><a href="#section-8.4-2" class="pilcrow">¶</a></p>
-<span id="name-jain-fairness-index-formula"></span><div id="fig-jfi">
+<span id="name-jains-fairness-index-formul"></span><div id="fig-jfi">
 <figure id="figure-3">
-          <div class="alignLeft art-ascii-art art-text artwork" id="section-8.4-3.1">
+          <div class="alignCenter art-ascii-art art-text artwork" id="section-8.4-3.1">
 <pre>
-JFI = (Sum LinkTx_i)^2 / (N * Sum LinkTx_i^2)
+JFI = (Sum LinkTx_i)^2 / (N × Sum LinkTx_i^2)
 </pre>
 </div>
 <figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
-<a href="#name-jain-fairness-index-formula" class="selfRef">Jain Fairness Index Formula</a>
+<a href="#name-jains-fairness-index-formul" class="selfRef">Jain's Fairness Index Formula</a>
           </figcaption></figure>
 </div>
 <p id="section-8.4-4">where LinkTx_i = transmitted traffic on fabric link i, N = total parallel links. Range: 1/N (worst) to 1.0 (perfect).<a href="#section-8.4-4" class="pilcrow">¶</a></p>
@@ -2489,8 +2492,8 @@ JFI = (Sum LinkTx_i)^2 / (N * Sum LinkTx_i^2)
 </div>
 <div id="test-collective">
 <section id="section-9">
-      <h2 id="name-test-category-4-collective-">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-test-category-4-collective-" class="section-name selfRef">Test Category 4: Collective Communication Benchmarks</a>
+      <h2 id="name-test-category-5-collective-">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-test-category-5-collective-" class="section-name selfRef">Test Category 5: Collective Communication Benchmarks</a>
       </h2>
 <p id="section-9-1">These tests evaluate the fabric's performance under realistic collective communication patterns. Unlike synthetic RDMA tests in <a href="#test-rdma" class="auto internal xref">Section 5</a> and <a href="#test-uec" class="auto internal xref">Section 6</a>, these exercise the full stack including the collective communications library (CCL) in use (e.g., NCCL, RCCL, oneCCL).<a href="#section-9-1" class="pilcrow">¶</a></p>
 <div id="allreduce-benchmark">
@@ -2526,8 +2529,7 @@ JFI = (Sum LinkTx_i)^2 / (N * Sum LinkTx_i^2)
         </h3>
 <p id="section-9.2-1"><strong>Objective:</strong> Measure fabric performance during AllToAll operations, the dominant collective for Mixture-of-Experts (MoE) expert parallelism dispatch.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
 <p id="section-9.2-2"><strong>Procedure:</strong> Using the same message sizes, accelerator counts, iteration count, and load balancing strategies as <a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>, execute AllToAll operations via the collective communication library.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
-<p id="section-9.2-3">AllToAll generates the worst-case fabric stress pattern: every accelerator simultaneously sends a unique payload to every other accelerator in the group, which creates maximum entropy and N-to-N incast
-at every fabric link.  This makes AllToAll JCT the most sensitive single indicator of fabric congestion management quality.<a href="#section-9.2-3" class="pilcrow">¶</a></p>
+<p id="section-9.2-3">AllToAll generates the worst-case fabric stress pattern: every accelerator simultaneously sends a unique payload to every other accelerator in the group, which creates maximum entropy and stresses every fabric link with many-to-many traffic overlap.  This makes AllToAll JCT the most sensitive single indicator of fabric congestion management quality.<a href="#section-9.2-3" class="pilcrow">¶</a></p>
 <p id="section-9.2-4">BusBW is computed per the BusBW definition in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>; algo_factor is fixed per collective type and does not depend on topology or library implementation. The runtime algorithm in use is verified via library tracing and documented as part of the test conditions.<a href="#section-9.2-4" class="pilcrow">¶</a></p>
 <p id="section-9.2-5"><strong>Measurement:</strong>  Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.<a href="#section-9.2-5" class="pilcrow">¶</a></p>
 <p id="section-9.2-6"><strong>Reporting:</strong> Same table format as <a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>, with the "Algorithm (verified)" column required.  Additionally report JCT for each configuration; JCT degradation relative to the ECMP baseline is highlighted as the primary congestion sensitivity indicator.<a href="#section-9.2-6" class="pilcrow">¶</a></p>
@@ -2544,7 +2546,7 @@ at every fabric link.  This makes AllToAll JCT the most sensitive single indicat
 There is no reduce phase, which produces lower peak fabric load than AllReduce at equivalent message size and N.  This makes AllGather a useful baseline for isolating the gather-path fabric contribution from the combined send-and-reduce cost.<a href="#section-9.3-3" class="pilcrow">¶</a></p>
 <p id="section-9.3-4">BusBW is computed per the BusBW definition in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>; algo_factor is fixed per collective type and does not depend on the library's algorithm selection. The runtime algorithm in use is verified via library tracing and documented as part of the test conditions.<a href="#section-9.3-4" class="pilcrow">¶</a></p>
 <p id="section-9.3-5"><strong>Measurement:</strong> Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.<a href="#section-9.3-5" class="pilcrow">¶</a></p>
-<p id="section-9.3-6"><strong>Reporting:</strong> Same table format as <a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>, with the "Algorithm (verified)" column required.  Report BusBW efficiency = BusBW / NIC_line_rate.  Where results are compared to AllReduce under identical parameters, the BusBW ratio (AllGather / AllReduce) quantifies the fabric overhead attributable to the reduce phase.<a href="#section-9.3-6" class="pilcrow">¶</a></p>
+<p id="section-9.3-6"><strong>Reporting:</strong> Same table format as <a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>, with the "Algorithm (verified)" column required.  Report BusBW efficiency = BusBW / NIC_line_rate.  Where results are compared to AllReduce under identical parameters, the BusBW ratio (AllGather / AllReduce) quantifies the difference in fabric load between the two traffic patterns; AllReduce's additional network traffic reflects its ReduceScatter phase, not the reduction arithmetic itself, which is performed by the accelerators, not the fabric.<a href="#section-9.3-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="collective-communication-library-bus-bandwidth-summary">
@@ -2627,8 +2629,8 @@ There is no reduce phase, which produces lower peak fabric load than AllReduce a
 </div>
 <div id="test-jct">
 <section id="section-10">
-      <h2 id="name-test-category-5-job-complet">
-<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-test-category-5-job-complet" class="section-name selfRef">Test Category 5: Job Completion Time (JCT) Benchmarks</a>
+      <h2 id="name-test-category-6-job-complet">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-test-category-6-job-complet" class="section-name selfRef">Test Category 6: Job Completion Time (JCT) Benchmarks</a>
       </h2>
 <p id="section-10-1">JCT is the single most important user-facing KPI for AI training fabrics; it directly determines accelerator utilization and training cost.<a href="#section-10-1" class="pilcrow">¶</a></p>
 <div id="synthetic-jct-under-controlled-conditions">
@@ -2681,9 +2683,9 @@ There is no reduce phase, which produces lower peak fabric load than AllReduce a
 <p id="section-10.1-5">Execute 1000 iterations and measure total wall-clock JCT.<a href="#section-10.1-5" class="pilcrow">¶</a></p>
 <span id="name-jct-ratio-calculation"></span><div id="fig-jct-formula">
 <figure id="figure-4">
-          <div class="alignLeft art-text artwork" id="section-10.1-6.1">
+          <div class="alignCenter art-text artwork" id="section-10.1-6.1">
 <pre>
-Roofline_seq = Iterations x (C + (8 x S x algo_factor) / B_acc)
+Roofline_seq = Iterations × (C + (8 × S × algo_factor) / B_acc)
 JCT Ratio    = Measured_JCT / Roofline_seq
 
   where:
@@ -2714,13 +2716,13 @@ Many frameworks overlap these phases via gradient bucketing or asynchronous coll
 <p id="section-10.1-8">Implementations using overlapped execution additionally report:<a href="#section-10.1-8" class="pilcrow">¶</a></p>
 <span id="name-overlap-fraction-calculatio"></span><div id="fig-overlap-formula">
 <figure id="figure-5">
-          <div class="alignLeft art-text artwork" id="section-10.1-9.1">
+          <div class="alignCenter art-text artwork" id="section-10.1-9.1">
 <pre>
 Overlap_Fraction = 1 - (Measured_JCT - C_total) / Comm_time
 
   where:
-    C_total   = Iterations x C
-    Comm_time = Iterations x (8 x S x algo_factor) / B_acc
+    C_total   = Iterations × C
+    Comm_time = Iterations × (8 × S × algo_factor) / B_acc
     S, algo_factor, B_acc as defined for Roofline_seq above.
 </pre>
 </div>
@@ -2739,7 +2741,7 @@ Effective_Comm_Overhead = Measured_JCT - C_total
 <p id="section-10.1-14"><strong>Reporting:</strong> Tabulate JCT Ratio for each (C, S, N, LB_strategy) combination.  Plot JCT Ratio vs. N to characterize fabric scalability.<a href="#section-10.1-14" class="pilcrow">¶</a></p>
 <ul class="normal ulEmpty">
 <li class="normal ulEmpty" id="section-10.1-15.1">
-            <p id="section-10.1-15.1.1">NOTE: JCT Ratio &lt;= 1.05 indicates excellent fabric performance; values between 1.05 and 1.15 are acceptable; a ratio above 1.15 indicates significant fabric-induced overhead. These are non-normative illustrative reference values only.<a href="#section-10.1-15.1.1" class="pilcrow">¶</a></p>
+            <p id="section-10.1-15.1.1">NOTE: JCT Ratio ≤ 1.05 indicates excellent fabric performance; values between 1.05 and 1.15 are acceptable; a ratio above 1.15 indicates significant fabric-induced overhead. These are non-normative illustrative reference values only.<a href="#section-10.1-15.1.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -2750,7 +2752,7 @@ Effective_Comm_Overhead = Measured_JCT - C_total
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-mlperf-aligned-jct" class="section-name selfRef">MLPerf-Aligned JCT</a>
         </h3>
 <p id="section-10.2-1"><strong>Objective:</strong> Measure JCT using MLPerf Training benchmark workloads <span>[<a href="#MLPERF" class="cite xref">MLPERF</a>]</span> to enable comparison with published industry results.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
-<p id="section-10.2-2"><strong>Procedure:</strong> Execute MLPerf Training closed-division workloads (e.g., BERT, ResNet, GPT-3 175B) per MLPerf submission rules. Simultaneously capture all fabric KPIs from <a href="#kpi-framework-and-metrics-taxonomy" class="auto internal xref">Section 4</a>. Report time-to-train and/or tokens-per-second.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
+<p id="section-10.2-2"><strong>Procedure:</strong> Execute the current MLPerf Training closed-division workloads per MLPerf submission rules (<span>[<a href="#MLPERF" class="cite xref">MLPERF</a>]</span>); the specific workload set changes across MLPerf versions, so the test report <span class="bcp14">MUST</span> identify the MLPerf Training version and workload names used. Simultaneously capture all fabric KPIs from <a href="#kpi-framework-and-metrics-taxonomy" class="auto internal xref">Section 4</a>. Report time-to-train and/or tokens-per-second.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="multi-tenant-jct-interference">
@@ -2762,7 +2764,7 @@ Effective_Comm_Overhead = Measured_JCT - C_total
 <p id="section-10.3-2"><strong>Procedure:</strong> Configure two or more independent training jobs. Jobs are configured to overlap in spine-layer link usage. Measure baseline JCT (isolated) and contention JCT (simultaneous).<a href="#section-10.3-2" class="pilcrow">¶</a></p>
 <span id="name-jct-interference-factor"></span><div id="fig-jct-interference">
 <figure id="figure-6">
-          <div class="alignLeft art-ascii-art art-text artwork" id="section-10.3-3.1">
+          <div class="alignCenter art-ascii-art art-text artwork" id="section-10.3-3.1">
 <pre>
 JCT Interference Factor = Contention_JCT / Baseline_JCT
 </pre>
@@ -2778,8 +2780,8 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 </div>
 <div id="test-scale">
 <section id="section-11">
-      <h2 id="name-test-category-6-scale-and-c">
-<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-test-category-6-scale-and-c" class="section-name selfRef">Test Category 6: Scale and Convergence</a>
+      <h2 id="name-test-category-7-scale-and-c">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-test-category-7-scale-and-c" class="section-name selfRef">Test Category 7: Scale and Convergence</a>
       </h2>
 <div id="fabric-scale-limits">
 <section id="section-11.1">
@@ -2787,7 +2789,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-fabric-scale-limits" class="section-name selfRef">Fabric Scale Limits</a>
         </h3>
 <p id="section-11.1-1"><strong>Objective:</strong> Determine the maximum fabric scale at which the DUT maintains acceptable KPI performance.<a href="#section-11.1-1" class="pilcrow">¶</a></p>
-<p id="section-11.1-2"><strong>Procedure:</strong> Progressively increase active accelerator endpoints from N=64 to maximum topology support while running AllReduce (<a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>, S=1GB). At each scale point record JCT Ratio, BusBW, ECN ratio, PFC count, CPU and memory utilization. Also measure BGP/routing convergence time after clearing all adjacencies (analogous to <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> Sections 3.10, 3.11, 4.9, 4.10).<a href="#section-11.1-2" class="pilcrow">¶</a></p>
+<p id="section-11.1-2"><strong>Procedure:</strong> Progressively increase active accelerator endpoints from N=64 to maximum topology support while running AllReduce (<a href="#allreduce-benchmark" class="auto internal xref">Section 9.1</a>, S=1GB). At each scale point record JCT Ratio, BusBW, ECN ratio, PFC count, CPU and memory utilization. Also measure BGP/routing convergence time after clearing all adjacencies (analogous to the convergence testing approach in <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span>).<a href="#section-11.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="link-failure-convergence">
@@ -2827,16 +2829,16 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 </div>
 <div id="test-soak">
 <section id="section-12">
-      <h2 id="name-test-category-7-soak-and-st">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-test-category-7-soak-and-st" class="section-name selfRef">Test Category 7: Soak and Stability</a>
+      <h2 id="name-test-category-8-soak-and-st">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-test-category-8-soak-and-st" class="section-name selfRef">Test Category 8: Soak and Stability</a>
       </h2>
 <div id="soak-24h">
 <section id="section-12.1">
         <h3 id="name-24-hour-sustained-load">
 <a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-24-hour-sustained-load" class="section-name selfRef">24-Hour Sustained Load</a>
         </h3>
-<p id="section-12.1-1"><strong>Objective:</strong> Characterize DUT fabric stability under sustained AI training load over an extended period, following the methodology pattern from <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> Sections 3.12, 4.11.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
-<p id="section-12.1-2"><strong>Procedure:</strong> Configure DUT at maximum validated scale from <a href="#fabric-scale-limits" class="auto internal xref">Section 11.1</a>. Generate bidirectional collective communication traffic (alternating AllReduce and AllToAll). Run continuously for 24 hours. Sample all KPIs from <a href="#kpi-framework-and-metrics-taxonomy" class="auto internal xref">Section 4</a> every 60 seconds.<a href="#section-12.1-2" class="pilcrow">¶</a></p>
+<p id="section-12.1-1"><strong>Objective:</strong> Characterize DUT fabric stability under sustained AI training load over an extended period, following the soak-testing methodology pattern in <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span>.<a href="#section-12.1-1" class="pilcrow">¶</a></p>
+<p id="section-12.1-2"><strong>Procedure:</strong> Configure DUT at maximum validated scale from <a href="#fabric-scale-limits" class="auto internal xref">Section 11.1</a>. Generate bidirectional collective communication traffic (alternating AllReduce and AllToAll) at 80% of maximum validated throughput, per the offered load fraction required by the Soak Test definition in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>. Run continuously for 24 hours. Sample all KPIs from <a href="#kpi-framework-and-metrics-taxonomy" class="auto internal xref">Section 4</a> every 60 seconds.<a href="#section-12.1-2" class="pilcrow">¶</a></p>
 <p id="section-12.1-3">The objective of the soak test is to monitor and document fabric behavior under extended load. The methodology does not establish pass/fail criteria for any reported metric. Any memory leaks, crashes, or other anomalies encountered during the test <span class="bcp14">MUST</span> be documented as an application log file or other dedicated file with their timestamps and durations.<a href="#section-12.1-3" class="pilcrow">¶</a></p>
 <p id="section-12.1-4"><strong>Reporting:</strong> Time-series plots of JCT Ratio, BusBW, ECN ratio, PFC count, CPU, and memory over the 24-hour period. Report standard deviation of JCT Ratio (stability metric).<a href="#section-12.1-4" class="pilcrow">¶</a></p>
 </section>
@@ -2858,7 +2860,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <a href="#section-13" class="section-number selfRef">13. </a><a href="#name-reporting-format" class="section-name selfRef">Reporting Format</a>
       </h2>
 <p id="section-13-1">Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. This methodology defines what is measured and how it is reported; it does not set minimum acceptable values, certification, or pass/fail criteria. Any deployment-specific performance objectives are outside the scope of this document.<a href="#section-13-1" class="pilcrow">¶</a></p>
-<p id="section-13-2">Results <span class="bcp14">MUST</span> be reported per the BusBW reporting format defined in Section 3 of <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>.<a href="#section-13-2" class="pilcrow">¶</a></p>
+<p id="section-13-2">Results from collective communication benchmarks (<a href="#test-collective" class="auto internal xref">Section 9</a>) <span class="bcp14">MUST</span> be reported per the BusBW reporting format defined in Section 3 of <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>.<a href="#section-13-2" class="pilcrow">¶</a></p>
 <p id="section-13-3">Test reports include the following sections:<a href="#section-13-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-13-4">
 <li id="section-13-4.1">
@@ -2899,7 +2901,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <p id="section-14-7">The following considerations are specific to the methodology defined in this document:<a href="#section-14-7" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-14-8.1">
-          <p id="section-14-8.1.1"><strong>PFC leakage:</strong> PFC PAUSE frames generated under incast or storm conditions (<a href="#pfc-behavior-under-incast" class="auto internal xref">Section 7.2</a>, <a href="#pfc-storm-and-deadlock-resilience" class="auto internal xref">Section 7.4</a>) that escape the test environment can hang adjacent production switches sharing the same priority class. Physical or VLAN-based isolation of the test fabric is required.<a href="#section-14-8.1.1" class="pilcrow">¶</a></p>
+          <p id="section-14-8.1.1"><strong>PFC leakage:</strong> PFC PAUSE frames generated under incast or storm conditions (<a href="#pfc-behavior-under-incast" class="auto internal xref">Section 7.2</a>, <a href="#pfc-storm-and-deadlock-resilience" class="auto internal xref">Section 7.4</a>) that escape the test environment can cause adjacent production switches sharing the same priority class to stop responding. Physical or VLAN-based isolation of the test fabric is required.<a href="#section-14-8.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-14-8.2">
           <p id="section-14-8.2.1"><strong>Line-rate RDMA traffic generators:</strong> the equipment specified in <a href="#traffic-generator-requirements" class="auto internal xref">Section 3.3</a> is capable of saturating production links at line rate; such generators <span class="bcp14">MUST</span> be confined to the test fabric.<a href="#section-14-8.2.1" class="pilcrow">¶</a></p>
@@ -2921,7 +2923,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
       <h2 id="name-iana-considerations">
 <a href="#section-15" class="section-number selfRef">15. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-15-1">This document makes no request of IANA.<a href="#section-15-1" class="pilcrow">¶</a></p>
+<p id="section-15-1">This document has no IANA actions.<a href="#section-15-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
@@ -2969,7 +2971,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <dd class="break"></dd>
 <dt id="TERMINOLOGY">[TERMINOLOGY]</dt>
         <dd>
-<span class="refAuthor">Calabria, F.</span>, <span class="refAuthor">Pignataro, C.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Fioccola, G.</span>, and <span class="refAuthor">S. Reddy</span>, <span class="refTitle">"Benchmarking Terminology for AI Network Fabrics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-calabria-bmwg-ai-fabric-terminology-02</span>, <time datetime="2026-06-04" class="refDate">4 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-terminology-02">https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-terminology-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Calabria, F.</span>, <span class="refAuthor">Pignataro, C.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Fioccola, G.</span>, and <span class="refAuthor">S. Reddy</span>, <span class="refTitle">"Benchmarking Terminology for AI Network Fabrics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-calabria-bmwg-ai-fabric-terminology-03</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-terminology-03">https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-terminology-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="UEC-1.0">[UEC-1.0]</dt>
       <dd>
@@ -2986,7 +2988,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <dl class="references">
 <dt id="DCQCN-PAPER">[DCQCN-PAPER]</dt>
         <dd>
-<span class="refAuthor">Zhu, Y.</span>, <span class="refTitle">"Congestion Control for Large-Scale RDMA Deployments"</span>, <span class="seriesInfo">DOI 10.1145/2785956.2787484</span>, <time datetime="2015" class="refDate">2015</time>, <span>&lt;<a href="https://doi.org/10.1145/2785956.2787484">https://doi.org/10.1145/2785956.2787484</a>&gt;</span>. </dd>
+<span class="refAuthor">Zhu, Y.</span>, <span class="refAuthor">Eran, H.</span>, <span class="refAuthor">Firestone, D.</span>, <span class="refAuthor">Guo, C.</span>, <span class="refAuthor">Lipshteyn, M.</span>, <span class="refAuthor">Liron, Y.</span>, <span class="refAuthor">Padhye, J.</span>, <span class="refAuthor">Raindel, S.</span>, <span class="refAuthor">Yahia, M. H.</span>, and <span class="refAuthor">M. Zhang</span>, <span class="refTitle">"Congestion Control for Large-Scale RDMA Deployments"</span>, <span class="seriesInfo">ACM SIGCOMM pp. 523-536</span>, <span class="seriesInfo">DOI 10.1145/2785956.2787484</span>, <time datetime="2015" class="refDate">2015</time>, <span>&lt;<a href="https://doi.org/10.1145/2785956.2787484">https://doi.org/10.1145/2785956.2787484</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="EVPN-BENCH">[EVPN-BENCH]</dt>
         <dd>
@@ -2994,7 +2996,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <dd class="break"></dd>
 <dt id="INFERENCE-BENCH">[INFERENCE-BENCH]</dt>
         <dd>
-<span class="refAuthor">Calabria, F.</span>, <span class="refAuthor">Pignataro, C.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Fioccola, G.</span>, and <span class="refAuthor">S. Reddy</span>, <span class="refTitle">"Benchmarking Methodology for AI Inference Serving Network Fabrics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-calabria-bmwg-ai-fabric-inference-bench-02</span>, <time datetime="2026-06-04" class="refDate">4 June 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-inference-bench-02">https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-inference-bench-02</a>&gt;</span>. </dd>
+<span class="refAuthor">Calabria, F.</span>, <span class="refAuthor">Pignataro, C.</span>, <span class="refAuthor">Wu, Q.</span>, <span class="refAuthor">Fioccola, G.</span>, and <span class="refAuthor">S. Reddy</span>, <span class="refTitle">"Benchmarking Methodology for AI Inference Serving Network Fabrics"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-calabria-bmwg-ai-fabric-inference-bench-03</span>, <time datetime="2026-07-06" class="refDate">6 July 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-inference-bench-03">https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-inference-bench-03</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="LIBFABRIC">[LIBFABRIC]</dt>
         <dd>
@@ -3006,7 +3008,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
 <dd class="break"></dd>
 <dt id="META-ROCE">[META-ROCE]</dt>
         <dd>
-<span class="refAuthor">Gangidi, A.</span>, <span class="refTitle">"RDMA over Ethernet for Distributed AI Training at Meta Scale"</span>, <span class="seriesInfo">DOI 10.1145/3651890.3672233</span>, <time datetime="2024" class="refDate">2024</time>, <span>&lt;<a href="https://doi.org/10.1145/3651890.3672233">https://doi.org/10.1145/3651890.3672233</a>&gt;</span>. </dd>
+<span class="refAuthor">Gangidi, A.</span>, <span class="refAuthor">Miao, R.</span>, <span class="refAuthor">Zheng, S.</span>, <span class="refAuthor">Bondu, S. J.</span>, <span class="refAuthor">Goes, G.</span>, <span class="refAuthor">Morsy, H.</span>, <span class="refAuthor">Puri, R.</span>, <span class="refAuthor">Riftadi, M.</span>, <span class="refAuthor">Shetty, A. J.</span>, <span class="refAuthor">Yang, J.</span>, <span class="refAuthor">Zhang, S.</span>, <span class="refAuthor">Fernandez, M. J.</span>, <span class="refAuthor">Gandham, S.</span>, and <span class="refAuthor">H. Zeng</span>, <span class="refTitle">"RDMA over Ethernet for Distributed Training at Meta Scale"</span>, <span class="seriesInfo">ACM SIGCOMM '24 Sydney, NSW, Australia</span>, <span class="seriesInfo">DOI 10.1145/3651890.3672233</span>, <time datetime="2024" class="refDate">2024</time>, <span>&lt;<a href="https://doi.org/10.1145/3651890.3672233">https://doi.org/10.1145/3651890.3672233</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="MLPERF">[MLPERF]</dt>
         <dd>
@@ -3299,15 +3301,15 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
         <tbody>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">JCT Ratio</td>
-            <td class="text-left" rowspan="1" colspan="1">&lt;= 1.05 (&lt;= 1.15 acceptable)</td>
+            <td class="text-left" rowspan="1" colspan="1">≤ 1.05 (≤ 1.15 acceptable)</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">BusBW</td>
-            <td class="text-left" rowspan="1" colspan="1">&gt;= 90% of NIC line rate (intra-pod)</td>
+            <td class="text-left" rowspan="1" colspan="1">≥ 90% of NIC line rate (intra-pod)</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Aggregate Throughput</td>
-            <td class="text-left" rowspan="1" colspan="1">&gt;= 95% of bisection BW</td>
+            <td class="text-left" rowspan="1" colspan="1">≥ 95% of bisection BW</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Packet Drop Rate</td>
@@ -3435,7 +3437,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
             <td class="text-left" rowspan="1" colspan="1">18</td>
             <td class="text-left" rowspan="1" colspan="1">IPv4 Header</td>
             <td class="text-left" rowspan="1" colspan="1">20B</td>
-            <td class="text-left" rowspan="1" colspan="1">DSCP=26 (AF31, Assured Forwarding class 31), ECN=ECT(0) (ECN-Capable Transport), Proto=17 (UDP)</td>
+            <td class="text-left" rowspan="1" colspan="1">DSCP=26 (AF31, Assured Forwarding class 3, drop precedence 1), ECN=ECT(0) (ECN-Capable Transport), Proto=17 (UDP)</td>
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">38</td>
@@ -3637,10 +3639,10 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
               <td class="text-left" rowspan="1" colspan="1">RUD allows OOO delivery</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">Min Header Overhead</td>
+              <td class="text-left" rowspan="1" colspan="1">Pre-Payload Header Bytes</td>
               <td class="text-left" rowspan="1" colspan="1">~74B (Write)</td>
               <td class="text-left" rowspan="1" colspan="1">~78B (est. Write)</td>
-              <td class="text-left" rowspan="1" colspan="1">Slight increase for sub-layer headers</td>
+              <td class="text-left" rowspan="1" colspan="1">Slight increase for sub-layer headers; excludes the mandatory 8B ICRC+FCS trailer, present in both</td>
             </tr>
           </tbody>
         </table>
@@ -3674,7 +3676,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-F-1">This work has benefited from the discussions that occurred during the joint IPPM and BMWG meeting and on the BMWG mailing list. Thanks to Carsten Rossenhoevel and Mohamed Boucadair for valuable review and comments.<a href="#appendix-F-1" class="pilcrow">¶</a></p>
+<p id="appendix-F-1">This work has benefited from the discussions that occurred during the joint IPPM and BMWG meeting and on the BMWG mailing list. Thanks to Carsten Rossenhoevel and Mohamed Boucadair for valuable review and comments. Thanks to Andrew Yourtchenko for a thorough review of the document set.<a href="#appendix-F-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">

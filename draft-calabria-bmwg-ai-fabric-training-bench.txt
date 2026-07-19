@@ -5,13 +5,13 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 7 January 2027                             Blue Fern Consulting
+Expires: 20 January 2027                            Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
                                                                 S. Reddy
                                                                    Apple
-                                                             6 July 2026
+                                                            19 July 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -34,13 +34,13 @@ Abstract
    AI training workloads.  The tests cover Remote Direct Memory Access
    (RDMA) over Converged Ethernet version 2 (RoCEv2) transport, the
    Ultra Ethernet Transport (UET) protocol defined by the Ultra Ethernet
-   Consortium (UEC) Specification 1.0 [UEC-1.0], congestion management
-   (Priority Flow Control (PFC), Explicit Congestion Notification (ECN),
-   Data Center Quantized Congestion Notification (DCQCN), Credit-Based
-   Flow Control (CBFC)), load balancing strategies (Equal-Cost Multi-
-   Path (ECMP), Dynamic Load Balancing (DLB), packet spraying),
-   collective communication patterns (AllReduce, AllToAll, AllGather),
-   and scale/soak testing.
+   Consortium (UEC) Specification 1.0, congestion management (Priority
+   Flow Control (PFC), Explicit Congestion Notification (ECN), Data
+   Center Quantized Congestion Notification (DCQCN), Credit-Based Flow
+   Control (CBFC)), load balancing strategies (Equal-Cost Multi-Path
+   (ECMP), Dynamic Load Balancing (DLB), packet spraying), collective
+   communication patterns (AllReduce, AllToAll, AllGather), and scale/
+   soak testing.
 
    The methodology enables direct, reproducible comparison across switch
    ASICs, NIC transport stacks (RoCEv2 and UET), and fabric
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2027.
+   This Internet-Draft will expire on 20 January 2027.
 
 Copyright Notice
 
@@ -121,7 +121,7 @@ Table of Contents
      5.1.  Baseline Throughput
      5.2.  Latency Characterization
      5.3.  Back-to-Back Burst Absorption
-   6.  Test Category 1A: UEC Transport Protocol Benchmarks
+   6.  Test Category 2: UEC Transport Protocol Benchmarks
      6.1.  UET Throughput by Transport Service
      6.2.  UET Latency Characterization
      6.3.  Packet Spray Efficacy Under UET RUD
@@ -129,30 +129,30 @@ Table of Contents
      6.5.  Link Layer Enhancement Benchmarks
      6.6.  UET Collective Communication Performance
      6.7.  UET PDC Scalability and Connection Setup Rate
-   7.  Test Category 2: Congestion Management
+   7.  Test Category 3: Congestion Management
      7.1.  ECN Marking Accuracy and Threshold
      7.2.  PFC Behavior Under Incast
      7.3.  DCQCN Convergence Time
      7.4.  PFC Storm and Deadlock Resilience
-   8.  Test Category 3: Load Balancing Efficacy
+   8.  Test Category 4: Load Balancing Efficacy
      8.1.  ECMP Entropy and Polarization
      8.2.  Dynamic Load Balancing (Flowlet)
      8.3.  Packet Spraying
-     8.4.  Jain Fairness Index Measurement
-   9.  Test Category 4: Collective Communication Benchmarks
+     8.4.  Jain's Fairness Index Measurement
+   9.  Test Category 5: Collective Communication Benchmarks
      9.1.  AllReduce Benchmark
      9.2.  AllToAll Benchmark
      9.3.  AllGather Benchmark
      9.4.  Collective Communication Library Bus Bandwidth Summary
-   10. Test Category 5: Job Completion Time (JCT) Benchmarks
+   10. Test Category 6: Job Completion Time (JCT) Benchmarks
      10.1.  Synthetic JCT Under Controlled Conditions
      10.2.  MLPerf-Aligned JCT
      10.3.  Multi-Tenant JCT Interference
-   11. Test Category 6: Scale and Convergence
+   11. Test Category 7: Scale and Convergence
      11.1.  Fabric Scale Limits
      11.2.  Link Failure Convergence
      11.3.  Zero-Impact Failover Measurement
-   12. Test Category 7: Soak and Stability
+   12. Test Category 8: Soak and Stability
      12.1.  24-Hour Sustained Load
      12.2.  Resource Leak Detection
    13. Reporting Format
@@ -332,20 +332,20 @@ Table of Contents
 
 3.1.1.  Topology A: 2-Tier Clos (Leaf-Spine)
 
-   +--------+ +--------+ +--------+ +--------+
-   | Spine1 | | Spine2 | | Spine3 | | SpineN |
-   +---++---+ +---++---+ +---++---+ +---++---+
-       ||          ||          ||          ||
-       ||    Full Mesh Interconnect        ||
-       ||    (ECMP / DLB / Spray)         ||
-       ||          ||          ||          ||
-   +---++---+ +---++---+ +---++---+ +---++---+
-   | Leaf 1 | | Leaf 2 | | Leaf 3 | | Leaf N |
-   +---++---+ +---++---+ +---++---+ +---++---+
-       ||          ||          ||          ||
-   [GPU/XPU]  [GPU/XPU]  [GPU/XPU]  [GPU/XPU]
-   Hosts w/   Hosts w/   Hosts w/   Hosts w/
-   RoCEv2 NIC             RoCEv2 NIC
+                +--------+ +--------+ +--------+ +--------+
+                | Spine1 | | Spine2 | | Spine3 | | SpineN |
+                +---++---+ +---++---+ +---++---+ +---++---+
+                    ||          ||          ||          ||
+                    ||    Full Mesh Interconnect        ||
+                    ||    (ECMP / DLB / Spray)         ||
+                    ||          ||          ||          ||
+                +---++---+ +---++---+ +---++---+ +---++---+
+                | Leaf 1 | | Leaf 2 | | Leaf 3 | | Leaf N |
+                +---++---+ +---++---+ +---++---+ +---++---+
+                    ||          ||          ||          ||
+                [GPU/XPU]  [GPU/XPU]  [GPU/XPU]  [GPU/XPU]
+                Hosts w/   Hosts w/   Hosts w/   Hosts w/
+                RoCEv2 NIC             RoCEv2 NIC
 
                Figure 1: Topology A: 2-Tier Clos (Leaf-Spine)
 
@@ -363,34 +363,37 @@ Table of Contents
 
 3.1.3.  Topology C: Rail-Optimized
 
-                          SPINE LAYER
-   +--------+ +--------+ +--------+ +--------+
-   | Spine1 | | Spine2 | | Spine3 | | SpineN |
-   +--+--+--+ +--+--+--+ +--+--+--+ +--+--+--+
-    |     Full Mesh Interconnect (ECMP/Spray)  |
-   +--+--+--+ +--+--+--+ +--+--+--+ +--+--+--+
-   | Rail-0 | | Rail-1 | | Rail-2 | | Rail-7 |  RAIL (LEAF) LAYER
-   |  Leaf  | |  Leaf  | |  Leaf  | |  Leaf  |  one switch per NIC
-   +--+--+--+ +--+--+--+ +--+--+--+ +--+--+--+
-     |   |       |   |       |   |      |   |
-   NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
-     |   |       |   |       |   |      |   |
-   +--------+ +--------+ +--------+ +--------+
-   | Host A | | Host B | | Host C | | Host D |  GPU HOSTS
-   | GPU[0] | | GPU[0] | | GPU[0] | | GPU[0] |  (each host has
-   | GPU[1] | | GPU[1] | | GPU[1] | | GPU[1] |   8 NICs, one
-   |  ...   | |  ...   | |  ...   | |  ...   |   per rail)
-   | GPU[7] | | GPU[7] | | GPU[7] | | GPU[7] |
-   +--------+ +--------+ +--------+ +--------+
-   |<------ Rail-0 ------->|         |<-Rail-7->|
+                             SPINE LAYER
+      +--------+ +--------+ +--------+ +--------+
+      | Spine1 | | Spine2 | | Spine3 | | SpineN |
+      +--+--+--+ +--+--+--+ +--+--+--+ +--+--+--+
+       |     Full Mesh Interconnect (ECMP/Spray)  |
+      +--+--+--+ +--+--+--+ +--+--+--+ +--+--+--+
+      | Rail-0 | | Rail-1 | | Rail-2 | | Rail-7 |  RAIL (LEAF) LAYER
+      |  Leaf  | |  Leaf  | |  Leaf  | |  Leaf  |  one switch per NIC
+      +--+--+--+ +--+--+--+ +--+--+--+ +--+--+--+
+        |   |       |   |       |   |      |   |
+      NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
+        |   |       |   |       |   |      |   |
+      +--------+ +--------+ +--------+ +--------+
+      | Host A | | Host B | | Host C | | Host D |  GPU HOSTS
+      | GPU[0] | | GPU[0] | | GPU[0] | | GPU[0] |  (each host has
+      | GPU[1] | | GPU[1] | | GPU[1] | | GPU[1] |   8 NICs, one
+      |  ...   | |  ...   | |  ...   | |  ...   |   per rail)
+      | GPU[7] | | GPU[7] | | GPU[7] | | GPU[7] |
+      +--------+ +--------+ +--------+ +--------+
 
-                    Figure 2: Topology C: Rail-Optimized
+        Figure 2: Topology C: Rail-Optimized (schematic; only 4 of N
+                           rails and hosts shown)
 
    In rail-optimized topologies, each NIC on a multi-NIC host connects
    to a dedicated leaf switch ("rail"); this co-optimizes network
    locality with the collective communications library (CCL) in use
-   (e.g., NCCL, RCCL, oneCCL).  The DUT boundary and rail mapping are
-   fully documented in the test report.
+   (e.g., NCCL, RCCL, oneCCL).  The diagram is schematic: it depicts a
+   representative subset of rails and hosts, not the full cross-host
+   fan-out; in the complete topology, the Rail-N leaf switch connects to
+   GPU[N] of every host.  The DUT boundary and rail mapping are fully
+   documented in the test report.
 
 3.2.  Device Under Test (DUT) Identification
 
@@ -450,7 +453,7 @@ Table of Contents
     +==============+=================================================+
     | Parameter    | Minimum Requirement                             |
     +==============+=================================================+
-    | Timestamp    | <= 100 nanoseconds                              |
+    | Timestamp    | ≤ 100 nanoseconds                               |
     | accuracy     |                                                 |
     +--------------+-------------------------------------------------+
     | Frame rate   | +/- 0.1% of specified rate                      |
@@ -465,7 +468,7 @@ Table of Contents
     | Flow counter | Per-flow byte and packet counts                 |
     | resolution   |                                                 |
     +--------------+-------------------------------------------------+
-    | Loss         | 0 ppm resolution                                |
+    | Loss         | Exact per-packet loss counting                  |
     | measurement  |                                                 |
     +--------------+-------------------------------------------------+
     | Burst        | Burst lengths at line rate sufficient to exceed |
@@ -544,40 +547,45 @@ Table of Contents
 
 4.2.  Secondary KPIs
 
-    +================+===============+===============================+
-    | KPI            | Unit          | Definition                    |
-    +================+===============+===============================+
-    | ECN Marking    | %             | Percentage of packets marked  |
-    | Ratio          |               | CE over measurement interval  |
-    +----------------+---------------+-------------------------------+
-    | PFC Pause      | events/sec    | Rate of PFC PAUSE frames per  |
-    | Count          |               | priority per port             |
-    +----------------+---------------+-------------------------------+
-    | PFC Pause      | us            | Cumulative time a port is in  |
-    | Duration       |               | PFC-paused state per interval |
-    +----------------+---------------+-------------------------------+
-    | RDMA           | retx/sec      | NIC-level retransmissions due |
-    | Retransmission |               | to timeouts or NAKs           |
-    | Rate           |               |                               |
-    +----------------+---------------+-------------------------------+
-    | ECMP Imbalance | dimensionless | Max-Mean Ratio of flow counts |
-    | (MMR)          |               | across parallel uplinks       |
-    +----------------+---------------+-------------------------------+
-    | Jain Fairness  | 0.0-1.0       | Fairness of traffic           |
-    | Index (JFI)    |               | distribution; 1.0 = perfect   |
-    +----------------+---------------+-------------------------------+
-    | Queue Depth    | bytes or      | 95th percentile and maximum   |
-    | (P95/Max)      | cells         | egress queue occupancy per    |
-    |                |               | port                          |
-    +----------------+---------------+-------------------------------+
-    | Congestion     | us            | Time from congestion onset to |
-    | Control        |               | DCQCN rate stabilization      |
-    | Convergence    |               |                               |
-    +----------------+---------------+-------------------------------+
-    | Out-of-Order   | pkt/sec       | Packets delivered out of      |
-    | Packet Rate    |               | sequence (relevant for packet |
-    |                |               | spray)                        |
-    +----------------+---------------+-------------------------------+
+      +================+===============+===========================+
+      | KPI            | Unit          | Definition                |
+      +================+===============+===========================+
+      | ECN Marking    | %             | Percentage of packets     |
+      | Ratio          |               | marked CE over            |
+      |                |               | measurement interval      |
+      +----------------+---------------+---------------------------+
+      | PFC Pause      | events/sec    | Rate of PFC PAUSE frames  |
+      | Count          |               | per priority per port     |
+      +----------------+---------------+---------------------------+
+      | PFC Pause      | us            | Cumulative time a port is |
+      | Duration       |               | in PFC-paused state per   |
+      |                |               | interval                  |
+      +----------------+---------------+---------------------------+
+      | RDMA           | retx/sec      | NIC-level retransmissions |
+      | Retransmission |               | due to timeouts or NAKs   |
+      | Rate           |               |                           |
+      +----------------+---------------+---------------------------+
+      | ECMP Imbalance | dimensionless | Max-Mean Ratio of flow    |
+      | (MMR)          |               | counts across parallel    |
+      |                |               | uplinks                   |
+      +----------------+---------------+---------------------------+
+      | Jain's         | 1/N-1.0       | Fairness of traffic       |
+      | Fairness Index |               | distribution; 1.0 =       |
+      | (JFI)          |               | perfect, 1/N = worst (N = |
+      |                |               | number of parallel links) |
+      +----------------+---------------+---------------------------+
+      | Queue Depth    | bytes or      | 95th percentile and       |
+      | (P95/Max)      | cells         | maximum egress queue      |
+      |                |               | occupancy per port        |
+      +----------------+---------------+---------------------------+
+      | Congestion     | us            | Time from congestion      |
+      | Control        |               | onset to DCQCN rate       |
+      | Convergence    |               | stabilization             |
+      +----------------+---------------+---------------------------+
+      | Out-of-Order   | pkt/sec       | Packets delivered out of  |
+      | Packet Rate    |               | sequence (relevant for    |
+      |                |               | packet spray)             |
+      +----------------+---------------+---------------------------+
 
                          Table 6: Secondary KPIs
 
@@ -639,7 +647,7 @@ Table of Contents
 
    *Reporting:* Report aggregate throughput (Tbps), per-port utilization
    (%), and throughput efficiency (measured/theoretical).  Present as
-   table indexed by message size x QP count, and as graph (message size
+   table indexed by message size × QP count, and as graph (message size
    on X-axis).
 
 5.2.  Latency Characterization
@@ -656,7 +664,13 @@ Table of Contents
 
    *  Reported statistics: min, mean, P50, P95, P99, P99.9, max
 
-   *  Repeat at least 20 times; report averages
+   *  Each run MUST capture at least 10,000 latency samples to support a
+      statistically meaningful P99.9
+
+   *  Repeat at least 20 times; pool all samples across runs and compute
+      percentiles from the pooled distribution, and report the per-run
+      variability (e.g., min/max across runs) alongside the pooled
+      statistics
 
    *  Test under both zero-load (single QP) and loaded (full fabric
       utilization) conditions
@@ -685,11 +699,11 @@ Table of Contents
    each message size and incast ratio.  Plot burst capacity vs. incast
    ratio.
 
-6.  Test Category 1A: UEC Transport Protocol Benchmarks
+6.  Test Category 2: UEC Transport Protocol Benchmarks
 
    The Ultra Ethernet Consortium (UEC) Specification 1.0 [UEC-1.0]
-   defines UET, a connectionless RDMA transport designed to replace
-   RoCEv2 for AI/HPC workloads.  All UET tests use the libfabric API
+   defines UET, an RDMA transport positioned as an alternative to RoCEv2
+   for AI/HPC workloads.  All UET tests use the libfabric API
    [LIBFABRIC] and run on UEC 1.0-compliant NICs.
 
    The UEC compliance profile (AI Base, AI Full, or HPC) used during
@@ -710,33 +724,37 @@ Table of Contents
 
    *Reporting template:*
 
-   +============+========+========+========+========+========+========+
-   | Metric     | ROD    | RUD    | RUDI   | UUD    | RoCEv2 | RoCEv2 |
-   |            |        |        |        |        | RC     | UC     |
-   +============+========+========+========+========+========+========+
-   | Throughput | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
-   | @ 1MB      |        |        |        |        |        |        |
-   | (Gbps)     |        |        |        |        |        |        |
-   +------------+--------+--------+--------+--------+--------+--------+
-   | Throughput | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
-   | @ 4MB      |        |        |        |        |        |        |
-   | (Gbps)     |        |        |        |        |        |        |
-   +------------+--------+--------+--------+--------+--------+--------+
-   | Efficiency | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
-   | (% line    |        |        |        |        |        |        |
-   | rate)      |        |        |        |        |        |        |
-   +------------+--------+--------+--------+--------+--------+--------+
-   | PDC/QP     | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
-   | Setup Time |        |        |        |        |        |        |
-   | (us)       |        |        |        |        |        |        |
-   +------------+--------+--------+--------+--------+--------+--------+
-   | Max        | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
-   | Sustained  |        |        |        |        |        |        |
-   | PDC/QP     |        |        |        |        |        |        |
-   | Count      |        |        |        |        |        |        |
-   +------------+--------+--------+--------+--------+--------+--------+
+   +==============+======+========+========+========+========+========+
+   | Metric       |ROD   | RUD    | RUDI   | UUD    | RoCEv2 | RoCEv2 |
+   |              |      |        |        |        | RC     | UC     |
+   +==============+======+========+========+========+========+========+
+   | Throughput @ |(meas)| (meas) | (meas) | (meas) | (meas) | (meas) |
+   | 1MB (Gbps)   |      |        |        |        |        |        |
+   +--------------+------+--------+--------+--------+--------+--------+
+   | Throughput @ |(meas)| (meas) | (meas) | (meas) | (meas) | (meas) |
+   | 4MB (Gbps)   |      |        |        |        |        |        |
+   +--------------+------+--------+--------+--------+--------+--------+
+   | Efficiency   |(meas)| (meas) | (meas) | (meas) | (meas) | (meas) |
+   | (% line      |      |        |        |        |        |        |
+   | rate)        |      |        |        |        |        |        |
+   +--------------+------+--------+--------+--------+--------+--------+
+   | Connection/  |(meas)| (meas) | (meas) | (meas) | (meas) | (meas) |
+   | PDC          |      |        |        |        |        |        |
+   | Initiation   |      |        |        |        |        |        |
+   | Latency (us) |      |        |        |        |        |        |
+   | (see note)   |      |        |        |        |        |        |
+   +--------------+------+--------+--------+--------+--------+--------+
+   | Max          |(meas)| (meas) | (meas) | (meas) | (meas) | (meas) |
+   | Sustained    |      |        |        |        |        |        |
+   | PDC/QP Count |      |        |        |        |        |        |
+   +--------------+------+--------+--------+--------+--------+--------+
 
                Table 8: UET Throughput by Transport Service
+
+   NOTE: For RoCEv2 RC/UC, this measures QP connection setup time
+   (handshake round-trip).  For UET (ROD/RUD/RUDI/UUD), PDCs have no
+   separate setup handshake; this measures the first-packet latency
+   reflecting in-band PDC initiation instead.
 
 6.2.  UET Latency Characterization
 
@@ -799,9 +817,9 @@ Table of Contents
 
                 Table 9: Packet Spray Efficacy Under UET RUD
 
-      UET RUD is expected to achieve zero host-visible reordering
-      despite per-packet spray because the transport layer natively
-      tolerates unordered delivery.
+      This test evaluates whether UET RUD achieves zero host-visible
+      reordering despite per-packet spray, since the transport layer is
+      designed to tolerate unordered delivery.
 
 6.4.  UET Congestion Control Benchmarks
 
@@ -815,8 +833,8 @@ Table of Contents
 
    *Reporting:* Tabulate incast throughput, convergence time, peak queue
    depth, PFC event count, and packet drop rate for UET vs. DCQCN per
-   incast ratio. *Critical differentiator:* report whether UET achieves
-   zero application-visible loss without PFC.
+   incast ratio. *Key metric:* report whether UET achieves zero
+   application-visible loss without PFC.
 
 6.5.  Link Layer Enhancement Benchmarks
 
@@ -901,9 +919,9 @@ Table of Contents
    handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write.
    (c) Maximum concurrent PDC count: scale until per-PDC throughput
    drops below 90% of single-PDC rate.  The UEC specification [UEC-1.0]
-   targets up to 1 million endpoints.
+   targets millions of endpoints.
 
-7.  Test Category 2: Congestion Management
+7.  Test Category 3: Congestion Management
 
    AI training workloads generate repetitive micro-congestion during the
    back-propagation gradient synchronization phase.
@@ -955,7 +973,7 @@ Table of Contents
    immunity (e.g., VOQ-based scheduling); the mechanism observed is
    reported.
 
-8.  Test Category 3: Load Balancing Efficacy
+8.  Test Category 4: Load Balancing Efficacy
 
    Load balancing across parallel fabric paths is critical for AI
    training fabrics because the traffic consists of a small number of
@@ -968,8 +986,10 @@ Table of Contents
 
    *Procedure:* Configure standard 5-tuple ECMP.  Generate traffic with
    Q = {1, 4, 8, 16, 32} QPs per src-dst pair.  Measure per-link
-   utilization, MMR, and JFI.  Test with and without BTH-aware hashing.
-   Repeat for fabric sizes of 8, 16, 32, and 64 leaf switches.
+   utilization, MMR, and JFI.  Test with and without ECMP hashing that
+   includes the BTH destination QP field as a hash input (in addition to
+   the standard 5-tuple).  Repeat for fabric sizes of 8, 16, 32, and 64
+   leaf switches.
 
 8.2.  Dynamic Load Balancing (Flowlet)
 
@@ -991,16 +1011,16 @@ Table of Contents
    retransmission impact.  If the DUT provides an in-fabric reorder
    buffer, document per Appendix C.
 
-8.4.  Jain Fairness Index Measurement
+8.4.  Jain's Fairness Index Measurement
 
    *Objective:* Single-number summary of load balancing quality
    comparable across all strategies.
 
    *Formula:*
 
-   JFI = (Sum LinkTx_i)^2 / (N * Sum LinkTx_i^2)
+               JFI = (Sum LinkTx_i)^2 / (N × Sum LinkTx_i^2)
 
-                   Figure 3: Jain Fairness Index Formula
+                  Figure 3: Jain's Fairness Index Formula
 
    where LinkTx_i = transmitted traffic on fabric link i, N = total
    parallel links.  Range: 1/N (worst) to 1.0 (perfect).
@@ -1008,7 +1028,7 @@ Table of Contents
    *Reporting:* Report JFI for each load balancing strategy.  Provide
    bar chart comparing ECMP, DLB, and packet spray.
 
-9.  Test Category 4: Collective Communication Benchmarks
+9.  Test Category 5: Collective Communication Benchmarks
 
    These tests evaluate the fabric's performance under realistic
    collective communication patterns.  Unlike synthetic RDMA tests in
@@ -1062,9 +1082,10 @@ Table of Contents
 
    AllToAll generates the worst-case fabric stress pattern: every
    accelerator simultaneously sends a unique payload to every other
-   accelerator in the group, which creates maximum entropy and N-to-N
-   incast at every fabric link.  This makes AllToAll JCT the most
-   sensitive single indicator of fabric congestion management quality.
+   accelerator in the group, which creates maximum entropy and stresses
+   every fabric link with many-to-many traffic overlap.  This makes
+   AllToAll JCT the most sensitive single indicator of fabric congestion
+   management quality.
 
    BusBW is computed per the BusBW definition in [TERMINOLOGY];
    algo_factor is fixed per collective type and does not depend on
@@ -1113,7 +1134,10 @@ Table of Contents
    (verified)" column required.  Report BusBW efficiency = BusBW /
    NIC_line_rate.  Where results are compared to AllReduce under
    identical parameters, the BusBW ratio (AllGather / AllReduce)
-   quantifies the fabric overhead attributable to the reduce phase.
+   quantifies the difference in fabric load between the two traffic
+   patterns; AllReduce's additional network traffic reflects its
+   ReduceScatter phase, not the reduction arithmetic itself, which is
+   performed by the accelerators, not the fabric.
 
 9.4.  Collective Communication Library Bus Bandwidth Summary
 
@@ -1140,7 +1164,7 @@ Table of Contents
 
           Table 11: Collective Communication Bus Bandwidth Summary
 
-10.  Test Category 5: Job Completion Time (JCT) Benchmarks
+10.  Test Category 6: Job Completion Time (JCT) Benchmarks
 
    JCT is the single most important user-facing KPI for AI training
    fabrics; it directly determines accelerator utilization and training
@@ -1176,25 +1200,25 @@ Table of Contents
 
    Execute 1000 iterations and measure total wall-clock JCT.
 
-   Roofline_seq = Iterations x (C + (8 x S x algo_factor) / B_acc)
-   JCT Ratio    = Measured_JCT / Roofline_seq
+      Roofline_seq = Iterations × (C + (8 × S × algo_factor) / B_acc)
+      JCT Ratio    = Measured_JCT / Roofline_seq
 
-     where:
-       C            = compute time per iteration, in seconds
-                      (convert the millisecond values in the
-                      parameter table to seconds)
-       S            = message size per iteration (bytes)
-       algo_factor  = fixed normalization constant per collective
-                      type; see the BusBW definition in the
-                      companion terminology document
-       B_acc        = aggregate per-accelerator NIC line rate
-                      (bits/second); sum across all NICs serving
-                      the accelerator (e.g., in rail-optimised
-                      topologies, the sum of all rail NIC speeds)
-       Iterations   = number of synthetic iterations executed
+        where:
+          C            = compute time per iteration, in seconds
+                         (convert the millisecond values in the
+                         parameter table to seconds)
+          S            = message size per iteration (bytes)
+          algo_factor  = fixed normalization constant per collective
+                         type; see the BusBW definition in the
+                         companion terminology document
+          B_acc        = aggregate per-accelerator NIC line rate
+                         (bits/second); sum across all NICs serving
+                         the accelerator (e.g., in rail-optimised
+                         topologies, the sum of all rail NIC speeds)
+          Iterations   = number of synthetic iterations executed
 
-     The factor of 8 converts S from bytes to bits to match the
-     units of B_acc.
+        The factor of 8 converts S from bytes to bits to match the
+        units of B_acc.
 
                       Figure 4: JCT Ratio Calculation
 
@@ -1206,12 +1230,12 @@ Table of Contents
 
    Implementations using overlapped execution additionally report:
 
-   Overlap_Fraction = 1 - (Measured_JCT - C_total) / Comm_time
+       Overlap_Fraction = 1 - (Measured_JCT - C_total) / Comm_time
 
-     where:
-       C_total   = Iterations x C
-       Comm_time = Iterations x (8 x S x algo_factor) / B_acc
-       S, algo_factor, B_acc as defined for Roofline_seq above.
+         where:
+           C_total   = Iterations × C
+           Comm_time = Iterations × (8 × S × algo_factor) / B_acc
+           S, algo_factor, B_acc as defined for Roofline_seq above.
 
                    Figure 5: Overlap Fraction Calculation
 
@@ -1230,7 +1254,7 @@ Table of Contents
    combination.  Plot JCT Ratio vs. N to characterize fabric
    scalability.
 
-      NOTE: JCT Ratio <= 1.05 indicates excellent fabric performance;
+      NOTE: JCT Ratio ≤ 1.05 indicates excellent fabric performance;
       values between 1.05 and 1.15 are acceptable; a ratio above 1.15
       indicates significant fabric-induced overhead.  These are non-
       normative illustrative reference values only.
@@ -1240,8 +1264,10 @@ Table of Contents
    *Objective:* Measure JCT using MLPerf Training benchmark workloads
    [MLPERF] to enable comparison with published industry results.
 
-   *Procedure:* Execute MLPerf Training closed-division workloads (e.g.,
-   BERT, ResNet, GPT-3 175B) per MLPerf submission rules.
+   *Procedure:* Execute the current MLPerf Training closed-division
+   workloads per MLPerf submission rules ([MLPERF]); the specific
+   workload set changes across MLPerf versions, so the test report MUST
+   identify the MLPerf Training version and workload names used.
    Simultaneously capture all fabric KPIs from Section 4.  Report time-
    to-train and/or tokens-per-second.
 
@@ -1254,13 +1280,13 @@ Table of Contents
    are configured to overlap in spine-layer link usage.  Measure
    baseline JCT (isolated) and contention JCT (simultaneous).
 
-   JCT Interference Factor = Contention_JCT / Baseline_JCT
+          JCT Interference Factor = Contention_JCT / Baseline_JCT
 
                      Figure 6: JCT Interference Factor
 
    Test with spine link overlap: 0%, 25%, 50%, 75%.
 
-11.  Test Category 6: Scale and Convergence
+11.  Test Category 7: Scale and Convergence
 
 11.1.  Fabric Scale Limits
 
@@ -1272,7 +1298,7 @@ Table of Contents
    (Section 9.1, S=1GB).  At each scale point record JCT Ratio, BusBW,
    ECN ratio, PFC count, CPU and memory utilization.  Also measure BGP/
    routing convergence time after clearing all adjacencies (analogous to
-   [EVPN-BENCH] Sections 3.10, 3.11, 4.9, 4.10).
+   the convergence testing approach in [EVPN-BENCH]).
 
 11.2.  Link Failure Convergence
 
@@ -1304,18 +1330,20 @@ Table of Contents
    JCT for the failure iteration is within the P99 JCT of steady-state
    iterations.
 
-12.  Test Category 7: Soak and Stability
+12.  Test Category 8: Soak and Stability
 
 12.1.  24-Hour Sustained Load
 
    *Objective:* Characterize DUT fabric stability under sustained AI
-   training load over an extended period, following the methodology
-   pattern from [EVPN-BENCH] Sections 3.12, 4.11.
+   training load over an extended period, following the soak-testing
+   methodology pattern in [EVPN-BENCH].
 
    *Procedure:* Configure DUT at maximum validated scale from
    Section 11.1.  Generate bidirectional collective communication
-   traffic (alternating AllReduce and AllToAll).  Run continuously for
-   24 hours.  Sample all KPIs from Section 4 every 60 seconds.
+   traffic (alternating AllReduce and AllToAll) at 80% of maximum
+   validated throughput, per the offered load fraction required by the
+   Soak Test definition in [TERMINOLOGY].  Run continuously for 24
+   hours.  Sample all KPIs from Section 4 every 60 seconds.
 
    The objective of the soak test is to monitor and document fabric
    behavior under extended load.  The methodology does not establish
@@ -1350,8 +1378,9 @@ Table of Contents
    certification, or pass/fail criteria.  Any deployment-specific
    performance objectives are outside the scope of this document.
 
-   Results MUST be reported per the BusBW reporting format defined in
-   Section 3 of [TERMINOLOGY].
+   Results from collective communication benchmarks (Section 9) MUST be
+   reported per the BusBW reporting format defined in Section 3 of
+   [TERMINOLOGY].
 
    Test reports include the following sections:
 
@@ -1430,9 +1459,9 @@ Table of Contents
 
    *  *PFC leakage:* PFC PAUSE frames generated under incast or storm
       conditions (Section 7.2, Section 7.4) that escape the test
-      environment can hang adjacent production switches sharing the same
-      priority class.  Physical or VLAN-based isolation of the test
-      fabric is required.
+      environment can cause adjacent production switches sharing the
+      same priority class to stop responding.  Physical or VLAN-based
+      isolation of the test fabric is required.
 
    *  *Line-rate RDMA traffic generators:* the equipment specified in
       Section 3.3 is capable of saturating production links at line
@@ -1458,7 +1487,7 @@ Table of Contents
 
 15.  IANA Considerations
 
-   This document makes no request of IANA.
+   This document has no IANA actions.
 
 16.  References
 
@@ -1504,9 +1533,9 @@ Table of Contents
               Calabria, F., Pignataro, C., Wu, Q., Fioccola, G., and S.
               Reddy, "Benchmarking Terminology for AI Network Fabrics",
               Work in Progress, Internet-Draft, draft-calabria-bmwg-ai-
-              fabric-terminology-02, 4 June 2026,
+              fabric-terminology-03, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-calabria-
-              bmwg-ai-fabric-terminology-02>.
+              bmwg-ai-fabric-terminology-03>.
 
    [UEC-1.0]  Ultra Ethernet Consortium, "Ultra Ethernet Transport (UET)
               Specification 1.0", June 2025,
@@ -1515,8 +1544,11 @@ Table of Contents
 16.2.  Informative References
 
    [DCQCN-PAPER]
-              Zhu, Y., "Congestion Control for Large-Scale RDMA
-              Deployments", DOI 10.1145/2785956.2787484, 2015,
+              Zhu, Y., Eran, H., Firestone, D., Guo, C., Lipshteyn, M.,
+              Liron, Y., Padhye, J., Raindel, S., Yahia, M. H., and M.
+              Zhang, "Congestion Control for Large-Scale RDMA
+              Deployments", ACM SIGCOMM pp. 523-536,
+              DOI 10.1145/2785956.2787484, 2015,
               <https://doi.org/10.1145/2785956.2787484>.
 
    [EVPN-BENCH]
@@ -1530,9 +1562,9 @@ Table of Contents
               Calabria, F., Pignataro, C., Wu, Q., Fioccola, G., and S.
               Reddy, "Benchmarking Methodology for AI Inference Serving
               Network Fabrics", Work in Progress, Internet-Draft, draft-
-              calabria-bmwg-ai-fabric-inference-bench-02, 4 June 2026,
+              calabria-bmwg-ai-fabric-inference-bench-03, 6 July 2026,
               <https://datatracker.ietf.org/doc/html/draft-calabria-
-              bmwg-ai-fabric-inference-bench-02>.
+              bmwg-ai-fabric-inference-bench-03>.
 
    [LIBFABRIC]
               OpenFabrics Interfaces Working Group, "libfabric: Open
@@ -1547,9 +1579,13 @@ Table of Contents
               gaikwad-llm-benchmarking-methodology-00>.
 
    [META-ROCE]
-              Gangidi, A., "RDMA over Ethernet for Distributed AI
-              Training at Meta Scale", DOI 10.1145/3651890.3672233,
-              2024, <https://doi.org/10.1145/3651890.3672233>.
+              Gangidi, A., Miao, R., Zheng, S., Bondu, S. J., Goes, G.,
+              Morsy, H., Puri, R., Riftadi, M., Shetty, A. J., Yang, J.,
+              Zhang, S., Fernandez, M. J., Gandham, S., and H. Zeng,
+              "RDMA over Ethernet for Distributed Training at Meta
+              Scale", ACM SIGCOMM '24 Sydney, NSW, Australia,
+              DOI 10.1145/3651890.3672233, 2024,
+              <https://doi.org/10.1145/3651890.3672233>.
 
    [MLPERF]   MLCommons, "MLPerf Training Benchmark Suite", n.d.,
               <https://mlcommons.org>.
@@ -1679,20 +1715,20 @@ Appendix B.  Indicative Reference Values (Non-Normative)
    topology, accelerator architecture, collective library, and operator
    requirements.
 
-      +======================+=====================================+
-      | KPI                  | Indicative Reference                |
-      +======================+=====================================+
-      | JCT Ratio            | <= 1.05 (<= 1.15 acceptable)        |
-      +----------------------+-------------------------------------+
-      | BusBW                | >= 90% of NIC line rate (intra-pod) |
-      +----------------------+-------------------------------------+
-      | Aggregate Throughput | >= 95% of bisection BW              |
-      +----------------------+-------------------------------------+
-      | Packet Drop Rate     | 0 ppm (lossless)                    |
-      +----------------------+-------------------------------------+
+       +======================+====================================+
+       | KPI                  | Indicative Reference               |
+       +======================+====================================+
+       | JCT Ratio            | ≤ 1.05 (≤ 1.15 acceptable)         |
+       +----------------------+------------------------------------+
+       | BusBW                | ≥ 90% of NIC line rate (intra-pod) |
+       +----------------------+------------------------------------+
+       | Aggregate Throughput | ≥ 95% of bisection BW              |
+       +----------------------+------------------------------------+
+       | Packet Drop Rate     | 0 ppm (lossless)                   |
+       +----------------------+------------------------------------+
 
-         Table 14: Indicative Reference Values for Distributed AI
-                    Training Fabrics (Non- Normative)
+          Table 14: Indicative Reference Values for Distributed AI
+                     Training Fabrics (Non- Normative)
 
 Appendix C.  ASIC Feature Categories (Informational)
 
@@ -1776,8 +1812,9 @@ Appendix D.  RoCEv2 Test Frame Format
    |        |            |      | shift subsequent offsets back by 4B |
    +--------+------------+------+-------------------------------------+
    | 18     | IPv4       | 20B  | DSCP=26 (AF31, Assured Forwarding   |
-   |        | Header     |      | class 31), ECN=ECT(0) (ECN-Capable  |
-   |        |            |      | Transport), Proto=17 (UDP)          |
+   |        | Header     |      | class 3, drop precedence 1),        |
+   |        |            |      | ECN=ECT(0) (ECN-Capable Transport), |
+   |        |            |      | Proto=17 (UDP)                      |
    +--------+------------+------+-------------------------------------+
    | 38     | UDP Header | 8B   | DstPort=4791 (RoCEv2), SrcPort=var  |
    +--------+------------+------+-------------------------------------+
@@ -1854,37 +1891,39 @@ Appendix E.  UET (Ultra Ethernet Transport) Frame Format
 
 E.1.  Key Differences from RoCEv2
 
-     +============+==========+=============+=========================+
-     | Field      | RoCEv2   | UET Value   | Notes                   |
-     |            | Value    |             |                         |
-     +============+==========+=============+=========================+
-     | UDP Dst    | 4791     | 4793        | 4791 is IANA-assigned   |
-     | Port       |          |             | (RoCEv2); 4793          |
-     |            |          |             | registration is pending |
-     +------------+----------+-------------+-------------------------+
-     | Transport  | QP       | PDC ID      | Connectionless in UET   |
-     | Endpoint   | Number   | (variable)  |                         |
-     |            | (24b)    |             |                         |
-     +------------+----------+-------------+-------------------------+
-     | Sequence   | PSN      | PSN         | Larger range for RUD    |
-     | Number     | (24b)    | (extended)  | OOO tolerance           |
-     +------------+----------+-------------+-------------------------+
-     | Congestion | ECN bits | ECN + CMS   | Sender + receiver       |
-     | Signal     | only     | sub-header  | signals in UET          |
-     +------------+----------+-------------+-------------------------+
-     | Entropy    | UDP src  | Explicit    | Deterministic spray in  |
-     | Source     | port     | entropy     | UET                     |
-     |            |          | field       |                         |
-     +------------+----------+-------------+-------------------------+
-     | Ordering   | Always   | Per-service | RUD allows OOO delivery |
-     | Guarantee  | in-order | (ROD/RUD)   |                         |
-     |            | (RC)     |             |                         |
-     +------------+----------+-------------+-------------------------+
-     | Min Header | ~74B     | ~78B (est.  | Slight increase for     |
-     | Overhead   | (Write)  | Write)      | sub-layer headers       |
-     +------------+----------+-------------+-------------------------+
+   +=============+==========+=============+===========================+
+   | Field       | RoCEv2   | UET Value   | Notes                     |
+   |             | Value    |             |                           |
+   +=============+==========+=============+===========================+
+   | UDP Dst     | 4791     | 4793        | 4791 is IANA-assigned     |
+   | Port        |          |             | (RoCEv2); 4793            |
+   |             |          |             | registration is pending   |
+   +-------------+----------+-------------+---------------------------+
+   | Transport   | QP       | PDC ID      | Connectionless in UET     |
+   | Endpoint    | Number   | (variable)  |                           |
+   |             | (24b)    |             |                           |
+   +-------------+----------+-------------+---------------------------+
+   | Sequence    | PSN      | PSN         | Larger range for RUD OOO  |
+   | Number      | (24b)    | (extended)  | tolerance                 |
+   +-------------+----------+-------------+---------------------------+
+   | Congestion  | ECN bits | ECN + CMS   | Sender + receiver signals |
+   | Signal      | only     | sub-header  | in UET                    |
+   +-------------+----------+-------------+---------------------------+
+   | Entropy     | UDP src  | Explicit    | Deterministic spray in    |
+   | Source      | port     | entropy     | UET                       |
+   |             |          | field       |                           |
+   +-------------+----------+-------------+---------------------------+
+   | Ordering    | Always   | Per-service | RUD allows OOO delivery   |
+   | Guarantee   | in-order | (ROD/RUD)   |                           |
+   |             | (RC)     |             |                           |
+   +-------------+----------+-------------+---------------------------+
+   | Pre-Payload | ~74B     | ~78B (est.  | Slight increase for sub-  |
+   | Header      | (Write)  | Write)      | layer headers; excludes   |
+   | Bytes       |          |             | the mandatory 8B ICRC+FCS |
+   |             |          |             | trailer, present in both  |
+   +-------------+----------+-------------+---------------------------+
 
-                    Table 18: RoCEv2 vs. UET Comparison
+                   Table 18: RoCEv2 vs. UET Comparison
 
    1.  *UDP Destination Port:* UET uses port 4793 vs. RoCEv2 port 4791.
 
@@ -1914,7 +1953,8 @@ Acknowledgments
    This work has benefited from the discussions that occurred during the
    joint IPPM and BMWG meeting and on the BMWG mailing list.  Thanks to
    Carsten Rossenhoevel and Mohamed Boucadair for valuable review and
-   comments.
+   comments.  Thanks to Andrew Yourtchenko for a thorough review of the
+   document set.
 
 Authors' Addresses
 
