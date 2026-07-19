@@ -85,20 +85,66 @@ informative:
     seriesinfo:
       Internet-Draft: draft-gaikwad-llm-benchmarking-methodology-00
   META-ROCE:
-    title: "RDMA over Ethernet for Distributed AI Training at Meta Scale"
+    title: "RDMA over Ethernet for Distributed Training at Meta Scale"
     author:
       - ins: A. Gangidi
-        name: Anirudh Gangidi
+        name: Adithya Gangidi
+      - ins: R. Miao
+        name: Rui Miao
+      - ins: S. Zheng
+        name: Shengbao Zheng
+      - ins: S. J. Bondu
+        name: Sai Jayesh Bondu
+      - ins: G. Goes
+        name: Guilherme Goes
+      - ins: H. Morsy
+        name: Hany Morsy
+      - ins: R. Puri
+        name: Rohit Puri
+      - ins: M. Riftadi
+        name: Mohammad Riftadi
+      - ins: A. J. Shetty
+        name: Ashmitha Jeevaraj Shetty
+      - ins: J. Yang
+        name: Jingyi Yang
+      - ins: S. Zhang
+        name: Shuqiang Zhang
+      - ins: M. J. Fernandez
+        name: Mikel Jimenez Fernandez
+      - ins: S. Gandham
+        name: Shashidhar Gandham
+      - ins: H. Zeng
+        name: Hongyi Zeng
     date: 2024
     seriesinfo:
+      "ACM SIGCOMM '24": "Sydney, NSW, Australia"
       DOI: 10.1145/3651890.3672233
   DCQCN-PAPER:
     title: "Congestion Control for Large-Scale RDMA Deployments"
     author:
       - ins: Y. Zhu
         name: Yibo Zhu
+      - ins: H. Eran
+        name: Haggai Eran
+      - ins: D. Firestone
+        name: Daniel Firestone
+      - ins: C. Guo
+        name: Chuanxiong Guo
+      - ins: M. Lipshteyn
+        name: Marina Lipshteyn
+      - ins: Y. Liron
+        name: Yehonatan Liron
+      - ins: J. Padhye
+        name: Jitendra Padhye
+      - ins: S. Raindel
+        name: Shachar Raindel
+      - ins: M. H. Yahia
+        name: Mohamad Haj Yahia
+      - ins: M. Zhang
+        name: Ming Zhang
     date: 2015
     seriesinfo:
+      "ACM SIGCOMM": "pp. 523-536"
       DOI: 10.1145/2785956.2787484
   LIBFABRIC:
     title: "libfabric: Open Fabric Interfaces"
@@ -312,7 +358,7 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio are investigated and reported.
 | PFC Pause Duration | us | Cumulative time a port is in PFC-paused state per interval |
 | RDMA Retransmission Rate | retx/sec | NIC-level retransmissions due to timeouts or NAKs |
 | ECMP Imbalance (MMR) | dimensionless | Max-Mean Ratio of flow counts across parallel uplinks |
-| Jain's Fairness Index (JFI) | 0.0-1.0 | Fairness of traffic distribution; 1.0 = perfect |
+| Jain's Fairness Index (JFI) | 1/N-1.0 | Fairness of traffic distribution; 1.0 = perfect, 1/N = worst (N = number of parallel links) |
 | Queue Depth (P95/Max) | bytes or cells | 95th percentile and maximum egress queue occupancy per port |
 | Congestion Control Convergence | us | Time from congestion onset to DCQCN rate stabilization |
 | Out-of-Order Packet Rate | pkt/sec | Packets delivered out of sequence (relevant for packet spray) |
@@ -380,7 +426,7 @@ These tests establish baseline fabric performance for RDMA traffic independent o
 
 # Test Category 2: UEC Transport Protocol Benchmarks {#test-uec}
 
-The Ultra Ethernet Consortium (UEC) Specification 1.0 {{UEC-1.0}} defines UET, a connectionless RDMA transport designed to replace RoCEv2 for AI/HPC workloads. All UET tests use the libfabric API {{LIBFABRIC}} and run on UEC 1.0-compliant NICs.
+The Ultra Ethernet Consortium (UEC) Specification 1.0 {{UEC-1.0}} defines UET, an RDMA transport positioned as an alternative to RoCEv2 for AI/HPC workloads. All UET tests use the libfabric API {{LIBFABRIC}} and run on UEC 1.0-compliant NICs.
 
 The UEC compliance profile (AI Base, AI Full, or HPC) used during testing is documented in the test report.
 
@@ -397,9 +443,11 @@ The UEC compliance profile (AI Base, AI Full, or HPC) used during testing is doc
 | Throughput @ 1MB (Gbps) | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
 | Throughput @ 4MB (Gbps) | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
 | Efficiency (% line rate) | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
-| PDC/QP Setup Time (us) | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
+| Connection/PDC Initiation Latency (us) (see note) | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
 | Max Sustained PDC/QP Count | (meas) | (meas) | (meas) | (meas) | (meas) | (meas) |
 {: #tab-uet-throughput title="UET Throughput by Transport Service"}
+
+NOTE: For RoCEv2 RC/UC, this measures QP connection setup time (handshake round-trip). For UET (ROD/RUD/RUDI/UUD), PDCs have no separate setup handshake; this measures the first-packet latency reflecting in-band PDC initiation instead.
 
 ## UET Latency Characterization {#uet-latency-characterization}
 
@@ -434,7 +482,7 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 | UET RUD + DLB/Flowlet | (meas) | (meas) | (meas) | (meas) | (meas) |
 {: #tab-uet-spray title="Packet Spray Efficacy Under UET RUD"}
 
-> UET RUD is expected to achieve zero host-visible reordering despite per-packet spray because the transport layer natively tolerates unordered delivery.
+> This test evaluates whether UET RUD achieves zero host-visible reordering despite per-packet spray, since the transport layer is designed to tolerate unordered delivery.
 
 ## UET Congestion Control Benchmarks {#uet-congestion-control-benchmarks}
 
@@ -442,7 +490,7 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 
 **Procedure:** Measure: (a) incast throughput at N = {2, 4, 8, 16, 32, 64}; (b) convergence time after doubling active senders (until all flows within 10% of fair share); (c) PFC avoidance with PFC disabled on the DUT; (d) receiver credit utilization.
 
-**Reporting:** Tabulate incast throughput, convergence time, peak queue depth, PFC event count, and packet drop rate for UET vs. DCQCN per incast ratio. **Critical differentiator:** report whether UET achieves zero application-visible loss without PFC.
+**Reporting:** Tabulate incast throughput, convergence time, peak queue depth, PFC event count, and packet drop rate for UET vs. DCQCN per incast ratio. **Key metric:** report whether UET achieves zero application-visible loss without PFC.
 
 ## Link Layer Enhancement Benchmarks {#link-layer-enhancement-benchmarks}
 
@@ -524,7 +572,7 @@ Load balancing across parallel fabric paths is critical for AI training fabrics 
 
 **Objective:** Quantify traffic polarization under standard ECMP hashing for AI training flow patterns.
 
-**Procedure:** Configure standard 5-tuple ECMP. Generate traffic with Q = {1, 4, 8, 16, 32} QPs per src-dst pair. Measure per-link utilization, MMR, and JFI. Test with and without BTH-aware hashing. Repeat for fabric sizes of 8, 16, 32, and 64 leaf switches.
+**Procedure:** Configure standard 5-tuple ECMP. Generate traffic with Q = {1, 4, 8, 16, 32} QPs per src-dst pair. Measure per-link utilization, MMR, and JFI. Test with and without ECMP hashing that includes the BTH destination QP field as a hash input (in addition to the standard 5-tuple). Repeat for fabric sizes of 8, 16, 32, and 64 leaf switches.
 
 ## Dynamic Load Balancing (Flowlet) {#dynamic-load-balancing-flowlet}
 
@@ -601,7 +649,7 @@ BusBW is computed per the BusBW definition in {{TERMINOLOGY}}; algo_factor is fi
 
 **Measurement:** Report BusBW (average, P50, P95, P99), JCT per iteration, ECN marking ratio, PFC pause count, and per-link utilization for each (message_size, N, LB_strategy) combination.
 
-**Reporting:** Same table format as {{allreduce-benchmark}}, with the "Algorithm (verified)" column required.  Report BusBW efficiency = BusBW / NIC_line_rate.  Where results are compared to AllReduce under identical parameters, the BusBW ratio (AllGather / AllReduce) quantifies the fabric overhead attributable to the reduce phase.
+**Reporting:** Same table format as {{allreduce-benchmark}}, with the "Algorithm (verified)" column required.  Report BusBW efficiency = BusBW / NIC_line_rate.  Where results are compared to AllReduce under identical parameters, the BusBW ratio (AllGather / AllReduce) quantifies the difference in fabric load between the two traffic patterns; AllReduce's additional network traffic reflects its ReduceScatter phase, not the reduction arithmetic itself, which is performed by the accelerators, not the fabric.
 
 ## Collective Communication Library Bus Bandwidth Summary
 
@@ -697,7 +745,7 @@ The Overlap_Fraction and communication-library overlap configuration (e.g., buck
 
 **Objective:** Measure JCT using MLPerf Training benchmark workloads {{MLPERF}} to enable comparison with published industry results.
 
-**Procedure:** Execute MLPerf Training closed-division workloads (e.g., BERT, ResNet, GPT-3 175B) per MLPerf submission rules. Simultaneously capture all fabric KPIs from {{kpi-framework-and-metrics-taxonomy}}. Report time-to-train and/or tokens-per-second.
+**Procedure:** Execute the current MLPerf Training closed-division workloads per MLPerf submission rules ({{MLPERF}}); the specific workload set changes across MLPerf versions, so the test report MUST identify the MLPerf Training version and workload names used. Simultaneously capture all fabric KPIs from {{kpi-framework-and-metrics-taxonomy}}. Report time-to-train and/or tokens-per-second.
 
 ## Multi-Tenant JCT Interference {#multi-tenant-jct-interference}
 
@@ -745,7 +793,7 @@ Repeat for: leaf uplink failure, spine switch failure, superspine link failure (
 
 **Objective:** Characterize DUT fabric stability under sustained AI training load over an extended period, following the soak-testing methodology pattern in {{EVPN-BENCH}}.
 
-**Procedure:** Configure DUT at maximum validated scale from {{fabric-scale-limits}}. Generate bidirectional collective communication traffic (alternating AllReduce and AllToAll). Run continuously for 24 hours. Sample all KPIs from {{kpi-framework-and-metrics-taxonomy}} every 60 seconds.
+**Procedure:** Configure DUT at maximum validated scale from {{fabric-scale-limits}}. Generate bidirectional collective communication traffic (alternating AllReduce and AllToAll) at 80% of maximum validated throughput, per the offered load fraction required by the Soak Test definition in {{TERMINOLOGY}}. Run continuously for 24 hours. Sample all KPIs from {{kpi-framework-and-metrics-taxonomy}} every 60 seconds.
 
 The objective of the soak test is to monitor and document fabric behavior under extended load. The methodology does not establish pass/fail criteria for any reported metric. Any memory leaks, crashes, or other anomalies encountered during the test MUST be documented as an application log file or other dedicated file with their timestamps and durations.
 
