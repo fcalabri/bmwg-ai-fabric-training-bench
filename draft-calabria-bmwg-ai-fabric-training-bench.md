@@ -790,7 +790,7 @@ Per {{RFC6815}}, the tests defined herein MUST NOT be performed on production ne
 
 The following considerations are specific to the methodology defined in this document:
 
-- **PFC leakage:** PFC PAUSE frames generated under incast or storm conditions ({{pfc-behavior-under-incast}}, {{pfc-storm-and-deadlock-resilience}}) that escape the test environment can hang adjacent production switches sharing the same priority class. Physical or VLAN-based isolation of the test fabric is required.
+- **PFC leakage:** PFC PAUSE frames generated under incast or storm conditions ({{pfc-behavior-under-incast}}, {{pfc-storm-and-deadlock-resilience}}) that escape the test environment can cause adjacent production switches sharing the same priority class to stop responding. Physical or VLAN-based isolation of the test fabric is required.
 - **Line-rate RDMA traffic generators:** the equipment specified in {{traffic-generator-requirements}} is capable of saturating production links at line rate; such generators MUST be confined to the test fabric.
 - **PFC disabled in {{uet-congestion-control-benchmarks}}:** the UET PFC-free incast test deliberately disables PFC on the DUT. In this configuration, traffic leaking to adjacent infrastructure cannot be backpressured and will be dropped on the adjacent device's queues. Isolation is mandatory.
 - **RDMA QP and PDC namespace isolation:** when RDMA/RoCEv2 traffic is used, the test environment SHOULD be isolated from production RDMA fabrics to prevent QP number space collisions or inadvertent PFC propagation. When UET traffic is used ({{test-uec}}), the test environment MUST ensure that UDP port 4793 traffic does not leak to production networks and that PDC identifier spaces are isolated.
