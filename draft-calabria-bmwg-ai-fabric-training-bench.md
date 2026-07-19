@@ -206,7 +206,7 @@ Three reference topologies are defined. Every test report identifies which topol
 Hosts w/   Hosts w/   Hosts w/   Hosts w/
 RoCEv2 NIC             RoCEv2 NIC
 ~~~
-{: #fig-topo-a title="Topology A: 2-Tier Clos (Leaf-Spine)"}
+{: #fig-topo-a align="center" title="Topology A: 2-Tier Clos (Leaf-Spine)"}
 
 The DUT boundary encompasses all leaf and spine switches and their interconnecting links. Traffic generators or actual GPU hosts connect at the leaf layer.
 
@@ -237,7 +237,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 | GPU[7] | | GPU[7] | | GPU[7] | | GPU[7] |
 +--------+ +--------+ +--------+ +--------+
 ~~~
-{: #fig-topo-c title="Topology C: Rail-Optimized (schematic; only 4 of N rails and hosts shown)"}
+{: #fig-topo-c align="center" title="Topology C: Rail-Optimized (schematic; only 4 of N rails and hosts shown)"}
 
 In rail-optimized topologies, each NIC on a multi-NIC host connects to a dedicated leaf switch ("rail"); this co-optimizes network locality with the collective communications library (CCL) in use (e.g., NCCL, RCCL, oneCCL). The diagram is schematic: it depicts a representative subset of rails and hosts, not the full cross-host fan-out; in the complete topology, the Rail-N leaf switch connects to GPU[N] of every host. The DUT boundary and rail mapping are fully documented in the test report.
 
@@ -266,7 +266,7 @@ The traffic generator supports: RoCEv2 transport emulation (QP establishment, RD
 
 | Parameter | Minimum Requirement |
 |---|---|
-| Timestamp accuracy | <= 100 nanoseconds |
+| Timestamp accuracy | ≤ 100 nanoseconds |
 | Frame rate accuracy | +/- 0.1% of specified rate |
 | QP scaling range | 1 to 256 QPs per src-dst pair |
 | Message size range | 64 B to 8 GB |
@@ -547,7 +547,7 @@ Load balancing across parallel fabric paths is critical for AI training fabrics 
 ~~~ ascii-art
 JFI = (Sum LinkTx_i)^2 / (N × Sum LinkTx_i^2)
 ~~~
-{: #fig-jfi title="Jain's Fairness Index Formula"}
+{: #fig-jfi align="center" title="Jain's Fairness Index Formula"}
 
 where LinkTx_i = transmitted traffic on fabric link i, N = total parallel links. Range: 1/N (worst) to 1.0 (perfect).
 
@@ -661,7 +661,7 @@ JCT Ratio    = Measured_JCT / Roofline_seq
   The factor of 8 converts S from bytes to bits to match the
   units of B_acc.
 ~~~
-{: #fig-jct-formula title="JCT Ratio Calculation"}
+{: #fig-jct-formula align="center" title="JCT Ratio Calculation"}
 
 This model assumes strictly sequential compute and communication phases
 and represents a conservative upper bound on communication overhead.
@@ -677,7 +677,7 @@ Overlap_Fraction = 1 - (Measured_JCT - C_total) / Comm_time
     Comm_time = Iterations × (8 × S × algo_factor) / B_acc
     S, algo_factor, B_acc as defined for Roofline_seq above.
 ~~~
-{: #fig-overlap-formula title="Overlap Fraction Calculation"}
+{: #fig-overlap-formula align="center" title="Overlap Fraction Calculation"}
 
 An Overlap_Fraction of 0 indicates fully sequential execution; 1.0 indicates communication is perfectly hidden behind compute.
 
@@ -691,7 +691,7 @@ The Overlap_Fraction and communication-library overlap configuration (e.g., buck
 
 **Reporting:** Tabulate JCT Ratio for each (C, S, N, LB_strategy) combination.  Plot JCT Ratio vs. N to characterize fabric scalability.
 
-> NOTE: JCT Ratio <= 1.05 indicates excellent fabric performance; values between 1.05 and 1.15 are acceptable; a ratio above 1.15 indicates significant fabric-induced overhead. These are non-normative illustrative reference values only.
+> NOTE: JCT Ratio ≤ 1.05 indicates excellent fabric performance; values between 1.05 and 1.15 are acceptable; a ratio above 1.15 indicates significant fabric-induced overhead. These are non-normative illustrative reference values only.
 
 ## MLPerf-Aligned JCT {#mlperf-aligned-jct}
 
@@ -708,7 +708,7 @@ The Overlap_Fraction and communication-library overlap configuration (e.g., buck
 ~~~ ascii-art
 JCT Interference Factor = Contention_JCT / Baseline_JCT
 ~~~
-{: #fig-jct-interference title="JCT Interference Factor"}
+{: #fig-jct-interference align="center" title="JCT Interference Factor"}
 
 Test with spine link overlap: 0%, 25%, 50%, 75%.
 
@@ -842,9 +842,9 @@ This appendix provides indicative reference values for the KPIs defined in {{kpi
 
 | KPI | Indicative Reference |
 |---|---|
-| JCT Ratio | <= 1.05 (<= 1.15 acceptable) |
-| BusBW | >= 90% of NIC line rate (intra-pod) |
-| Aggregate Throughput | >= 95% of bisection BW |
+| JCT Ratio | ≤ 1.05 (≤ 1.15 acceptable) |
+| BusBW | ≥ 90% of NIC line rate (intra-pod) |
+| Aggregate Throughput | ≥ 95% of bisection BW |
 | Packet Drop Rate | 0 ppm (lossless) |
 {: #tab-indicative-values title="Indicative Reference Values for Distributed AI Training Fabrics (Non-Normative)"}
 
@@ -926,4 +926,4 @@ UET runs over UDP/IP using UDP destination port 4793 (IANA registration pending)
 # Acknowledgments
 {:numbered="false"}
 
-This work has benefited from the discussions that occurred during the joint IPPM and BMWG meeting and on the BMWG mailing list. Thanks to Carsten Rossenhoevel and Mohamed Boucadair for valuable review and comments.
+This work has benefited from the discussions that occurred during the joint IPPM and BMWG meeting and on the BMWG mailing list. Thanks to Carsten Rossenhoevel and Mohamed Boucadair for valuable review and comments. Thanks to Andrew Yourtchenko for a thorough review of the document set.
