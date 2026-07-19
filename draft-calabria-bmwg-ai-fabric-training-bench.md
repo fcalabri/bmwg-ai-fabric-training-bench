@@ -313,7 +313,7 @@ Discrepancies exceeding 10% in BusBW or JCT Ratio are investigated and reported.
 | PFC Pause Duration | us | Cumulative time a port is in PFC-paused state per interval |
 | RDMA Retransmission Rate | retx/sec | NIC-level retransmissions due to timeouts or NAKs |
 | ECMP Imbalance (MMR) | dimensionless | Max-Mean Ratio of flow counts across parallel uplinks |
-| Jain Fairness Index (JFI) | 0.0-1.0 | Fairness of traffic distribution; 1.0 = perfect |
+| Jain's Fairness Index (JFI) | 0.0-1.0 | Fairness of traffic distribution; 1.0 = perfect |
 | Queue Depth (P95/Max) | bytes or cells | 95th percentile and maximum egress queue occupancy per port |
 | Congestion Control Convergence | us | Time from congestion onset to DCQCN rate stabilization |
 | Out-of-Order Packet Rate | pkt/sec | Packets delivered out of sequence (relevant for packet spray) |
@@ -538,7 +538,7 @@ Load balancing across parallel fabric paths is critical for AI training fabrics 
 
 **Procedure:** Configure per-packet load balancing. Measure MMR (expected ~1.0), JFI (expected ~1.0), out-of-order rate, and RDMA retransmission impact. If the DUT provides an in-fabric reorder buffer, document per {{asic-features}}.
 
-## Jain Fairness Index Measurement
+## Jain's Fairness Index Measurement
 
 **Objective:** Single-number summary of load balancing quality comparable across all strategies.
 
@@ -547,7 +547,7 @@ Load balancing across parallel fabric paths is critical for AI training fabrics 
 ~~~ ascii-art
 JFI = (Sum LinkTx_i)^2 / (N * Sum LinkTx_i^2)
 ~~~
-{: #fig-jfi title="Jain Fairness Index Formula"}
+{: #fig-jfi title="Jain's Fairness Index Formula"}
 
 where LinkTx_i = transmitted traffic on fabric link i, N = total parallel links. Range: 1/N (worst) to 1.0 (perfect).
 
