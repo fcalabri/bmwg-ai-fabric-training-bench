@@ -1055,7 +1055,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Calabria, et al.</td>
-<td class="center">Expires 20 January 2027</td>
+<td class="center">Expires 21 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg {
 <dd class="internet-draft">draft-calabria-bmwg-ai-fabric-training-bench-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-19" class="published">19 July 2026</time>
+<time datetime="2026-07-20" class="published">20 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-20">20 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-01-21">21 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1142,7 +1142,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 20 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2313,8 +2313,8 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
         </h3>
 <p id="section-6.6-1"><strong>Objective:</strong> Measure collective communication (AllReduce, AllToAll, AllGather) performance over UET and compare directly to RoCEv2, isolating the transport protocol contribution to collective efficiency.<a href="#section-6.6-1" class="pilcrow">¶</a></p>
 <p id="section-6.6-2"><strong>Procedure:</strong> Execute the collective benchmark suite from <a href="#test-collective" class="auto internal xref">Section 9</a> over UET RUD transport using a UEC-compliant collective library. The same accelerator count (N), message sizes, and fabric topology are used for both UET and RoCEv2 runs to ensure a valid comparison. Run UET RUD + packet spray as the primary configuration and UET ROD + ECMP as the secondary baseline.<a href="#section-6.6-2" class="pilcrow">¶</a></p>
-<p id="section-6.6-3">For AllReduce, the UET group keying state (transport-layer reduction support per UEC Spec 1.0) on the DUT NIC — active or inactive — is documented as a required result field in the test report.<a href="#section-6.6-3" class="pilcrow">¶</a></p>
-<p id="section-6.6-4">When UET group keying is active during testing, report the observed BusBW computed from measured bytes transferred. The algo_factor defined in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span> (fixed per collective type) still applies to the formula; the observed transfer volume reflects group keying behavior.<a href="#section-6.6-4" class="pilcrow">¶</a></p>
+<p id="section-6.6-3">For AllReduce, the UET TSS group-key encryption state (active or inactive) on the DUT NIC is documented as a required result field in the test report.<a href="#section-6.6-3" class="pilcrow">¶</a></p>
+<p id="section-6.6-4">When UET TSS group-key encryption is active during testing, report the observed BusBW computed from measured bytes transferred per the algo_factor formula defined in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span> (fixed per collective type); group-key encryption affects per-packet security processing overhead, not the transfer volume itself.<a href="#section-6.6-4" class="pilcrow">¶</a></p>
 <p id="section-6.6-5">The runtime algorithm in use is reported per message-size bucket. See <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span> for the BusBW definition and algo_factor values.<a href="#section-6.6-5" class="pilcrow">¶</a></p>
 <p id="section-6.6-6"><strong>Reporting:</strong>  Report the percentage improvement in BusBW and JCT attributable to UET native packet spray and congestion control.<a href="#section-6.6-6" class="pilcrow">¶</a></p>
 <p id="section-6.6-7"><strong>Reporting template:</strong><a href="#section-6.6-7" class="pilcrow">¶</a></p>
