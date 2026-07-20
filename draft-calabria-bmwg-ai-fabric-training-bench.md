@@ -510,9 +510,9 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 
 **Procedure:** Execute the collective benchmark suite from {{test-collective}} over UET RUD transport using a UEC-compliant collective library. The same accelerator count (N), message sizes, and fabric topology are used for both UET and RoCEv2 runs to ensure a valid comparison. Run UET RUD + packet spray as the primary configuration and UET ROD + ECMP as the secondary baseline.
 
-For AllReduce, the UET group keying state (transport-layer reduction support per UEC Spec 1.0) on the DUT NIC — active or inactive — is documented as a required result field in the test report.
+For AllReduce, the UET TSS group-key encryption state (active or inactive) on the DUT NIC is documented as a required result field in the test report.
 
-When UET group keying is active during testing, report the observed BusBW computed from measured bytes transferred. The algo_factor defined in {{TERMINOLOGY}} (fixed per collective type) still applies to the formula; the observed transfer volume reflects group keying behavior.
+When UET TSS group-key encryption is active during testing, report the observed BusBW computed from measured bytes transferred per the algo_factor formula defined in {{TERMINOLOGY}} (fixed per collective type); group-key encryption affects per-packet security processing overhead, not the transfer volume itself.
 
 The runtime algorithm in use is reported per message-size bucket. See {{TERMINOLOGY}} for the BusBW definition and algo_factor values.
 
