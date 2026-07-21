@@ -5,13 +5,13 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 20 January 2027                            Blue Fern Consulting
+Expires: 22 January 2027                            Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
                                                                 S. Reddy
                                                                    Apple
-                                                            19 July 2026
+                                                            21 July 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 January 2027.
+   This Internet-Draft will expire on 22 January 2027.
 
 Copyright Notice
 
@@ -875,15 +875,15 @@ Table of Contents
    UET RUD + packet spray as the primary configuration and UET ROD +
    ECMP as the secondary baseline.
 
-   For AllReduce, the UET group keying state (transport-layer reduction
-   support per UEC Spec 1.0) on the DUT NIC — active or inactive — is
-   documented as a required result field in the test report.
+   For AllReduce, the UET TSS group-key encryption state (active or
+   inactive) on the DUT NIC is documented as a required result field in
+   the test report.
 
-   When UET group keying is active during testing, report the observed
-   BusBW computed from measured bytes transferred.  The algo_factor
-   defined in [TERMINOLOGY] (fixed per collective type) still applies to
-   the formula; the observed transfer volume reflects group keying
-   behavior.
+   When UET TSS group-key encryption is active during testing, report
+   the observed BusBW computed from measured bytes transferred per the
+   algo_factor formula defined in [TERMINOLOGY] (fixed per collective
+   type); group-key encryption affects per-packet security processing
+   overhead, not the transfer volume itself.
 
    The runtime algorithm in use is reported per message-size bucket.
    See [TERMINOLOGY] for the BusBW definition and algo_factor values.
@@ -1840,102 +1840,106 @@ Appendix D.  RoCEv2 Test Frame Format
 
 Appendix E.  UET (Ultra Ethernet Transport) Frame Format
 
-   UET runs over UDP/IP using UDP destination port 4793 (IANA
-   registration pending).
+   UET runs over UDP/IP using UDP destination port 4793, IANA-assigned
+   to Ultra Ethernet Transport.
 
-   +========+============+======+=====================================+
-   | Offset | Field      | Size | Value / Description                 |
-   +========+============+======+=====================================+
-   | 00     | Ethernet   | 6B   | DUT next-hop MAC                    |
-   |        | Dst MAC    |      |                                     |
-   +--------+------------+------+-------------------------------------+
-   | 06     | Ethernet   | 6B   | Test equipment MAC                  |
-   |        | Src MAC    |      |                                     |
-   +--------+------------+------+-------------------------------------+
-   | 12     | EtherType  | 2B   | 0x0800 (IPv4) when untagged; 0x8100 |
-   |        | / TPID     |      | (TPID) when 802.1Q-tagged           |
-   +--------+------------+------+-------------------------------------+
-   | 14     | 802.1Q Tag | 4B   | When tagged: TCI (PCP=3 for UET     |
-   |        | (optional) |      | priority class, VID) followed by    |
-   |        |            |      | inner EtherType 0x0800.  Omit this  |
-   |        |            |      | row entirely when untagged and      |
-   |        |            |      | shift subsequent offsets back by 4B |
-   +--------+------------+------+-------------------------------------+
-   | 18     | IPv4       | 20B  | DSCP=26 (AF31), ECN=ECT(0),         |
-   |        | Header     |      | Proto=17 (UDP)                      |
-   +--------+------------+------+-------------------------------------+
-   | 38     | UDP Header | 8B   | DstPort=4793 (UET), SrcPort=entropy |
-   +--------+------------+------+-------------------------------------+
-   | 46     | UET Common | 16B  | Version, OpCode, PDC ID, PSN,       |
-   |        | Header     |      | Entropy Value, Flags                |
-   +--------+------------+------+-------------------------------------+
-   | 62     | SES Header | var  | Operation-specific (Write/Send/     |
-   |        | (Semantic) |      | etc.)                               |
-   +--------+------------+------+-------------------------------------+
-   | var    | PDS Header | var  | Sequence, Credit, Ack fields        |
-   |        | (Pkt       |      |                                     |
-   |        | Delivery)  |      |                                     |
-   +--------+------------+------+-------------------------------------+
-   | var    | CMS Header | var  | ECN feedback, rate signals          |
-   |        | (Cong.     |      |                                     |
-   |        | Mgmt)      |      |                                     |
-   +--------+------------+------+-------------------------------------+
-   | var    | Payload    | var  | Application data                    |
-   +--------+------------+------+-------------------------------------+
-   | var    | ICRC       | 4B   | Invariant CRC                       |
-   +--------+------------+------+-------------------------------------+
-   | var+4  | FCS        | 4B   | Ethernet Frame Check Sequence       |
-   +--------+------------+------+-------------------------------------+
+   Unlike the RoCEv2 frame format above, this appendix does not specify
+   a byte-accurate UET header layout.  UET headers are layered and
+   variable-length, and their wire formats are defined normatively by
+   the UEC; test equipment implementations MUST follow [UEC-1.0]
+   Section 4 for all wire-format details.  The figure below is
+   explicitly schematic: it shows only the layering and on-wire ordering
+   of the protocol components that test equipment generates and parses.
 
-                        Table 17: UET Frame Format
+      +-------------------------------------------------------------+
+      | Ethernet Header: Dst MAC, Src MAC, EtherType                |
+      |   (optional 802.1Q tag: PCP=3 for UET priority class, VID)  |
+      +-------------------------------------------------------------+
+      | IPv4 Header: DSCP=26 (AF31), ECN=ECT(0), Proto=17 (UDP)     |
+      +-------------------------------------------------------------+
+      | UDP Header: DstPort=4793 (UET);                             |
+      |   SrcPort carries the Entropy Value, varied per packet      |
+      +-------------------------------------------------------------+
+      | PDS (Packet Delivery Sublayer) header(s):                   |
+      |   packet type, PDC identifiers, sequence number,            |
+      |   ack/credit and congestion-control state                   |
+      +-------------------------------------------------------------+
+      | SES (Semantic Sublayer) header(s):                          |
+      |   operation (Write/Read/Send/Atomic), addressing,           |
+      |   message identification                                    |
+      +-------------------------------------------------------------+
+      | Payload                                                     |
+      +-------------------------------------------------------------+
+      | ICRC (4B) | FCS (4B)                                        |
+      +-------------------------------------------------------------+
+
+       Figure 7: UET Frame Layering (Schematic Only; Byte Layouts Per
+                             UEC 1.0 Section 4)
+
+   Layering notes:
+
+   *  The Entropy Value is carried in the UDP source port field, not in
+      a separate UET header field; see the Entropy Value definition in
+      [TERMINOLOGY].  Test equipment varies the UDP source port per
+      packet to exercise packet spraying.
+
+   *  PDS headers precede SES headers on the wire.
+
+   *  CMS (Congestion Management Sublayer) state is carried in PDS
+      congestion-control fields and control packets rather than as a
+      separate wire header.  TSS (Transport Security Sublayer), when
+      enabled, adds security headers and authentication data per
+      [UEC-1.0] Section 4.
 
 E.1.  Key Differences from RoCEv2
 
-   +=============+==========+=============+===========================+
-   | Field       | RoCEv2   | UET Value   | Notes                     |
-   |             | Value    |             |                           |
-   +=============+==========+=============+===========================+
-   | UDP Dst     | 4791     | 4793        | 4791 is IANA-assigned     |
-   | Port        |          |             | (RoCEv2); 4793            |
-   |             |          |             | registration is pending   |
-   +-------------+----------+-------------+---------------------------+
-   | Transport   | QP       | PDC ID      | Connectionless in UET     |
-   | Endpoint    | Number   | (variable)  |                           |
-   |             | (24b)    |             |                           |
-   +-------------+----------+-------------+---------------------------+
-   | Sequence    | PSN      | PSN         | Larger range for RUD OOO  |
-   | Number      | (24b)    | (extended)  | tolerance                 |
-   +-------------+----------+-------------+---------------------------+
-   | Congestion  | ECN bits | ECN + CMS   | Sender + receiver signals |
-   | Signal      | only     | sub-header  | in UET                    |
-   +-------------+----------+-------------+---------------------------+
-   | Entropy     | UDP src  | Explicit    | Deterministic spray in    |
-   | Source      | port     | entropy     | UET                       |
-   |             |          | field       |                           |
-   +-------------+----------+-------------+---------------------------+
-   | Ordering    | Always   | Per-service | RUD allows OOO delivery   |
-   | Guarantee   | in-order | (ROD/RUD)   |                           |
-   |             | (RC)     |             |                           |
-   +-------------+----------+-------------+---------------------------+
-   | Pre-Payload | ~74B     | ~78B (est.  | Slight increase for sub-  |
-   | Header      | (Write)  | Write)      | layer headers; excludes   |
-   | Bytes       |          |             | the mandatory 8B ICRC+FCS |
-   |             |          |             | trailer, present in both  |
-   +-------------+----------+-------------+---------------------------+
+   +==========+=================+====================+=================+
+   |Aspect    | RoCEv2          | UET                | Notes           |
+   +==========+=================+====================+=================+
+   |UDP Dst   | 4791 (IANA-     | 4793 (IANA-        | Distinct        |
+   |Port      | assigned)       | assigned)          | transports,     |
+   |          |                 |                    | both over UDP/  |
+   |          |                 |                    | IP              |
+   +----------+-----------------+--------------------+-----------------+
+   |Transport | QP Number (24b) | PDC ID             | PDC state is    |
+   |Endpoint  |                 |                    | established     |
+   |          |                 |                    | in-band with    |
+   |          |                 |                    | the first       |
+   |          |                 |                    | packet          |
+   +----------+-----------------+--------------------+-----------------+
+   |Entropy   | UDP src port,   | UDP src port,      | Per-packet      |
+   |Source    | typically fixed | varied per packet  | spraying uses   |
+   |          | per QP/         |                    | existing ECMP   |
+   |          | connection      |                    | hashing         |
+   +----------+-----------------+--------------------+-----------------+
+   |Congestion| ECN bits; CNP-  | ECN plus UET       | Sender- and     |
+   |Signalling| based feedback  | congestion-control | receiver-based  |
+   |          | (e.g., DCQCN)   | state carried in   | CC per          |
+   |          |                 | PDS                | [UEC-1.0]       |
+   +----------+-----------------+--------------------+-----------------+
+   |Ordering  | Always in-order | Per-service        | RUD/RUDI allow  |
+   |Guarantee | (RC)            | (ROD/RUD/RUDI/UUD) | out-of-order    |
+   |          |                 |                    | delivery        |
+   +----------+-----------------+--------------------+-----------------+
+   |Header    | Fixed BTH plus  | Layered, variable- | Per [UEC-1.0]   |
+   |Structure | per-opcode      | length (PDS, SES)  | Section 4       |
+   |          | extension       |                    |                 |
+   |          | headers         |                    |                 |
+   +----------+-----------------+--------------------+-----------------+
 
-                   Table 18: RoCEv2 vs. UET Comparison
+                    Table 17: RoCEv2 vs. UET Comparison
 
    1.  *UDP Destination Port:* UET uses port 4793 vs. RoCEv2 port 4791.
 
-   2.  *Entropy Value:* Explicit entropy field for ECMP path selection.
-       Test equipment varies this field to achieve uniform path
-       distribution.
+   2.  *Entropy Value:* Carried in the UDP source port field and varied
+       per packet for ECMP path selection.  Test equipment varies the
+       source port to achieve uniform path distribution.
 
    3.  *Transport Service Indicator:* Header encodes transport service
        (ROD/RUD/RUDI/UUD).  Tests set this to match the service being
        benchmarked.
 
-   4.  *PDC Identifier:* Connectionless PDC ID replaces RoCEv2's
+   4.  *PDC Identifier:* In-band-established PDC ID replaces RoCEv2's
        Destination QP.  Test equipment tracks PDC lifecycle for accurate
        measurement.
 
