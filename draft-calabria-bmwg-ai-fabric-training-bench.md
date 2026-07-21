@@ -196,7 +196,7 @@ Collective operation measurements (AllReduce, AllGather, AllToAll) are measured 
 
 The methodology is designed for controlled laboratory environments per the BMWG charter; it is NOT intended for production network measurement.
 
-## Relationship to Existing BMWG Work
+## Relationship to Existing and Companion Work
 
 | Document | Relationship |
 |---|---|
@@ -205,9 +205,11 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 | {{RFC8238}} | Data center terminology; buffer, congestion, and microburst terms extended |
 | {{RFC8239}} | Data center methodology; line-rate and buffer tests adapted for RoCEv2 |
 | {{RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
-| {{LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT. This document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. See {{INFERENCE-BENCH}} for the companion fabric-level benchmarking methodology addressing AI inference serving workloads. |
+| {{LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT; this document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. |
+| {{TERMINOLOGY}} | Companion document; normative source for the terminology used throughout this document |
+| {{INFERENCE-BENCH}} | Companion fabric-level benchmarking methodology addressing AI inference serving workloads |
 | {{UEC-1.0}} | UET protocol specification; transport services, congestion control, and link-layer enhancements benchmarked in {{test-uec}} |
-{: #tab-existing-work title="Relationship to Existing BMWG Work"}
+{: #tab-existing-work title="Relationship to Existing and Companion Work"}
 
 # Terminology
 
@@ -217,7 +219,7 @@ All terminology used in this document – including the AI fabric, RoCEv2, UET, 
 
 | Term | Definition |
 |---|---|
-| **PFC Pause Event** | A single PFC PAUSE frame transmitted on a priority class. Used in this document as the unit of count for PFC event-rate metrics (events/sec, cumulative duration) reported by the methodology in {{test-congestion}}. |
+| **PFC Pause Event** | A single PFC PAUSE frame with a non-zero quanta value transmitted on a priority class. Zero-quanta (X-ON / resume) frames are excluded from the count, since implementations that signal resume explicitly would otherwise report roughly double the event rate of implementations that let the pause timer expire; X-ON frames are instead used to bound the paused interval for the cumulative-duration metric. Used in this document as the unit of count for PFC event-rate metrics (events/sec, cumulative duration) reported by the methodology in {{test-congestion}}. |
 {: #tab-terminology title="Bench-Specific Terminology Extensions"}
 
 In addition to the BusBW reporting requirements specified in {{TERMINOLOGY}}, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions for any AllReduce, AllGather, or AllToAll benchmark in this document.
@@ -315,11 +317,17 @@ The traffic generator supports: RoCEv2 transport emulation (QP establishment, RD
 | Timestamp accuracy | ≤ 100 nanoseconds |
 | Frame rate accuracy | +/- 0.1% of specified rate |
 | QP scaling range | 1 to 256 QPs per src-dst pair |
-| Message size range | 64 B to 8 GB |
+| Message size range | 64 B to 2 GB (single-message ceiling; see note) |
 | Flow counter resolution | Per-flow byte and packet counts |
 | Loss measurement | Exact per-packet loss counting |
 | Burst generation | Burst lengths at line rate sufficient to exceed DUT buffering; configurable beyond 1000 frames |
 {: #tab-tgen-accuracy title="Minimum Measurement Accuracy Requirements"}
+
+NOTE: A single RDMA message cannot exceed the 32-bit RETH DMA Length field, an
+absolute ceiling of 4 GB, and implementations commonly advertise a practical
+max_msg_sz of 1-2 GB. Transfers larger than the single-message ceiling are
+composed from multiple RDMA messages, and the message count and per-message
+size are reported alongside the aggregate transfer size.
 
 ### Acceptable Implementations
 
