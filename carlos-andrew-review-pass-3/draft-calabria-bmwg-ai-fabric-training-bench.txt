@@ -126,7 +126,7 @@ Table of Contents
      6.2.  UET Latency Characterization
      6.3.  Packet Spray Efficacy Under UET RUD
      6.4.  UET Congestion Control Benchmarks
-     6.5.  Link Layer Enhancement Benchmarks
+     6.5.  Link-Layer and Network-Layer Enhancement Benchmarks
      6.6.  UET Collective Communication Performance
      6.7.  UET PDC Scalability and Connection Setup Rate
    7.  Test Category 3: Congestion Management
@@ -177,11 +177,15 @@ Table of Contents
    data center traffic varies in flow size and protocol mix.  AI
    training generates synchronized, bandwidth-intensive east-west
    traffic dominated by collective communication operations: AllReduce,
-   AllToAll, and AllGather.  These workloads require lossless transport
-   (via RDMA over Converged Ethernet, RoCEv2), bounded tail latency,
-   uniform load distribution across all fabric paths, and the ability to
-   absorb coordinated micro-bursts from thousands of accelerators
-   simultaneously.
+   AllToAll, and AllGather.  These workloads require RDMA transport with
+   negligible application-visible loss, bounded tail latency, uniform
+   load distribution across all fabric paths, and the ability to absorb
+   coordinated micro-bursts from thousands of accelerators
+   simultaneously.  RoCEv2 deployments typically meet the loss
+   requirement by operating the fabric lossless (PFC/ECN); UET is
+   designed to tolerate wire-level loss and recover via retransmission
+   and packet trimming (see the Zero Packet Loss definition in
+   [TERMINOLOGY]).
 
    Existing BMWG methodologies do not address AI training fabrics.
    [RFC2544] defines benchmarking for general network interconnect
@@ -856,10 +860,10 @@ Table of Contents
    incast ratio. *Key metric:* report whether UET achieves zero
    application-visible loss without PFC.
 
-6.5.  Link Layer Enhancement Benchmarks
+6.5.  Link-Layer and Network-Layer Enhancement Benchmarks
 
-   *Objective:* Measure performance impact of optional link-layer
-   enhancements: LLR, Packet Trimming (PT), and CBFC.
+   *Objective:* Measure performance impact of optional UEC enhancements:
+   LLR and CBFC (link-layer) and Packet Trimming (PT, network-layer).
 
    *Procedure:*
 
@@ -1418,8 +1422,8 @@ Table of Contents
        Section 3.2 including NIC firmware, driver, collective library
        version, and any tuning.  For UET tests, additionally report: UEC
        compliance profile, libfabric provider version, NIC UEC firmware
-       version, and enabled optional link-layer features (LLR, Packet
-       Trimming, Packet Rate Improvement (PRI), CBFC).
+       version, and enabled optional features (LLR, Packet Trimming,
+       Packet Rate Improvement (PRI), CBFC).
 
    5.  *Test Results:* For each test from Section 5 through Section 12,
        provide specified tables, graphs, and statistical summaries.  For
@@ -1735,20 +1739,23 @@ Appendix B.  Indicative Reference Values (Non-Normative)
    topology, accelerator architecture, collective library, and operator
    requirements.
 
-       +======================+====================================+
-       | KPI                  | Indicative Reference               |
-       +======================+====================================+
-       | JCT Ratio            | ≤ 1.05 (≤ 1.15 acceptable)         |
-       +----------------------+------------------------------------+
-       | BusBW                | ≥ 90% of NIC line rate (intra-pod) |
-       +----------------------+------------------------------------+
-       | Aggregate Throughput | ≥ 95% of bisection BW              |
-       +----------------------+------------------------------------+
-       | Packet Drop Rate     | 0 ppm (lossless)                   |
-       +----------------------+------------------------------------+
+    +============+===================================================+
+    | KPI        | Indicative Reference                              |
+    +============+===================================================+
+    | JCT Ratio  | ≤ 1.05 (≤ 1.15 acceptable)                        |
+    +------------+---------------------------------------------------+
+    | BusBW      | ≥ 90% of NIC line rate (intra-pod)                |
+    +------------+---------------------------------------------------+
+    | Aggregate  | ≥ 95% of bisection BW                             |
+    | Throughput |                                                   |
+    +------------+---------------------------------------------------+
+    | Packet     | 0 ppm wire-level loss (lossless RoCEv2 profiles); |
+    | Drop Rate  | 0 ppm application-visible loss (UET; see the Zero |
+    |            | Packet Loss definition in [TERMINOLOGY])          |
+    +------------+---------------------------------------------------+
 
-          Table 14: Indicative Reference Values for Distributed AI
-                     Training Fabrics (Non- Normative)
+         Table 14: Indicative Reference Values for Distributed AI
+                    Training Fabrics (Non- Normative)
 
 Appendix C.  ASIC Feature Categories (Informational)
 
@@ -1967,10 +1974,10 @@ E.1.  Key Differences from RoCEv2
        TSS) with variable-length headers.  Implementations MUST follow
        [UEC-1.0] Section 4 for wire format details.
 
-   6.  *Optional Link Layer Headers:* When LLR, Packet Trimming, or PRI
-       features are enabled, additional link-layer framing may be
-       present.  Test equipment is configured to recognize and parse
-       these.
+   6.  *Optional Feature Headers:* When the LLR or PRI link-layer
+       features, or the network-layer Packet Trimming feature, are
+       enabled, additional or modified framing may be present.  Test
+       equipment is configured to recognize and parse these.
 
 Acknowledgments
 

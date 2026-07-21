@@ -1273,7 +1273,7 @@ svg {
                 <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-uet-congestion-control-benc" class="internal xref">UET Congestion Control Benchmarks</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
-                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-link-layer-enhancement-benc" class="internal xref">Link Layer Enhancement Benchmarks</a></p>
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-link-layer-and-network-laye" class="internal xref">Link-Layer and Network-Layer Enhancement Benchmarks</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.6">
                 <p id="section-toc.1-1.6.2.6.1"><a href="#section-6.6" class="auto internal xref">6.6</a>.  <a href="#name-uet-collective-communicatio" class="internal xref">UET Collective Communication Performance</a></p>
@@ -1428,7 +1428,7 @@ svg {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Distributed AI/ML training workloads impose traffic requirements that standard data center fabrics were not designed to meet. Traditional data center traffic varies in flow size and protocol mix. AI training generates synchronized, bandwidth-intensive east-west traffic dominated by collective communication operations: AllReduce, AllToAll, and AllGather. These workloads require lossless transport (via RDMA over Converged Ethernet, RoCEv2), bounded tail latency, uniform load distribution across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Distributed AI/ML training workloads impose traffic requirements that standard data center fabrics were not designed to meet. Traditional data center traffic varies in flow size and protocol mix. AI training generates synchronized, bandwidth-intensive east-west traffic dominated by collective communication operations: AllReduce, AllToAll, and AllGather. These workloads require RDMA transport with negligible application-visible loss, bounded tail latency, uniform load distribution across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously. RoCEv2 deployments typically meet the loss requirement by operating the fabric lossless (PFC/ECN); UET is designed to tolerate wire-level loss and recover via retransmission and packet trimming (see the Zero Packet Loss definition in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>).<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">Existing BMWG methodologies do not address AI training fabrics. <span>[<a href="#RFC2544" class="cite xref">RFC2544</a>]</span> defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the congestion behavior specific to GPU-to-GPU traffic. <span>[<a href="#RFC8238" class="cite xref">RFC8238</a>]</span> and <span>[<a href="#RFC8239" class="cite xref">RFC8239</a>]</span> establish data center benchmarking terminology and methodology but predate large-scale RoCEv2 deployment and do not address Priority Flow Control (PFC) interactions, DCQCN congestion control convergence <span>[<a href="#DCQCN-PAPER" class="cite xref">DCQCN-PAPER</a>]</span>, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale <span>[<a href="#META-ROCE" class="cite xref">META-ROCE</a>]</span> shows the need for a standardized benchmarking methodology.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">The Ethernet Virtual Private Network (EVPN) benchmarking methodology <span>[<a href="#EVPN-BENCH" class="cite xref">EVPN-BENCH</a>]</span> provides a structural template for service-oriented benchmarking but is scoped to L2VPN services rather than RDMA fabrics.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">This document defines a benchmarking methodology for AI training network fabrics.<a href="#section-1-4" class="pilcrow">¶</a></p>
@@ -2304,10 +2304,10 @@ size are reported alongside the aggregate transfer size.<a href="#section-3.3.2-
 </div>
 <div id="link-layer-enhancement-benchmarks">
 <section id="section-6.5">
-        <h3 id="name-link-layer-enhancement-benc">
-<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-link-layer-enhancement-benc" class="section-name selfRef">Link Layer Enhancement Benchmarks</a>
+        <h3 id="name-link-layer-and-network-laye">
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-link-layer-and-network-laye" class="section-name selfRef">Link-Layer and Network-Layer Enhancement Benchmarks</a>
         </h3>
-<p id="section-6.5-1"><strong>Objective:</strong> Measure performance impact of optional link-layer enhancements: LLR, Packet Trimming (PT), and CBFC.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<p id="section-6.5-1"><strong>Objective:</strong> Measure performance impact of optional UEC enhancements: LLR and CBFC (link-layer) and Packet Trimming (PT, network-layer).<a href="#section-6.5-1" class="pilcrow">¶</a></p>
 <p id="section-6.5-2"><strong>Procedure:</strong><a href="#section-6.5-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-6.5-3.1">
@@ -2890,7 +2890,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
           <p id="section-13-4.3.1"><strong>Test Configuration:</strong> All DUT configuration parameters: QoS policies (ECN thresholds, PFC headroom, DCQCN parameters), load balancing mode, buffer allocation, and vendor-specific tuning.<a href="#section-13-4.3.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-13-4.4">
-          <p id="section-13-4.4.1"><strong>Host Configuration:</strong> Complete host stack description per <a href="#device-under-test-dut-identification" class="auto internal xref">Section 3.2</a> including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional link-layer features (LLR, Packet Trimming, Packet Rate Improvement (PRI), CBFC).<a href="#section-13-4.4.1" class="pilcrow">¶</a></p>
+          <p id="section-13-4.4.1"><strong>Host Configuration:</strong> Complete host stack description per <a href="#device-under-test-dut-identification" class="auto internal xref">Section 3.2</a> including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional features (LLR, Packet Trimming, Packet Rate Improvement (PRI), CBFC).<a href="#section-13-4.4.1" class="pilcrow">¶</a></p>
 </li>
         <li id="section-13-4.5">
           <p id="section-13-4.5.1"><strong>Test Results:</strong> For each test from <a href="#test-rdma" class="auto internal xref">Section 5</a> through <a href="#test-soak" class="auto internal xref">Section 12</a>, provide specified tables, graphs, and statistical summaries. For <a href="#test-uec" class="auto internal xref">Section 6</a> tests, results include side-by-side UET vs. RoCEv2 comparison data on the identical DUT fabric.<a href="#section-13-4.5.1" class="pilcrow">¶</a></p>
@@ -3330,7 +3330,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
           </tr>
           <tr>
             <td class="text-left" rowspan="1" colspan="1">Packet Drop Rate</td>
-            <td class="text-left" rowspan="1" colspan="1">0 ppm (lossless)</td>
+            <td class="text-left" rowspan="1" colspan="1">0 ppm wire-level loss (lossless RoCEv2 profiles); 0 ppm application-visible loss (UET; see the Zero Packet Loss definition in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>)</td>
           </tr>
         </tbody>
       </table>
@@ -3624,7 +3624,7 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
             <p id="appendix-E.1-2.5.1"><strong>Layered Sub-Headers:</strong> UET uses four sub-layers (SES, PDS, CMS, TSS) with variable-length headers. Implementations <span class="bcp14">MUST</span> follow <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> Section 4 for wire format details.<a href="#appendix-E.1-2.5.1" class="pilcrow">¶</a></p>
 </li>
           <li id="appendix-E.1-2.6">
-            <p id="appendix-E.1-2.6.1"><strong>Optional Link Layer Headers:</strong> When LLR, Packet Trimming, or PRI features are enabled, additional link-layer framing may be present. Test equipment is configured to recognize and parse these.<a href="#appendix-E.1-2.6.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-2.6.1"><strong>Optional Feature Headers:</strong> When the LLR or PRI link-layer features, or the network-layer Packet Trimming feature, are enabled, additional or modified framing may be present. Test equipment is configured to recognize and parse these.<a href="#appendix-E.1-2.6.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 </section>
