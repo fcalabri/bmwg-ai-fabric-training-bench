@@ -1055,7 +1055,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Calabria, et al.</td>
-<td class="center">Expires 21 January 2027</td>
+<td class="center">Expires 22 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1068,12 @@ svg {
 <dd class="internet-draft">draft-calabria-bmwg-ai-fabric-training-bench-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-20" class="published">20 July 2026</time>
+<time datetime="2026-07-21" class="published">21 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-01-21">21 January 2027</time></dd>
+<dd class="expires"><time datetime="2027-01-22">22 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1142,7 +1142,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 22 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3485,164 +3485,107 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
       <h2 id="name-uet-ultra-ethernet-transpor">
 <a href="#appendix-E" class="section-number selfRef">Appendix E. </a><a href="#name-uet-ultra-ethernet-transpor" class="section-name selfRef">UET (Ultra Ethernet Transport) Frame Format</a>
       </h2>
-<p id="appendix-E-1">UET runs over UDP/IP using UDP destination port 4793 (IANA registration pending).<a href="#appendix-E-1" class="pilcrow">¶</a></p>
-<span id="name-uet-frame-format"></span><div id="tab-uet-frame">
-<table class="center" id="table-17">
-        <caption>
-<a href="#table-17" class="selfRef">Table 17</a>:
-<a href="#name-uet-frame-format" class="selfRef">UET Frame Format</a>
-        </caption>
-<thead>
-          <tr>
-            <th class="text-left" rowspan="1" colspan="1">Offset</th>
-            <th class="text-left" rowspan="1" colspan="1">Field</th>
-            <th class="text-left" rowspan="1" colspan="1">Size</th>
-            <th class="text-left" rowspan="1" colspan="1">Value / Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">00</td>
-            <td class="text-left" rowspan="1" colspan="1">Ethernet Dst MAC</td>
-            <td class="text-left" rowspan="1" colspan="1">6B</td>
-            <td class="text-left" rowspan="1" colspan="1">DUT next-hop MAC</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">06</td>
-            <td class="text-left" rowspan="1" colspan="1">Ethernet Src MAC</td>
-            <td class="text-left" rowspan="1" colspan="1">6B</td>
-            <td class="text-left" rowspan="1" colspan="1">Test equipment MAC</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">12</td>
-            <td class="text-left" rowspan="1" colspan="1">EtherType / TPID</td>
-            <td class="text-left" rowspan="1" colspan="1">2B</td>
-            <td class="text-left" rowspan="1" colspan="1">0x0800 (IPv4) when untagged; 0x8100 (TPID) when 802.1Q-tagged</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">14</td>
-            <td class="text-left" rowspan="1" colspan="1">802.1Q Tag (optional)</td>
-            <td class="text-left" rowspan="1" colspan="1">4B</td>
-            <td class="text-left" rowspan="1" colspan="1">When tagged: TCI (PCP=3 for UET priority class, VID) followed by inner EtherType 0x0800. Omit this row entirely when untagged and shift subsequent offsets back by 4B</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">18</td>
-            <td class="text-left" rowspan="1" colspan="1">IPv4 Header</td>
-            <td class="text-left" rowspan="1" colspan="1">20B</td>
-            <td class="text-left" rowspan="1" colspan="1">DSCP=26 (AF31), ECN=ECT(0), Proto=17 (UDP)</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">38</td>
-            <td class="text-left" rowspan="1" colspan="1">UDP Header</td>
-            <td class="text-left" rowspan="1" colspan="1">8B</td>
-            <td class="text-left" rowspan="1" colspan="1">DstPort=4793 (UET), SrcPort=entropy</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">46</td>
-            <td class="text-left" rowspan="1" colspan="1">UET Common Header</td>
-            <td class="text-left" rowspan="1" colspan="1">16B</td>
-            <td class="text-left" rowspan="1" colspan="1">Version, OpCode, PDC ID, PSN, Entropy Value, Flags</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">62</td>
-            <td class="text-left" rowspan="1" colspan="1">SES Header (Semantic)</td>
-            <td class="text-left" rowspan="1" colspan="1">var</td>
-            <td class="text-left" rowspan="1" colspan="1">Operation-specific (Write/Send/etc.)</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">var</td>
-            <td class="text-left" rowspan="1" colspan="1">PDS Header (Pkt Delivery)</td>
-            <td class="text-left" rowspan="1" colspan="1">var</td>
-            <td class="text-left" rowspan="1" colspan="1">Sequence, Credit, Ack fields</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">var</td>
-            <td class="text-left" rowspan="1" colspan="1">CMS Header (Cong. Mgmt)</td>
-            <td class="text-left" rowspan="1" colspan="1">var</td>
-            <td class="text-left" rowspan="1" colspan="1">ECN feedback, rate signals</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">var</td>
-            <td class="text-left" rowspan="1" colspan="1">Payload</td>
-            <td class="text-left" rowspan="1" colspan="1">var</td>
-            <td class="text-left" rowspan="1" colspan="1">Application data</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">var</td>
-            <td class="text-left" rowspan="1" colspan="1">ICRC</td>
-            <td class="text-left" rowspan="1" colspan="1">4B</td>
-            <td class="text-left" rowspan="1" colspan="1">Invariant CRC</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">var+4</td>
-            <td class="text-left" rowspan="1" colspan="1">FCS</td>
-            <td class="text-left" rowspan="1" colspan="1">4B</td>
-            <td class="text-left" rowspan="1" colspan="1">Ethernet Frame Check Sequence</td>
-          </tr>
-        </tbody>
-      </table>
+<p id="appendix-E-1">UET runs over UDP/IP using UDP destination port 4793, IANA-assigned to Ultra Ethernet Transport.<a href="#appendix-E-1" class="pilcrow">¶</a></p>
+<p id="appendix-E-2">Unlike the RoCEv2 frame format above, this appendix does not specify a byte-accurate UET header layout. UET headers are layered and variable-length, and their wire formats are defined normatively by the UEC; test equipment implementations <span class="bcp14">MUST</span> follow <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> Section 4 for all wire-format details. The figure below is explicitly schematic: it shows only the layering and on-wire ordering of the protocol components that test equipment generates and parses.<a href="#appendix-E-2" class="pilcrow">¶</a></p>
+<span id="name-uet-frame-layering-schemati"></span><div id="fig-uet-frame">
+<figure id="figure-7">
+        <div class="alignCenter art-text artwork" id="appendix-E-3.1">
+<pre>
++-------------------------------------------------------------+
+| Ethernet Header: Dst MAC, Src MAC, EtherType                |
+|   (optional 802.1Q tag: PCP=3 for UET priority class, VID)  |
++-------------------------------------------------------------+
+| IPv4 Header: DSCP=26 (AF31), ECN=ECT(0), Proto=17 (UDP)     |
++-------------------------------------------------------------+
+| UDP Header: DstPort=4793 (UET);                             |
+|   SrcPort carries the Entropy Value, varied per packet      |
++-------------------------------------------------------------+
+| PDS (Packet Delivery Sublayer) header(s):                   |
+|   packet type, PDC identifiers, sequence number,            |
+|   ack/credit and congestion-control state                   |
++-------------------------------------------------------------+
+| SES (Semantic Sublayer) header(s):                          |
+|   operation (Write/Read/Send/Atomic), addressing,           |
+|   message identification                                    |
++-------------------------------------------------------------+
+| Payload                                                     |
++-------------------------------------------------------------+
+| ICRC (4B) | FCS (4B)                                        |
++-------------------------------------------------------------+
+</pre>
 </div>
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<a href="#name-uet-frame-layering-schemati" class="selfRef">UET Frame Layering (Schematic Only; Byte Layouts Per UEC 1.0 Section 4)</a>
+        </figcaption></figure>
+</div>
+<p id="appendix-E-4">Layering notes:<a href="#appendix-E-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-E-5.1">
+          <p id="appendix-E-5.1.1">The Entropy Value is carried in the UDP source port field, not in a separate UET header field; see the Entropy Value definition in <span>[<a href="#TERMINOLOGY" class="cite xref">TERMINOLOGY</a>]</span>. Test equipment varies the UDP source port per packet to exercise packet spraying.<a href="#appendix-E-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-E-5.2">
+          <p id="appendix-E-5.2.1">PDS headers precede SES headers on the wire.<a href="#appendix-E-5.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-E-5.3">
+          <p id="appendix-E-5.3.1">CMS (Congestion Management Sublayer) state is carried in PDS congestion-control fields and control packets rather than as a separate wire header. TSS (Transport Security Sublayer), when enabled, adds security headers and authentication data per <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> Section 4.<a href="#appendix-E-5.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 <div id="key-differences-from-rocev2">
 <section id="appendix-E.1">
         <h3 id="name-key-differences-from-rocev2">
 <a href="#appendix-E.1" class="section-number selfRef">E.1. </a><a href="#name-key-differences-from-rocev2" class="section-name selfRef">Key Differences from RoCEv2</a>
         </h3>
 <span id="name-rocev2-vs-uet-comparison"></span><div id="tab-rocev2-vs-uet">
-<table class="center" id="table-18">
+<table class="center" id="table-17">
           <caption>
-<a href="#table-18" class="selfRef">Table 18</a>:
+<a href="#table-17" class="selfRef">Table 17</a>:
 <a href="#name-rocev2-vs-uet-comparison" class="selfRef">RoCEv2 vs. UET Comparison</a>
           </caption>
 <thead>
             <tr>
-              <th class="text-left" rowspan="1" colspan="1">Field</th>
-              <th class="text-left" rowspan="1" colspan="1">RoCEv2 Value</th>
-              <th class="text-left" rowspan="1" colspan="1">UET Value</th>
+              <th class="text-left" rowspan="1" colspan="1">Aspect</th>
+              <th class="text-left" rowspan="1" colspan="1">RoCEv2</th>
+              <th class="text-left" rowspan="1" colspan="1">UET</th>
               <th class="text-left" rowspan="1" colspan="1">Notes</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">UDP Dst Port</td>
-              <td class="text-left" rowspan="1" colspan="1">4791</td>
-              <td class="text-left" rowspan="1" colspan="1">4793</td>
-              <td class="text-left" rowspan="1" colspan="1">4791 is IANA-assigned (RoCEv2); 4793 registration is pending</td>
+              <td class="text-left" rowspan="1" colspan="1">4791 (IANA-assigned)</td>
+              <td class="text-left" rowspan="1" colspan="1">4793 (IANA-assigned)</td>
+              <td class="text-left" rowspan="1" colspan="1">Distinct transports, both over UDP/IP</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Transport Endpoint</td>
               <td class="text-left" rowspan="1" colspan="1">QP Number (24b)</td>
-              <td class="text-left" rowspan="1" colspan="1">PDC ID (variable)</td>
-              <td class="text-left" rowspan="1" colspan="1">Connectionless in UET</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Sequence Number</td>
-              <td class="text-left" rowspan="1" colspan="1">PSN (24b)</td>
-              <td class="text-left" rowspan="1" colspan="1">PSN (extended)</td>
-              <td class="text-left" rowspan="1" colspan="1">Larger range for RUD OOO tolerance</td>
-            </tr>
-            <tr>
-              <td class="text-left" rowspan="1" colspan="1">Congestion Signal</td>
-              <td class="text-left" rowspan="1" colspan="1">ECN bits only</td>
-              <td class="text-left" rowspan="1" colspan="1">ECN + CMS sub-header</td>
-              <td class="text-left" rowspan="1" colspan="1">Sender + receiver signals in UET</td>
+              <td class="text-left" rowspan="1" colspan="1">PDC ID</td>
+              <td class="text-left" rowspan="1" colspan="1">PDC state is established in-band with the first packet</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Entropy Source</td>
-              <td class="text-left" rowspan="1" colspan="1">UDP src port</td>
-              <td class="text-left" rowspan="1" colspan="1">Explicit entropy field</td>
-              <td class="text-left" rowspan="1" colspan="1">Deterministic spray in UET</td>
+              <td class="text-left" rowspan="1" colspan="1">UDP src port, typically fixed per QP/connection</td>
+              <td class="text-left" rowspan="1" colspan="1">UDP src port, varied per packet</td>
+              <td class="text-left" rowspan="1" colspan="1">Per-packet spraying uses existing ECMP hashing</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Congestion Signalling</td>
+              <td class="text-left" rowspan="1" colspan="1">ECN bits; CNP-based feedback (e.g., DCQCN)</td>
+              <td class="text-left" rowspan="1" colspan="1">ECN plus UET congestion-control state carried in PDS</td>
+              <td class="text-left" rowspan="1" colspan="1">Sender- and receiver-based CC per <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span>
+</td>
             </tr>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">Ordering Guarantee</td>
               <td class="text-left" rowspan="1" colspan="1">Always in-order (RC)</td>
-              <td class="text-left" rowspan="1" colspan="1">Per-service (ROD/RUD)</td>
-              <td class="text-left" rowspan="1" colspan="1">RUD allows OOO delivery</td>
+              <td class="text-left" rowspan="1" colspan="1">Per-service (ROD/RUD/RUDI/UUD)</td>
+              <td class="text-left" rowspan="1" colspan="1">RUD/RUDI allow out-of-order delivery</td>
             </tr>
             <tr>
-              <td class="text-left" rowspan="1" colspan="1">Pre-Payload Header Bytes</td>
-              <td class="text-left" rowspan="1" colspan="1">~74B (Write)</td>
-              <td class="text-left" rowspan="1" colspan="1">~78B (est. Write)</td>
-              <td class="text-left" rowspan="1" colspan="1">Slight increase for sub-layer headers; excludes the mandatory 8B ICRC+FCS trailer, present in both</td>
+              <td class="text-left" rowspan="1" colspan="1">Header Structure</td>
+              <td class="text-left" rowspan="1" colspan="1">Fixed BTH plus per-opcode extension headers</td>
+              <td class="text-left" rowspan="1" colspan="1">Layered, variable-length (PDS, SES)</td>
+              <td class="text-left" rowspan="1" colspan="1">Per <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> Section 4</td>
             </tr>
           </tbody>
         </table>
@@ -3652,13 +3595,13 @@ JCT Interference Factor = Contention_JCT / Baseline_JCT
             <p id="appendix-E.1-2.1.1"><strong>UDP Destination Port:</strong> UET uses port 4793 vs. RoCEv2 port 4791.<a href="#appendix-E.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="appendix-E.1-2.2">
-            <p id="appendix-E.1-2.2.1"><strong>Entropy Value:</strong> Explicit entropy field for ECMP path selection. Test equipment varies this field to achieve uniform path distribution.<a href="#appendix-E.1-2.2.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-2.2.1"><strong>Entropy Value:</strong> Carried in the UDP source port field and varied per packet for ECMP path selection. Test equipment varies the source port to achieve uniform path distribution.<a href="#appendix-E.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li id="appendix-E.1-2.3">
             <p id="appendix-E.1-2.3.1"><strong>Transport Service Indicator:</strong> Header encodes transport service (ROD/RUD/RUDI/UUD). Tests set this to match the service being benchmarked.<a href="#appendix-E.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
           <li id="appendix-E.1-2.4">
-            <p id="appendix-E.1-2.4.1"><strong>PDC Identifier:</strong> Connectionless PDC ID replaces RoCEv2's Destination QP. Test equipment tracks PDC lifecycle for accurate measurement.<a href="#appendix-E.1-2.4.1" class="pilcrow">¶</a></p>
+            <p id="appendix-E.1-2.4.1"><strong>PDC Identifier:</strong> In-band-established PDC ID replaces RoCEv2's Destination QP. Test equipment tracks PDC lifecycle for accurate measurement.<a href="#appendix-E.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li id="appendix-E.1-2.5">
             <p id="appendix-E.1-2.5.1"><strong>Layered Sub-Headers:</strong> UET uses four sub-layers (SES, PDS, CMS, TSS) with variable-length headers. Implementations <span class="bcp14">MUST</span> follow <span>[<a href="#UEC-1.0" class="cite xref">UEC-1.0</a>]</span> Section 4 for wire format details.<a href="#appendix-E.1-2.5.1" class="pilcrow">¶</a></p>
