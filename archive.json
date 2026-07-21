@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-07T04:03:23.118082+00:00",
+  "timestamp": "2026-07-21T03:26:03.362749+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -249,6 +249,32 @@
       "updatedAt": "2026-06-23T10:16:10Z",
       "closedAt": "2026-06-23T10:16:10Z",
       "comments": []
+    },
+    {
+      "number": 27,
+      "id": "I_kwDORX7w2M8AAAABJfNClA",
+      "title": "UET \"group keying\" gloss doesn't match UEC 1.0 (claims transport-layer reduction)",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/27",
+      "state": "OPEN",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "cpignata"
+      ],
+      "labels": [],
+      "body": "Actually found and reported by @ayourtch (Andrew Yourtchenko) in his review of the -03 draft set (Major finding [F09]):\n\nSection 6.6 requires reporting \"UET group keying state (transport-layer reduction support per UEC Spec 1.0)\". In UEC 1.0, group keying is a Transport Security Sublayer (TSS) key-management mechanism with no effect on transfer volume; in-network / transport-layer collective reduction is not part of the 1.0 release. The required result field is unimplementable as written.\n\nVerified directly against the UEC 1.0.2 specification PDF before fixing: \"group key\" (SDK) is a per-client key-derivation mechanism under the TSS Secure Domain / KDF machinery, unrelated to reduction.\n\nFix: deleted the false transfer-layer-reduction gloss, renamed the field to \"TSS group-key encryption state\", and replaced the false transfer-volume claim with the accurate framing (affects per-packet security processing overhead, not transfer volume).",
+      "createdAt": "2026-07-20T18:01:40Z",
+      "updatedAt": "2026-07-20T23:08:38Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "cpignata",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in fd74835, verified against the UEC 1.0.2 specification PDF.",
+          "createdAt": "2026-07-20T18:01:41Z",
+          "updatedAt": "2026-07-20T18:01:41Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -1019,6 +1045,82 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 26,
+      "id": "PR_kwDORX7w2M7zjzrP",
+      "title": "Editorial pass: address Andrew Yourtchenko's review + acronym/inclusive-language cleanup",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/26",
+      "state": "MERGED",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n\nAddresses the minor and editorial issues identified by Andrew Yourtchenko in his review of the draft set (-03), plus a broader editorial pass covering acronym consistency, inclusive language, and idnits hygiene.\n\n- Fixed the META-ROCE and DCQCN-PAPER citations: verified against ACM DL/dblp and found the Meta paper's lead author is Adithya Gangidi (not Anirudh) and its real title omits \"AI\"; both entries were missing their venue and most co-authors\n- Replaced retired MLPerf workload names (BERT, ResNet, GPT-3 175B) with a version-agnostic procedure that requires reporting the MLPerf Training version instead\n- Renumbered Test Category 1A to close the numbering gap (categories now run 1-8)\n- Fixed the JFI range (was stated two different ways in two places), the DSCP/AF31 mislabel (\"class 31\" instead of class 3, drop precedence 1), the malformed \"Min Header Overhead\" claim (a pre-payload offset presented as a minimum, excluding the mandatory ICRC+FCS trailer), improper cross-run percentile averaging, and a mischaracterized AllGather/AllReduce BusBW ratio (reduction is accelerator compute, not fabric overhead)\n- Neutralized advocacy phrasing in the UET sections (\"designed to replace\", \"Critical differentiator\")\n- Removed fragile section-number citations into an expired, withdrawn draft (draft-ietf-bmwg-evpntest-11)\n- Fixed the abstract's idnits INVALID_ABSTRACT_SECTION_REF citation, a stray \"1 million endpoints\" claim (UEC's spec says \"millions\"), and Jain's Fairness Index's missing possessive\n- Standardized multiplication notation to \u00d7 and switched <=/>= to \u2264/\u2265; centered all figures\n- Reviewed for NIST IR 8366 inclusive-language guidance (replaced \"hang\" with \"stop responding\")\n- Fixed an Acknowledgments wording mismatch with the companion drafts and added Andrew Yourtchenko's review credit",
+      "createdAt": "2026-07-19T15:17:27Z",
+      "updatedAt": "2026-07-20T17:49:42Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "7536c9c6842521f13d562c92f404bbf8a95e184b",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "carlos-editorial-2",
+      "headRefOid": "2c91982130af456ee33f52649d4d95c0ddee35ab",
+      "closedAt": "2026-07-19T15:50:04Z",
+      "mergedAt": "2026-07-19T15:50:04Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "debdd1c93bc4bae38fdcd04749a9ab1c732fa771"
+      },
+      "comments": [
+        {
+          "author": "cpignata",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@ayourtch would appreciate your review here as well \u2014 thank you for the thorough review of the -03 draft set, several of these commits address findings from it directly.",
+          "createdAt": "2026-07-20T17:49:42Z",
+          "updatedAt": "2026-07-20T17:49:42Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M8AAAABGf3bKQ",
+          "commit": {
+            "abbreviatedOid": "2c91982"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "looks great, thank you Carlos and AY ",
+          "createdAt": "2026-07-19T15:49:22Z",
+          "updatedAt": "2026-07-19T15:49:22Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 28,
+      "id": "PR_kwDORX7w2M70F5wF",
+      "title": "Fix one Major finding from Andrew Yourtchenko's review",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/28",
+      "state": "OPEN",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n\nFixes the Major finding from Andrew Yourtchenko's review of the -03 draft set that wasn't included in the earlier editorial PR (#26, already merged).\n\n- UET \"group keying\" was described as \"transport-layer reduction support per UEC Spec 1.0\"; verified against the UEC 1.0.2 specification and found group keying (SDK) is a TSS key-derivation/encryption mechanism with no relation to in-network reduction, which is not part of the 1.0 release. Renamed the field to \"TSS group-key encryption state\" and removed the false transfer-volume claim. Closes #27",
+      "createdAt": "2026-07-20T23:07:50Z",
+      "updatedAt": "2026-07-20T23:07:51Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "debdd1c93bc4bae38fdcd04749a9ab1c732fa771",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "carlos-major-issues-1",
+      "headRefOid": "04e032b07d6ac640c20627f6c8dfa1c1cc937fb1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
