@@ -173,7 +173,7 @@ The methodology enables direct, reproducible comparison across switch ASICs, NIC
 
 # Introduction
 
-Distributed AI/ML training workloads impose traffic requirements that standard data center fabrics were not designed to meet. Traditional data center traffic varies in flow size and protocol mix. AI training generates synchronized, bandwidth-intensive east-west traffic dominated by collective communication operations: AllReduce, AllToAll, and AllGather. These workloads require lossless transport (via RDMA over Converged Ethernet, RoCEv2), bounded tail latency, uniform load distribution across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously.
+Distributed AI/ML training workloads impose traffic requirements that standard data center fabrics were not designed to meet. Traditional data center traffic varies in flow size and protocol mix. AI training generates synchronized, bandwidth-intensive east-west traffic dominated by collective communication operations: AllReduce, AllToAll, and AllGather. These workloads require RDMA transport with negligible application-visible loss, bounded tail latency, uniform load distribution across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously. RoCEv2 deployments typically meet the loss requirement by operating the fabric lossless (PFC/ECN); UET is designed to tolerate wire-level loss and recover via retransmission and packet trimming (see the Zero Packet Loss definition in {{TERMINOLOGY}}).
 
 Existing BMWG methodologies do not address AI training fabrics. {{RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the congestion behavior specific to GPU-to-GPU traffic. {{RFC8238}} and {{RFC8239}} establish data center benchmarking terminology and methodology but predate large-scale RoCEv2 deployment and do not address Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{META-ROCE}} shows the need for a standardized benchmarking methodology.
 
@@ -500,9 +500,9 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 
 **Reporting:** Tabulate incast throughput, convergence time, peak queue depth, PFC event count, and packet drop rate for UET vs. DCQCN per incast ratio. **Key metric:** report whether UET achieves zero application-visible loss without PFC.
 
-## Link Layer Enhancement Benchmarks {#link-layer-enhancement-benchmarks}
+## Link-Layer and Network-Layer Enhancement Benchmarks {#link-layer-enhancement-benchmarks}
 
-**Objective:** Measure performance impact of optional link-layer enhancements: LLR, Packet Trimming (PT), and CBFC.
+**Objective:** Measure performance impact of optional UEC enhancements: LLR and CBFC (link-layer) and Packet Trimming (PT, network-layer).
 
 **Procedure:**
 
@@ -824,7 +824,7 @@ Test reports include the following sections:
 1. **DUT Identification:** Complete parameters from {{device-under-test-dut-identification}} for all fabric components.
 2. **Test Topology:** Diagram and description per {{reference-fabric-topologies}}, including physical cabling.
 3. **Test Configuration:** All DUT configuration parameters: QoS policies (ECN thresholds, PFC headroom, DCQCN parameters), load balancing mode, buffer allocation, and vendor-specific tuning.
-4. **Host Configuration:** Complete host stack description per {{device-under-test-dut-identification}} including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional link-layer features (LLR, Packet Trimming, Packet Rate Improvement (PRI), CBFC).
+4. **Host Configuration:** Complete host stack description per {{device-under-test-dut-identification}} including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional features (LLR, Packet Trimming, Packet Rate Improvement (PRI), CBFC).
 5. **Test Results:** For each test from {{test-rdma}} through {{test-soak}}, provide specified tables, graphs, and statistical summaries. For {{test-uec}} tests, results include side-by-side UET vs. RoCEv2 comparison data on the identical DUT fabric.
 6. **Anomalies:** Any deviations from specified procedures, test failures, or unexpected behaviors are documented.
 7. **Repeatability Statement:** Report iteration count and coefficient of variation (std deviation / mean) for each test's primary metric. A CV below 5% is recommended for test validity.
@@ -901,7 +901,7 @@ This appendix provides indicative reference values for the KPIs defined in {{kpi
 | JCT Ratio | ≤ 1.05 (≤ 1.15 acceptable) |
 | BusBW | ≥ 90% of NIC line rate (intra-pod) |
 | Aggregate Throughput | ≥ 95% of bisection BW |
-| Packet Drop Rate | 0 ppm (lossless) |
+| Packet Drop Rate | 0 ppm wire-level loss (lossless RoCEv2 profiles); 0 ppm application-visible loss (UET; see the Zero Packet Loss definition in {{TERMINOLOGY}}) |
 {: #tab-indicative-values title="Indicative Reference Values for Distributed AI Training Fabrics (Non-Normative)"}
 
 # ASIC Feature Categories (Informational) {#asic-features}
@@ -992,7 +992,7 @@ Layering notes:
 3. **Transport Service Indicator:** Header encodes transport service (ROD/RUD/RUDI/UUD). Tests set this to match the service being benchmarked.
 4. **PDC Identifier:** In-band-established PDC ID replaces RoCEv2's Destination QP. Test equipment tracks PDC lifecycle for accurate measurement.
 5. **Layered Sub-Headers:** UET uses four sub-layers (SES, PDS, CMS, TSS) with variable-length headers. Implementations MUST follow {{UEC-1.0}} Section 4 for wire format details.
-6. **Optional Link Layer Headers:** When LLR, Packet Trimming, or PRI features are enabled, additional link-layer framing may be present. Test equipment is configured to recognize and parse these.
+6. **Optional Feature Headers:** When the LLR or PRI link-layer features, or the network-layer Packet Trimming feature, are enabled, additional or modified framing may be present. Test equipment is configured to recognize and parse these.
 
 # Acknowledgments
 {:numbered="false"}
