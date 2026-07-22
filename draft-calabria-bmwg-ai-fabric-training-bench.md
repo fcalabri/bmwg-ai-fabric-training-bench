@@ -817,7 +817,7 @@ The objective of the soak test is to monitor and document fabric behavior under 
 
 Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. This methodology defines what is measured and how it is reported; it does not set minimum acceptable values, certification, or pass/fail criteria. Any deployment-specific performance objectives are outside the scope of this document.
 
-Results from collective communication benchmarks ({{test-collective}}) MUST be reported per the BusBW reporting format defined in Section 3 of {{TERMINOLOGY}}.
+Results from collective communication benchmarks ({{test-collective}}) MUST be reported per the reporting requirements stated in the BusBW definition of {{TERMINOLOGY}}.
 
 Test reports include the following sections:
 
@@ -835,7 +835,7 @@ This document defines benchmarking methodology for controlled laboratory environ
 
 Benchmarking activities as described in this document are limited to technology characterization of AI training fabrics using controlled stimuli in a laboratory environment, with dedicated address space and the constraints specified herein.
 
-The benchmarking network topology will be an independent test setup and MUST NOT be connected to devices that may forward the test traffic into a production network or misroute traffic to the test management network. This isolation requirement is particularly important for AI fabric benchmarking because the lossless transport modes referenced in this document (PFC, DCQCN, CBFC) propagate congestion hop-by-hop and can extend the blast radius of a misconfigured test beyond the immediate DUT.
+The benchmarking network topology will be an independent test setup and MUST NOT be connected to devices that may forward the test traffic into a production network or misroute traffic to the test management network. This isolation requirement is particularly important for AI fabric benchmarking because the hop-by-hop flow-control mechanisms referenced in this document (PFC, CBFC) propagate backpressure toward traffic sources and can extend the blast radius of a misconfigured test beyond the immediate DUT; DCQCN reduces, but does not eliminate, reliance on these mechanisms.
 
 Benchmarking is performed on a "black-box" basis, relying solely on measurements observable external to the DUT as defined in {{TERMINOLOGY}}.
 
