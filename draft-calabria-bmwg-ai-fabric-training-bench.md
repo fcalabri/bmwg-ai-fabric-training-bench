@@ -173,7 +173,7 @@ The methodology enables direct, reproducible comparison across switch ASICs, NIC
 
 # Introduction
 
-Distributed AI/ML training workloads impose traffic requirements that standard data center fabrics were not designed to meet. Traditional data center traffic varies in flow size and protocol mix. AI training generates synchronized, bandwidth-intensive east-west traffic dominated by collective communication operations: AllReduce, AllToAll, and AllGather. These workloads require lossless transport (via RDMA over Converged Ethernet, RoCEv2), bounded tail latency, uniform load distribution across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously.
+Distributed AI/ML training workloads impose traffic requirements that standard data center fabrics were not designed to meet. Traditional data center traffic varies in flow size and protocol mix. AI training generates synchronized, bandwidth-intensive east-west traffic dominated by collective communication operations: AllReduce, AllToAll, and AllGather. These workloads require RDMA transport with negligible application-visible loss, bounded tail latency, uniform load distribution across all fabric paths, and the ability to absorb coordinated micro-bursts from thousands of accelerators simultaneously. RoCEv2 deployments typically meet the loss requirement by operating the fabric lossless (PFC/ECN); UET is designed to tolerate wire-level loss and recover via retransmission and packet trimming (see the Zero Packet Loss definition in {{TERMINOLOGY}}).
 
 Existing BMWG methodologies do not address AI training fabrics. {{RFC2544}} defines benchmarking for general network interconnect devices but does not account for RDMA transport semantics, collective communication patterns, or the congestion behavior specific to GPU-to-GPU traffic. {{RFC8238}} and {{RFC8239}} establish data center benchmarking terminology and methodology but predate large-scale RoCEv2 deployment and do not address Priority Flow Control (PFC) interactions, DCQCN congestion control convergence {{DCQCN-PAPER}}, or the impact of load balancing strategies on Job Completion Time (JCT). Industry experience deploying RoCEv2 at scale {{META-ROCE}} shows the need for a standardized benchmarking methodology.
 
@@ -196,7 +196,7 @@ Collective operation measurements (AllReduce, AllGather, AllToAll) are measured 
 
 The methodology is designed for controlled laboratory environments per the BMWG charter; it is NOT intended for production network measurement.
 
-## Relationship to Existing BMWG Work
+## Relationship to Existing and Companion Work
 
 | Document | Relationship |
 |---|---|
@@ -205,9 +205,11 @@ The methodology is designed for controlled laboratory environments per the BMWG 
 | {{RFC8238}} | Data center terminology; buffer, congestion, and microburst terms extended |
 | {{RFC8239}} | Data center methodology; line-rate and buffer tests adapted for RoCEv2 |
 | {{RFC9004}} | Back-to-back frame updates; burst absorption methodology referenced |
-| {{LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT. This document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. See {{INFERENCE-BENCH}} for the companion fabric-level benchmarking methodology addressing AI inference serving workloads. |
+| {{LLM-BENCH}} | Complementary document benchmarking the inference serving stack. Treats the network as opaque SUT; this document benchmarks the fabric itself. The two documents MAY be used together but MUST NOT be combined in a single benchmarking report without explicit section demarcation. |
+| {{TERMINOLOGY}} | Companion document; normative source for the terminology used throughout this document |
+| {{INFERENCE-BENCH}} | Companion fabric-level benchmarking methodology addressing AI inference serving workloads |
 | {{UEC-1.0}} | UET protocol specification; transport services, congestion control, and link-layer enhancements benchmarked in {{test-uec}} |
-{: #tab-existing-work title="Relationship to Existing BMWG Work"}
+{: #tab-existing-work title="Relationship to Existing and Companion Work"}
 
 # Terminology
 
@@ -217,7 +219,7 @@ All terminology used in this document – including the AI fabric, RoCEv2, UET, 
 
 | Term | Definition |
 |---|---|
-| **PFC Pause Event** | A single PFC PAUSE frame transmitted on a priority class. Used in this document as the unit of count for PFC event-rate metrics (events/sec, cumulative duration) reported by the methodology in {{test-congestion}}. |
+| **PFC Pause Event** | A single PFC PAUSE frame with a non-zero quanta value transmitted on a priority class. Zero-quanta (X-ON / resume) frames are excluded from the count, since implementations that signal resume explicitly would otherwise report roughly double the event rate of implementations that let the pause timer expire; X-ON frames are instead used to bound the paused interval for the cumulative-duration metric. Used in this document as the unit of count for PFC event-rate metrics (events/sec, cumulative duration) reported by the methodology in {{test-congestion}}. |
 {: #tab-terminology title="Bench-Specific Terminology Extensions"}
 
 In addition to the BusBW reporting requirements specified in {{TERMINOLOGY}}, the runtime algorithm selected by the collective library MUST be verified via library tracing and documented as part of the test conditions for any AllReduce, AllGather, or AllToAll benchmark in this document.
@@ -315,11 +317,17 @@ The traffic generator supports: RoCEv2 transport emulation (QP establishment, RD
 | Timestamp accuracy | ≤ 100 nanoseconds |
 | Frame rate accuracy | +/- 0.1% of specified rate |
 | QP scaling range | 1 to 256 QPs per src-dst pair |
-| Message size range | 64 B to 8 GB |
+| Message size range | 64 B to 2 GB (single-message ceiling; see note) |
 | Flow counter resolution | Per-flow byte and packet counts |
 | Loss measurement | Exact per-packet loss counting |
 | Burst generation | Burst lengths at line rate sufficient to exceed DUT buffering; configurable beyond 1000 frames |
 {: #tab-tgen-accuracy title="Minimum Measurement Accuracy Requirements"}
+
+NOTE: A single RDMA message cannot exceed the 32-bit RETH DMA Length field, an
+absolute ceiling of 4 GB, and implementations commonly advertise a practical
+max_msg_sz of 1-2 GB. Transfers larger than the single-message ceiling are
+composed from multiple RDMA messages, and the message count and per-message
+size are reported alongside the aggregate transfer size.
 
 ### Acceptable Implementations
 
@@ -492,9 +500,9 @@ Measure MMR, JFI, out-of-order delivery rate, retransmission rate, and effective
 
 **Reporting:** Tabulate incast throughput, convergence time, peak queue depth, PFC event count, and packet drop rate for UET vs. DCQCN per incast ratio. **Key metric:** report whether UET achieves zero application-visible loss without PFC.
 
-## Link Layer Enhancement Benchmarks {#link-layer-enhancement-benchmarks}
+## Link-Layer and Network-Layer Enhancement Benchmarks {#link-layer-enhancement-benchmarks}
 
-**Objective:** Measure performance impact of optional link-layer enhancements: LLR, Packet Trimming (PT), and CBFC.
+**Objective:** Measure performance impact of optional UEC enhancements: LLR and CBFC (link-layer) and Packet Trimming (PT, network-layer).
 
 **Procedure:**
 
@@ -809,14 +817,14 @@ The objective of the soak test is to monitor and document fabric behavior under 
 
 Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. This methodology defines what is measured and how it is reported; it does not set minimum acceptable values, certification, or pass/fail criteria. Any deployment-specific performance objectives are outside the scope of this document.
 
-Results from collective communication benchmarks ({{test-collective}}) MUST be reported per the BusBW reporting format defined in Section 3 of {{TERMINOLOGY}}.
+Results from collective communication benchmarks ({{test-collective}}) MUST be reported per the reporting requirements stated in the BusBW definition of {{TERMINOLOGY}}.
 
 Test reports include the following sections:
 
 1. **DUT Identification:** Complete parameters from {{device-under-test-dut-identification}} for all fabric components.
 2. **Test Topology:** Diagram and description per {{reference-fabric-topologies}}, including physical cabling.
 3. **Test Configuration:** All DUT configuration parameters: QoS policies (ECN thresholds, PFC headroom, DCQCN parameters), load balancing mode, buffer allocation, and vendor-specific tuning.
-4. **Host Configuration:** Complete host stack description per {{device-under-test-dut-identification}} including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional link-layer features (LLR, Packet Trimming, Packet Rate Improvement (PRI), CBFC).
+4. **Host Configuration:** Complete host stack description per {{device-under-test-dut-identification}} including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional features (LLR, Packet Trimming, Packet Rate Improvement (PRI), CBFC).
 5. **Test Results:** For each test from {{test-rdma}} through {{test-soak}}, provide specified tables, graphs, and statistical summaries. For {{test-uec}} tests, results include side-by-side UET vs. RoCEv2 comparison data on the identical DUT fabric.
 6. **Anomalies:** Any deviations from specified procedures, test failures, or unexpected behaviors are documented.
 7. **Repeatability Statement:** Report iteration count and coefficient of variation (std deviation / mean) for each test's primary metric. A CV below 5% is recommended for test validity.
@@ -827,7 +835,7 @@ This document defines benchmarking methodology for controlled laboratory environ
 
 Benchmarking activities as described in this document are limited to technology characterization of AI training fabrics using controlled stimuli in a laboratory environment, with dedicated address space and the constraints specified herein.
 
-The benchmarking network topology will be an independent test setup and MUST NOT be connected to devices that may forward the test traffic into a production network or misroute traffic to the test management network. This isolation requirement is particularly important for AI fabric benchmarking because the lossless transport modes referenced in this document (PFC, DCQCN, CBFC) propagate congestion hop-by-hop and can extend the blast radius of a misconfigured test beyond the immediate DUT.
+The benchmarking network topology will be an independent test setup and MUST NOT be connected to devices that may forward the test traffic into a production network or misroute traffic to the test management network. This isolation requirement is particularly important for AI fabric benchmarking because the hop-by-hop flow-control mechanisms referenced in this document (PFC, CBFC) propagate backpressure toward traffic sources and can extend the blast radius of a misconfigured test beyond the immediate DUT; DCQCN reduces, but does not eliminate, reliance on these mechanisms.
 
 Benchmarking is performed on a "black-box" basis, relying solely on measurements observable external to the DUT as defined in {{TERMINOLOGY}}.
 
@@ -893,7 +901,7 @@ This appendix provides indicative reference values for the KPIs defined in {{kpi
 | JCT Ratio | ≤ 1.05 (≤ 1.15 acceptable) |
 | BusBW | ≥ 90% of NIC line rate (intra-pod) |
 | Aggregate Throughput | ≥ 95% of bisection BW |
-| Packet Drop Rate | 0 ppm (lossless) |
+| Packet Drop Rate | 0 ppm wire-level loss (lossless RoCEv2 profiles); 0 ppm application-visible loss (UET; see the Zero Packet Loss definition in {{TERMINOLOGY}}) |
 {: #tab-indicative-values title="Indicative Reference Values for Distributed AI Training Fabrics (Non-Normative)"}
 
 # ASIC Feature Categories (Informational) {#asic-features}
@@ -984,7 +992,7 @@ Layering notes:
 3. **Transport Service Indicator:** Header encodes transport service (ROD/RUD/RUDI/UUD). Tests set this to match the service being benchmarked.
 4. **PDC Identifier:** In-band-established PDC ID replaces RoCEv2's Destination QP. Test equipment tracks PDC lifecycle for accurate measurement.
 5. **Layered Sub-Headers:** UET uses four sub-layers (SES, PDS, CMS, TSS) with variable-length headers. Implementations MUST follow {{UEC-1.0}} Section 4 for wire format details.
-6. **Optional Link Layer Headers:** When LLR, Packet Trimming, or PRI features are enabled, additional link-layer framing may be present. Test equipment is configured to recognize and parse these.
+6. **Optional Feature Headers:** When the LLR or PRI link-layer features, or the network-layer Packet Trimming feature, are enabled, additional or modified framing may be present. Test equipment is configured to recognize and parse these.
 
 # Acknowledgments
 {:numbered="false"}
