@@ -5,13 +5,13 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 22 January 2027                            Blue Fern Consulting
+Expires: 23 January 2027                            Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
                                                                 S. Reddy
                                                                    Apple
-                                                            21 July 2026
+                                                            22 July 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 January 2027.
+   This Internet-Draft will expire on 23 January 2027.
 
 Copyright Notice
 
@@ -1403,8 +1403,8 @@ Table of Contents
    performance objectives are outside the scope of this document.
 
    Results from collective communication benchmarks (Section 9) MUST be
-   reported per the BusBW reporting format defined in Section 3 of
-   [TERMINOLOGY].
+   reported per the reporting requirements stated in the BusBW
+   definition of [TERMINOLOGY].
 
    Test reports include the following sections:
 
@@ -1456,10 +1456,11 @@ Table of Contents
    and MUST NOT be connected to devices that may forward the test
    traffic into a production network or misroute traffic to the test
    management network.  This isolation requirement is particularly
-   important for AI fabric benchmarking because the lossless transport
-   modes referenced in this document (PFC, DCQCN, CBFC) propagate
-   congestion hop-by-hop and can extend the blast radius of a
-   misconfigured test beyond the immediate DUT.
+   important for AI fabric benchmarking because the hop-by-hop flow-
+   control mechanisms referenced in this document (PFC, CBFC) propagate
+   backpressure toward traffic sources and can extend the blast radius
+   of a misconfigured test beyond the immediate DUT; DCQCN reduces, but
+   does not eliminate, reliance on these mechanisms.
 
    Benchmarking is performed on a "black-box" basis, relying solely on
    measurements observable external to the DUT as defined in
