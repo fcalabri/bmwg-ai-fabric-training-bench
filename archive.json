@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-21T03:26:03.362749+00:00",
+  "timestamp": "2026-07-23T03:30:51.379877+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -255,7 +255,7 @@
       "id": "I_kwDORX7w2M8AAAABJfNClA",
       "title": "UET \"group keying\" gloss doesn't match UEC 1.0 (claims transport-layer reduction)",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/27",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "cpignata",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -264,8 +264,8 @@
       "labels": [],
       "body": "Actually found and reported by @ayourtch (Andrew Yourtchenko) in his review of the -03 draft set (Major finding [F09]):\n\nSection 6.6 requires reporting \"UET group keying state (transport-layer reduction support per UEC Spec 1.0)\". In UEC 1.0, group keying is a Transport Security Sublayer (TSS) key-management mechanism with no effect on transfer volume; in-network / transport-layer collective reduction is not part of the 1.0 release. The required result field is unimplementable as written.\n\nVerified directly against the UEC 1.0.2 specification PDF before fixing: \"group key\" (SDK) is a per-client key-derivation mechanism under the TSS Secure Domain / KDF machinery, unrelated to reduction.\n\nFix: deleted the false transfer-layer-reduction gloss, renamed the field to \"TSS group-key encryption state\", and replaced the false transfer-volume claim with the accurate framing (affects per-packet security processing overhead, not transfer volume).",
       "createdAt": "2026-07-20T18:01:40Z",
-      "updatedAt": "2026-07-20T23:08:38Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-21T15:33:54Z",
+      "closedAt": "2026-07-21T15:33:54Z",
       "comments": [
         {
           "author": "cpignata",
@@ -275,6 +275,108 @@
           "updatedAt": "2026-07-20T18:01:41Z"
         }
       ]
+    },
+    {
+      "number": 29,
+      "id": "I_kwDORX7w2M8AAAABJohEhg",
+      "title": "PFC Pause Event count includes X-ON frames",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/29",
+      "state": "CLOSED",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "cpignata"
+      ],
+      "labels": [],
+      "body": "\"PFC Pause Event\" is defined as any PAUSE frame on a priority class. That includes zero-quanta X-ON frames, so a DUT that signals resume explicitly reports roughly twice the event rate of one that lets the pause timer expire. Not comparable.\n\nCount non-zero quanta only.\n\nFound by @ayourtch in his -03 review (F80).",
+      "createdAt": "2026-07-21T17:24:33Z",
+      "updatedAt": "2026-07-22T09:57:30Z",
+      "closedAt": "2026-07-22T09:57:30Z",
+      "comments": []
+    },
+    {
+      "number": 30,
+      "id": "I_kwDORX7w2M8AAAABJohFgw",
+      "title": "Generator message size range goes to 8 GB, which isn't possible",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/30",
+      "state": "CLOSED",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "cpignata"
+      ],
+      "labels": [],
+      "body": "Table says 64 B to 8 GB. The RETH DMA Length field is 32 bits, so a single RDMA message tops out at 4 GB, and most implementations advertise 1-2 GB.\n\nCap it and say how larger transfers get composed.\n\nFound by @ayourtch in his -03 review (F70).",
+      "createdAt": "2026-07-21T17:24:35Z",
+      "updatedAt": "2026-07-22T09:57:30Z",
+      "closedAt": "2026-07-22T09:57:30Z",
+      "comments": []
+    },
+    {
+      "number": 31,
+      "id": "I_kwDORX7w2M8AAAABJohGmw",
+      "title": "One table row describes three different documents",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/31",
+      "state": "CLOSED",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "cpignata"
+      ],
+      "labels": [],
+      "body": "The LLM-BENCH row in Table 1 also explains INFERENCE-BENCH halfway through, and TERMINOLOGY (the normative base) has no row at all. The table is also titled \"Existing BMWG Work\", which neither companion draft is.\n\nFound by @ayourtch in his -03 review (F31).",
+      "createdAt": "2026-07-21T17:24:37Z",
+      "updatedAt": "2026-07-22T09:57:31Z",
+      "closedAt": "2026-07-22T09:57:31Z",
+      "comments": []
+    },
+    {
+      "number": 33,
+      "id": "I_kwDORX7w2M8AAAABJrFjrw",
+      "title": "T_dispatch entry",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/33",
+      "state": "CLOSED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "now reads  \"per accelerator per MoE layer\" \u2014 the exact mislabel  fixed in the inference draft, so the two documents now contradict each other ",
+      "createdAt": "2026-07-22T00:08:11Z",
+      "updatedAt": "2026-07-22T09:57:31Z",
+      "closedAt": "2026-07-22T09:57:31Z",
+      "comments": []
+    },
+    {
+      "number": 34,
+      "id": "I_kwDORX7w2M8AAAABJrF1hw",
+      "title": "DCQCN",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/34",
+      "state": "CLOSED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "all three documents call DCQCN a \"lossless transport mode\" that \"propagates congestion hop-by-hop\" in their Security Considerations \u2014 DCQCN is end-to-end congestion control; PFC and CBFC are the hop-by-hop mechanisms.",
+      "createdAt": "2026-07-22T00:09:07Z",
+      "updatedAt": "2026-07-22T09:57:31Z",
+      "closedAt": "2026-07-22T09:57:31Z",
+      "comments": []
+    },
+    {
+      "number": 35,
+      "id": "I_kwDORX7w2M8AAAABJrGQGQ",
+      "title": "RETH/ImmDt/MHA",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/35",
+      "state": "CLOSED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "RETH/ImmDt/MHA missing from the acronyms appendix the companions point to; four fragile numeric cross-document section citations; the \"RT | Traffic Generator\" acronym/expansion mismatch; Appendix A misattributing UET/PDC/ROD to \u00a75.2; the Primary-KPI cross-reference row omitting TPS; IRN never expanded.",
+      "createdAt": "2026-07-22T00:10:25Z",
+      "updatedAt": "2026-07-22T09:57:32Z",
+      "closedAt": "2026-07-22T09:57:32Z",
+      "comments": []
     }
   ],
   "pulls": [
@@ -1101,26 +1203,92 @@
       "id": "PR_kwDORX7w2M70F5wF",
       "title": "Fix one Major finding from Andrew Yourtchenko's review",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/28",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "cpignata",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "## Summary\n\nFixes the Major finding from Andrew Yourtchenko's review of the -03 draft set that wasn't included in the earlier editorial PR (#26, already merged).\n\n- UET \"group keying\" was described as \"transport-layer reduction support per UEC Spec 1.0\"; verified against the UEC 1.0.2 specification and found group keying (SDK) is a TSS key-derivation/encryption mechanism with no relation to in-network reduction, which is not part of the 1.0 release. Renamed the field to \"TSS group-key encryption state\" and removed the false transfer-volume claim. Closes #27",
       "createdAt": "2026-07-20T23:07:50Z",
-      "updatedAt": "2026-07-20T23:07:51Z",
+      "updatedAt": "2026-07-21T17:01:35Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "debdd1c93bc4bae38fdcd04749a9ab1c732fa771",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "carlos-major-issues-1",
-      "headRefOid": "04e032b07d6ac640c20627f6c8dfa1c1cc937fb1",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "5c7cae976fe28c6d72e4c8c3125091d330ab05eb",
+      "closedAt": "2026-07-21T15:33:53Z",
+      "mergedAt": "2026-07-21T15:33:53Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "1dc00cae794b6d8670838b991d01501d0701b7c7"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M8AAAABGuPWQQ",
+          "commit": {
+            "abbreviatedOid": "5c7cae9"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "Replaced the byte-accurate UET frame table in Appendix B with an explicitly schematic layering diagram; moved wire format specifics to normative reference to Section 4 of the UEC 1.0 Specification. Removed the incorrect 16-byte \"UET Common Header\", since it does not exist in the UEC Specification.\r\n\r\n-Corrected the on-wire sublayer order from SES first then PDS (it was previously shown as SES after PDS). \r\n\r\n-Fixed the entropy description: The Entropy Value is contained within the UDP Source Port Number and varies per packet, NOT in a separate UET header field -- The Frame Table previously stated both simultaneously. Now cross referenced to the correct Entropy Value Definition in the Terminology Document; this will insure that all  documents are consistent.\r\n\r\n-Revised the RoCEv2 vs. UET Comparison Table: removed two non-verifiable entries (\"PSN (Extended)\", and estimated pre-payload byte counts); revised the UET entropy-source entry; and described PDC's as being established via in-band mechanisms instead of \"Connectionless.\" Clarified that CMS state is encoded within PDS fields while TSS adds Security Headers if enabled.\r\n-Updated two outdated statements regarding UDP port 4793 registration pending status; port 4793 has been assigned by IANA to Ultra Ethernet Transport.",
+          "createdAt": "2026-07-21T15:11:51Z",
+          "updatedAt": "2026-07-21T15:11:51Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "id": "PR_kwDORX7w2M70e-93",
+      "title": "Third pass on Andrew's -03 review",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/32",
+      "state": "MERGED",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Three more from Andrew's review on training:\n- PFC Pause Event was counting X-ON resume frames, which roughly doubles the rate on DUTs that signal resume explicitly. Non-zero quanta only now. Closes #29\n- Generator message range said 8 GB; the 32-bit RETH DMA Length caps a single message well below that. Capped at 2 GB with a note on composing larger transfers. Closes #30\n- Split the LLM-BENCH row, which was also describing INFERENCE-BENCH, and added the missing TERMINOLOGY row. Retitled the table since the companion drafts aren't existing BMWG work. Left the MUST NOT where it was. Closes #31\n\nFernando's follow-up commits also cover the three issues he filed. Audited each item against the branches:\n\n- T_dispatch now reads \"per source-destination pair\" in both terminology and inference, so they agree again. Closes #33\n- DCQCN removed from the hop-by-hop list in all three Security Considerations; PFC and CBFC are named instead. Closes #34\n- RETH, ImmDt, MHA and IRN added to the acronyms appendix; RT renamed TG; Appendix A moved UET/PDC/ROD to the 5.1 row; Primary-KPI row picked up TPS; IRN expanded. The cross-document numeric section citations are gone, and I took out the last internal one (Section 5.2 -> anchor) in the terminology PR. Closes #35\n\nNote #33 and #35 are mostly fixed over in the terminology and inference repos, GitHub just can't auto-close across repos so they're linked here.",
+      "createdAt": "2026-07-21T17:25:27Z",
+      "updatedAt": "2026-07-22T09:57:30Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "1dc00cae794b6d8670838b991d01501d0701b7c7",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "carlos-andrew-review-pass-3",
+      "headRefOid": "34ccaa4165767b54202907a767aa5b9f40f2ec42",
+      "closedAt": "2026-07-22T09:57:28Z",
+      "mergedAt": "2026-07-22T09:57:28Z",
+      "mergedBy": "cpignata",
+      "mergeCommit": {
+        "oid": "acd59a626af70b251805e921355c516751a4f00d"
+      },
+      "comments": [
+        {
+          "author": "cpignata",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@fcalabri , please review! :-) ",
+          "createdAt": "2026-07-21T17:30:07Z",
+          "updatedAt": "2026-07-21T17:30:07Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M8AAAABGw2GIA",
+          "commit": {
+            "abbreviatedOid": "66ce777"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "- Introduction (F03/F06): \"require lossless transport (via RoCEv2)\" restated as\r\n  \"RDMA transport with negligible application-visible loss\"; one sentence added on\r\n  how each transport meets it (RoCEv2: lossless operation via PFC/ECN; UET:\r\n  tolerates wire-level loss, recovers via retransmission/trimming). Aligns with\r\n  the Zero Packet Loss definition in TERMINOLOGY; \r\n\r\n- Section 6.6 (F43): retitled \"Link-Layer and Network-Layer Enhancement\r\n  Benchmarks\"; objective now labels LLR/CBFC link-layer and Packet Trimming\r\n  network-layer, matching the TERMINOLOGY recategorization. Anchor unchanged, so existing cross-references resolve.\r\n\r\n- Reporting item 4 (F43): \"optional link-layer features\" -> \"optional features\";\r\n  the list is unchanged, the layer label was wrong for Packet Trimming.\r\n\r\n- Appendix B (F03): \"0 ppm (lossless)\" split by transport: 0 ppm wire-level loss\r\n  (lossless RoCEv2 profiles) vs. 0 ppm application-visible loss (UET). Table\r\n  remains non-normative.\r\n\r\n- Appendix E item 6 (F43): layer attribution corrected (LLR/PRI link-layer,\r\n  Packet Trimming network-layer); \"additional framing\" -> \"additional or\r\n  modified framing\" since trimming truncates packets rather than adding headers.",
+          "createdAt": "2026-07-21T20:36:49Z",
+          "updatedAt": "2026-07-21T20:36:49Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
