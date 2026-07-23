@@ -542,6 +542,8 @@ The runtime algorithm in use is reported per message-size bucket. See {{TERMINOL
 
 **Procedure:** (a) PDC establishment rate: initiate PDC creation to M = {100, 1000, 10000, 100000} remote endpoints. (b) Data-before-handshake: measure first-byte latency for UET vs. RoCEv2 RDMA Write. (c) Maximum concurrent PDC count: scale until per-PDC throughput drops below 90% of single-PDC rate. The UEC specification {{UEC-1.0}} targets millions of endpoints.
 
+NOTE: PDC and QP scaling limits are a host NIC capability, outside the DUT boundary per {{TERMINOLOGY}} and {{scope-and-applicability}}. They are reported as context because a NIC-side PDC/QP ceiling presents as fabric underperformance in the throughput and latency measurements above.
+
 # Test Category 3: Congestion Management {#test-congestion}
 
 AI training workloads generate repetitive micro-congestion during the back-propagation gradient synchronization phase.
@@ -747,7 +749,7 @@ The Overlap_Fraction and communication-library overlap configuration (e.g., buck
 
 **Reporting:** Tabulate JCT Ratio for each (C, S, N, LB_strategy) combination.  Plot JCT Ratio vs. N to characterize fabric scalability.
 
-> NOTE: JCT Ratio ≤ 1.05 indicates excellent fabric performance; values between 1.05 and 1.15 are acceptable; a ratio above 1.15 indicates significant fabric-induced overhead. These are non-normative illustrative reference values only.
+> NOTE: JCT Ratio values of 1.05 and 1.15 are cited elsewhere in this document ({{indicative-reference-values}}) as illustrative reference points, not as pass/fail thresholds. Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group; deployment-specific thresholds are outside the scope of this document.
 
 ## MLPerf-Aligned JCT {#mlperf-aligned-jct}
 
@@ -827,7 +829,7 @@ Test reports include the following sections:
 4. **Host Configuration:** Complete host stack description per {{device-under-test-dut-identification}} including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional features (LLR, Packet Trimming, Packet Rate Improvement (PRI), CBFC).
 5. **Test Results:** For each test from {{test-rdma}} through {{test-soak}}, provide specified tables, graphs, and statistical summaries. For {{test-uec}} tests, results include side-by-side UET vs. RoCEv2 comparison data on the identical DUT fabric.
 6. **Anomalies:** Any deviations from specified procedures, test failures, or unexpected behaviors are documented.
-7. **Repeatability Statement:** Report iteration count and coefficient of variation (std deviation / mean) for each test's primary metric. A CV below 5% is recommended for test validity.
+7. **Repeatability Statement:** Report iteration count and coefficient of variation (std deviation / mean) for each test's primary metric. A CV of 5% is an illustrative reference point for typical run-to-run variation; per the charter disclaimer above, this document does not set a required or minimum threshold for test validity.
 
 # Security Considerations
 
