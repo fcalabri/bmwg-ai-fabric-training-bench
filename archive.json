@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-23T03:30:51.379877+00:00",
+  "timestamp": "2026-07-26T03:37:18.316437+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -376,6 +376,38 @@
       "createdAt": "2026-07-22T00:10:25Z",
       "updatedAt": "2026-07-22T09:57:32Z",
       "closedAt": "2026-07-22T09:57:32Z",
+      "comments": []
+    },
+    {
+      "number": 37,
+      "id": "I_kwDORX7w2M8AAAABJ9aU3w",
+      "title": "UET PDC/QP scaling test measures a host NIC property, not the DUT",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/37",
+      "state": "OPEN",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Andrew pointed out (F107) that the UET PDC Scalability test (6.7) benchmarks NIC-level PDC/QP scaling, but \u00a71.2 explicitly excludes host NICs from the DUT boundary. Added a note clarifying that PDC/QP ceilings are a host NIC capability reported for context, not a DUT metric \u2014 same pattern already used for the GPU-NIC PCIe BW note in the inference doc.",
+      "createdAt": "2026-07-23T22:16:32Z",
+      "updatedAt": "2026-07-23T22:16:32Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 38,
+      "id": "I_kwDORX7w2M8AAAABJ9aVNQ",
+      "title": "JCT Ratio and CV reporting notes read like pass/fail criteria",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/38",
+      "state": "OPEN",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Andrew flagged (F12) two spots where the grading language reads like acceptance criteria, which is out of charter scope for this WG:\n\n- The JCT Ratio note used \"excellent / acceptable / significant overhead\" language\n- The repeatability statement said a CV below 5% is \"recommended for test validity\"\n\nReworded both to point at the existing non-normative indicative values and make clear there's no pass/fail threshold here.",
+      "createdAt": "2026-07-23T22:16:33Z",
+      "updatedAt": "2026-07-23T22:16:33Z",
+      "closedAt": null,
       "comments": []
     }
   ],
@@ -1289,6 +1321,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 36,
+      "id": "PR_kwDORX7w2M71l8sP",
+      "title": "Pass 4: charter-scope disclaimers, NIC scope clarification",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/36",
+      "state": "OPEN",
+      "author": "cpignata",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n\n- Note that PDC/QP scaling limits (\u00a7 UET PDC Scalability) are a host NIC capability outside the DUT boundary, reported for context \u2014 same pattern as the earlier GPU-NIC PCIe BW note (F107)\n- Replace graded \"excellent/acceptable/significant overhead\" JCT Ratio language with a pointer to the existing non-normative indicative reference values plus an explicit charter-scope disclaimer (F12)\n- Reframe the CV < 5% repeatability figure as illustrative rather than a recommended validity threshold (F12)\n\nCloses #37\nCloses #38",
+      "createdAt": "2026-07-23T22:15:50Z",
+      "updatedAt": "2026-07-23T22:16:39Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "acd59a626af70b251805e921355c516751a4f00d",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "carlos-andrew-review-pass-4",
+      "headRefOid": "be210319a68b590fa0d68ce55de9c3fc0be136ec",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
