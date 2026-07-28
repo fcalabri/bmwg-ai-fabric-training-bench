@@ -5,13 +5,13 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 23 January 2027                            Blue Fern Consulting
+Expires: 29 January 2027                            Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
                                                                 S. Reddy
                                                                    Apple
-                                                            22 July 2026
+                                                            28 July 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 January 2027.
+   This Internet-Draft will expire on 29 January 2027.
 
 Copyright Notice
 
@@ -945,6 +945,12 @@ Table of Contents
    drops below 90% of single-PDC rate.  The UEC specification [UEC-1.0]
    targets millions of endpoints.
 
+   NOTE: PDC and QP scaling limits are a host NIC capability, outside
+   the DUT boundary per [TERMINOLOGY] and Section 1.2.  They are
+   reported as context because a NIC-side PDC/QP ceiling presents as
+   fabric underperformance in the throughput and latency measurements
+   above.
+
 7.  Test Category 3: Congestion Management
 
    AI training workloads generate repetitive micro-congestion during the
@@ -1278,10 +1284,12 @@ Table of Contents
    combination.  Plot JCT Ratio vs. N to characterize fabric
    scalability.
 
-      NOTE: JCT Ratio ≤ 1.05 indicates excellent fabric performance;
-      values between 1.05 and 1.15 are acceptable; a ratio above 1.15
-      indicates significant fabric-induced overhead.  These are non-
-      normative illustrative reference values only.
+      NOTE: JCT Ratio values of 1.05 and 1.15 are cited elsewhere in
+      this document (Appendix B) as illustrative reference points, not
+      as pass/fail thresholds.  Per the BMWG charter, the definition of
+      acceptance criteria or performance requirements is explicitly
+      outside the scope of this Working Group; deployment-specific
+      thresholds are outside the scope of this document.
 
 10.2.  MLPerf-Aligned JCT
 
@@ -1435,7 +1443,10 @@ Table of Contents
 
    7.  *Repeatability Statement:* Report iteration count and coefficient
        of variation (std deviation / mean) for each test's primary
-       metric.  A CV below 5% is recommended for test validity.
+       metric.  A CV of 5% is an illustrative reference point for
+       typical run-to-run variation; per the charter disclaimer above,
+       this document does not set a required or minimum threshold for
+       test validity.
 
 14.  Security Considerations
 
