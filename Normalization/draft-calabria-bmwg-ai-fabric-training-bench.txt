@@ -477,7 +477,7 @@ Table of Contents
    Convergence and failover times (Section 11.2, Section 11.3), latency
    percentiles (Section 5.2), and queue occupancy are reported in
    absolute units and are not normalized; normalizing them would obscure
-   the behaviour they measure.
+   the behavior they measure.
 
 3.2.2.  Aggregate Switching Capacity Is Not a Normalization Factor
 
