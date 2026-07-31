@@ -295,7 +295,7 @@ In rail-optimized topologies, each NIC on a multi-NIC host connects to a dedicat
 
 ### Normalization Basis
 
-Normalization in this document is achieved by reporting KPIs that are dimensionless or referenced to a rate observable at the Fabric DUT Boundary defined in {{TERMINOLOGY}}. It is not achieved by equalising fabric hardware between the systems being compared.
+Normalization in this document is achieved by reporting KPIs that are dimensionless or referenced to a rate observable at the Fabric DUT Boundary defined in {{TERMINOLOGY}}. It is not achieved by normalizing fabric hardware between the systems being compared.
 
 | KPI | Defined in | Normalizing denominator |
 |---|---|---|
