@@ -5,13 +5,13 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 31 January 2027                            Blue Fern Consulting
+Expires: 1 February 2027                            Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
                                                                 S. Reddy
                                                                    Apple
-                                                            30 July 2026
+                                                            31 July 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 January 2027.
+   This Internet-Draft will expire on 1 February 2027.
 
 Copyright Notice
 
@@ -435,7 +435,7 @@ Table of Contents
 
    Normalization in this document is achieved by reporting KPIs that are
    dimensionless or referenced to a rate observable at the Fabric DUT
-   Boundary defined in [TERMINOLOGY].  It is not achieved by equalising
+   Boundary defined in [TERMINOLOGY].  It is not achieved by normalizing
    fabric hardware between the systems being compared.
 
      +==============+=============+==================================+
