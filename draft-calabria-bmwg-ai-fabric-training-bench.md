@@ -310,7 +310,7 @@ Normalization in this document is achieved by reporting KPIs that are dimensionl
 
 Each denominator in {{tab-normalization-basis}} is either a workload parameter fixed by the test operator (S, algo_factor, N) or an Ethernet line rate at the DUT boundary. No denominator contains a term for switch internal capacity, accelerator interconnect capacity, or host bus capacity.
 
-Convergence and failover times ({{link-failure-convergence}}, {{zero-impact-failover-measurement}}), latency percentiles ({{latency-characterization}}), and queue occupancy are reported in absolute units and are not normalized; normalizing them would obscure the behaviour they measure.
+Convergence and failover times ({{link-failure-convergence}}, {{zero-impact-failover-measurement}}), latency percentiles ({{latency-characterization}}), and queue occupancy are reported in absolute units and are not normalized; normalizing them would obscure the behavior they measure.
 
 ### Aggregate Switching Capacity Is Not a Normalization Factor
 
