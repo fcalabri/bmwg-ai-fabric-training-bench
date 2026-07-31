@@ -5,13 +5,13 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 29 January 2027                            Blue Fern Consulting
+Expires: 1 February 2027                            Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
                                                                 S. Reddy
                                                                    Apple
-                                                            28 July 2026
+                                                            31 July 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 29 January 2027.
+   This Internet-Draft will expire on 1 February 2027.
 
 Copyright Notice
 
@@ -108,11 +108,18 @@ Table of Contents
        3.1.1.  Topology A: 2-Tier Clos (Leaf-Spine)
        3.1.2.  Topology B: 3-Tier Clos (Leaf-Spine-Superspine)
        3.1.3.  Topology C: Rail-Optimized
-     3.2.  Device Under Test (DUT) Identification
-     3.3.  Traffic Generator Requirements
-       3.3.1.  Mandatory Functional Capabilities
-       3.3.2.  Minimum Measurement Accuracy Requirements
-       3.3.3.  Acceptable Implementations
+     3.2.  Result Comparability and Normalization
+       3.2.1.  Normalization Basis
+       3.2.2.  Aggregate Switching Capacity Is Not a Normalization
+               Factor
+       3.2.3.  Comparability Set
+       3.2.4.  Comparing Fabrics of the Same Topology Class
+       3.2.5.  Fabric-Visible Data Volume
+     3.3.  Device Under Test (DUT) Identification
+     3.4.  Traffic Generator Requirements
+       3.4.1.  Mandatory Functional Capabilities
+       3.4.2.  Minimum Measurement Accuracy Requirements
+       3.4.3.  Acceptable Implementations
    4.  KPI Framework and Metrics Taxonomy
      4.1.  Primary KPIs
      4.2.  Secondary KPIs
@@ -237,7 +244,9 @@ Table of Contents
    AllToAll) are measured at the Ethernet fabric boundary; intra-node
    accelerator-interconnect contributions are reported separately when
    characterizing wide Expert Parallelism (wide-EP) or multi-node
-   configurations.
+   configurations.  The reporting requirements that make this separation
+   auditable, and the normalization basis that keeps it intact, are
+   specified in Section 3.2.
 
    The methodology is designed for controlled laboratory environments
    per the BMWG charter; it is NOT intended for production network
@@ -345,7 +354,9 @@ Table of Contents
 
    Three reference topologies are defined.  Every test report identifies
    which topology was used.  Results obtained under different topologies
-   are not directly comparable without normalization.
+   are compared only under the conditions specified in Section 3.2,
+   which defines the normalization basis used by this methodology and
+   the parameters that MUST match before two results are compared.
 
 3.1.1.  Topology A: 2-Tier Clos (Leaf-Spine)
 
@@ -412,7 +423,217 @@ Table of Contents
    GPU[N] of every host.  The DUT boundary and rail mapping are fully
    documented in the test report.
 
-3.2.  Device Under Test (DUT) Identification
+3.2.  Result Comparability and Normalization
+
+   Section 3.1 requires that results obtained under different topologies
+   be compared only after normalization.  This section defines what that
+   normalization is, which parameters MUST be equal before two results
+   are compared, and which quantities MUST NOT be used as normalization
+   factors.
+
+3.2.1.  Normalization Basis
+
+   Normalization in this document is achieved by reporting KPIs that are
+   dimensionless or referenced to a rate observable at the Fabric DUT
+   Boundary defined in [TERMINOLOGY].  It is not achieved by normalizing
+   fabric hardware between the systems being compared.
+
+     +==============+=============+==================================+
+     | KPI          | Defined in  | Normalizing denominator          |
+     +==============+=============+==================================+
+     | JCT Ratio    | Section     | Roofline_seq, whose              |
+     |              | 10.1        | communication term is (8 × S ×   |
+     |              |             | algo_factor) / B_acc             |
+     +--------------+-------------+----------------------------------+
+     | BusBW        | Section 9   | Per-accelerator; made algorithm- |
+     |              |             | invariant by the fixed           |
+     |              |             | algo_factor of [TERMINOLOGY]     |
+     +--------------+-------------+----------------------------------+
+     | BusBW        | Section     | Per-accelerator NIC line rate    |
+     | efficiency   | 9.1,        |                                  |
+     |              | Section 9.3 |                                  |
+     +--------------+-------------+----------------------------------+
+     | Throughput   | Section 5.1 | Theoretical rate of the Ethernet |
+     | efficiency   |             | links under test                 |
+     +--------------+-------------+----------------------------------+
+     | Aggregate    | Section 4   | Fabric bisection bandwidth,      |
+     | Throughput   |             | computed from Ethernet link      |
+     |              |             | rates                            |
+     +--------------+-------------+----------------------------------+
+     | MMR, JFI     | Section 8   | Dimensionless by construction    |
+     +--------------+-------------+----------------------------------+
+     | JCT          | Section     | Baseline JCT measured on the     |
+     | Interference | 10.3        | same DUT                         |
+     | Factor       |             |                                  |
+     +--------------+-------------+----------------------------------+
+
+               Table 3: Normalization Basis for Reported KPIs
+
+   Each denominator in Table 3 is either a workload parameter fixed by
+   the test operator (S, algo_factor, N) or an Ethernet line rate at the
+   DUT boundary.  No denominator contains a term for switch internal
+   capacity, accelerator interconnect capacity, or host bus capacity.
+
+   Convergence and failover times (Section 11.2, Section 11.3), latency
+   percentiles (Section 5.2), and queue occupancy are reported in
+   absolute units and are not normalized; normalizing them would obscure
+   the behavior they measure.
+
+3.2.2.  Aggregate Switching Capacity Is Not a Normalization Factor
+
+   Aggregate switching capacity (ASIC forwarding capacity, in Tbps) MUST
+   NOT be used as a normalization factor for any KPI defined in this
+   document, and MUST NOT be held constant as a precondition for
+   comparing two fabrics, for three reasons:
+
+   1.  Aggregate switching capacity is a vendor-declared internal
+       property, not a quantity observable at the Fabric DUT Boundary.
+       Benchmarking in this document is performed on a black-box basis
+       (Section 14).
+
+   2.  Whether a given switching capacity is sufficient for the offered
+       collective pattern is what the tests in Section 5 through
+       Section 12 measure.  Dividing a measured result by the capacity
+       that produced it removes the effect under test: a fabric with
+       half the switching capacity that completes the same job in 1.6
+       times the time would report a better result per Tbps while
+       performing worse at the job.
+
+   3.  A capacity-normalized value is a cost or efficiency figure of
+       merit.  Per the BMWG charter, and consistent with Section 13 and
+       Appendix B, this document defines what is measured and how it is
+       reported, and does not define figures of merit or acceptance
+       criteria.
+
+   Aggregate switching capacity, per-port speed, switch radix, and
+   buffer architecture are reported as DUT characteristics (Section 3.3,
+   Appendix C) so that a reader can attribute an observed difference to
+   them.  They are inputs to the interpretation of a result, not
+   divisors applied to it.
+
+   The same reasoning applies to intra-node switching and interconnect
+   capacity (accelerator interconnects, PCIe, CXL).  Were aggregate
+   switching capacity used as a normalization factor, intra-node
+   switching and interconnect capacity would have to be included for
+   that normalization to be complete, which the DUT boundary of
+   Section 1.2 does not permit.  Because no denominator in Table 3
+   contains such a term, the normalization defined here does not reach
+   inside the node, and this section and Section 1.2 are consistent by
+   construction.
+
+3.2.3.  Comparability Set
+
+   Results obtained on two different fabrics are compared directly for
+   the KPIs in Table 3 when every parameter in Table 4 is equal and
+   reported for both results.
+
+       +===========================+===============================+
+       | Parameter                 | Why it must match             |
+       +===========================+===============================+
+       | Participating accelerator | Collective cost depends on N  |
+       | count N                   | through algo_factor and       |
+       |                           | through fabric path length    |
+       +---------------------------+-------------------------------+
+       | Accelerators per node,    | Determines the fabric-visible |
+       | and their placement and   | fraction of collective        |
+       | rail mapping              | traffic (Section 3.2.5)       |
+       +---------------------------+-------------------------------+
+       | B_acc, the per-           | Denominator of Roofline_seq   |
+       | accelerator Ethernet line | and of BusBW efficiency       |
+       | rate at the DUT boundary  |                               |
+       +---------------------------+-------------------------------+
+       | Leaf oversubscription     | Determines whether the fabric |
+       | ratio                     | can satisfy the offered       |
+       |                           | pattern                       |
+       +---------------------------+-------------------------------+
+       | Collective type, message  | Definition of the offered     |
+       | size S, and algo_factor   | workload                      |
+       +---------------------------+-------------------------------+
+       | Transport (RoCEv2 or      | Loss and retransmission       |
+       | UET), and for UET the     | semantics differ by transport |
+       | transport service         |                               |
+       +---------------------------+-------------------------------+
+       | Load balancing strategy   | Comparisons are made strategy |
+       |                           | by strategy                   |
+       +---------------------------+-------------------------------+
+
+                         Table 4: Comparability Set
+
+   When any parameter in Table 4 differs, the results are reported side
+   by side with the difference stated, and are not combined into a
+   single comparative figure.
+
+   Topology class is a reported test condition, not a parameter that
+   normalization removes.  Two fabrics of different topology class that
+   match on Table 4 are compared for the KPIs in Table 3, and the report
+   states, for each result: the topology class; the switch tier count;
+   the typical and worst-case hop count for the measured traffic
+   pattern; the number of equal-cost paths available between a source-
+   destination pair; and the bisection bandwidth.  Such a comparison
+   characterizes the topologies under the offered workload; it does not
+   attribute the observed difference to any single fabric component.
+
+   Topologies outside the reference set of Section 3.1, including mesh,
+   torus, and direct-connect fabrics, are outside the scope stated in
+   Section 1.2.  Results obtained on such a fabric are reported as a
+   deviation per Section 13, and the hop-count and equal-cost-path
+   descriptors above are supplied only where they are well defined for
+   that topology.
+
+3.2.4.  Comparing Fabrics of the Same Topology Class
+
+   *Different scale.* Comparison is performed at equal N, and scale is
+   characterized rather than normalized away.  Section 10.1 requires JCT
+   Ratio to be reported for each N in its parameter table and plotted
+   against N; the shape of that curve is the scaling result, and no
+   single scalar replaces it.  Two fabrics whose maximum supported scale
+   differs are compared over the range of N that both support; the
+   report gives the JCT Ratio at the largest common N together with the
+   maximum N each fabric sustains per Section 11.1.
+
+   *Different switch capacity, radix, or buffer size.* Comparison is
+   performed without adjustment, provided Table 4 matches.  The
+   difference in the measured KPIs is the result of the comparison.  The
+   differing DUT characteristics are reported per Section 3.3 and
+   Appendix C to permit attribution, and are not used to scale the
+   measured values.
+
+3.2.5.  Fabric-Visible Data Volume
+
+   Collective placement determines how much of a collective's traffic
+   crosses the DUT boundary.  A hierarchical AllReduce that reduces
+   within a node before reducing across the fabric presents less data to
+   the fabric than a flat AllReduce across the same N accelerators, even
+   though the application-level message size S is identical.  Two
+   results obtained under different placement therefore represent
+   different offered fabric workloads at equal S.
+
+   For every collective result reported under Section 9, Section 6.6, or
+   Section 10, the report states:
+
+   *  S, the application-level data size per participant;
+
+   *  S_fabric, the data volume per participant that crosses the Fabric
+      DUT Boundary, together with the method used to obtain it.
+      Measurement from NIC Ethernet port counters is preferred;
+      derivation from the collective algorithm and the placement is
+      acceptable when the derivation is stated;
+
+   *  the accelerator placement and, in rail-optimized topologies, the
+      rail mapping;
+
+   *  the Intra-Node Transfer Overhead component defined in
+      [TERMINOLOGY], reported separately.  This component is never added
+      to, subtracted from, or folded into a fabric KPI.
+
+   Comparisons use the same S and the same placement on both sides.
+   When placement cannot be matched, for example when comparing a rail-
+   optimized fabric using rail-aware placement against a Clos fabric
+   that has no rail structure, the report gives S_fabric for each result
+   so that the difference in offered fabric work is visible, and the
+   results are not presented as an equal-workload comparison.
+
+3.3.  Device Under Test (DUT) Identification
 
       +==============+===================+=========================+
       | Parameter    | Description       | Example                 |
@@ -452,11 +673,11 @@ Table of Contents
       |              | BIOS settings     |                         |
       +--------------+-------------------+-------------------------+
 
-                  Table 3: DUT Identification Parameters
+                  Table 5: DUT Identification Parameters
 
-3.3.  Traffic Generator Requirements
+3.4.  Traffic Generator Requirements
 
-3.3.1.  Mandatory Functional Capabilities
+3.4.1.  Mandatory Functional Capabilities
 
    The traffic generator supports: RoCEv2 transport emulation (QP
    establishment, RDMA Write/Read, ECN processing, DCQCN rate control);
@@ -465,7 +686,7 @@ Table of Contents
    AllGather with configurable message sizes); and nanosecond-precision
    timestamping.
 
-3.3.2.  Minimum Measurement Accuracy Requirements
+3.4.2.  Minimum Measurement Accuracy Requirements
 
     +==============+=================================================+
     | Parameter    | Minimum Requirement                             |
@@ -492,7 +713,7 @@ Table of Contents
     | generation   | DUT buffering; configurable beyond 1000 frames  |
     +--------------+-------------------------------------------------+
 
-            Table 4: Minimum Measurement Accuracy Requirements
+            Table 6: Minimum Measurement Accuracy Requirements
 
    NOTE: A single RDMA message cannot exceed the 32-bit RETH DMA Length
    field, an absolute ceiling of 4 GB, and implementations commonly
@@ -501,7 +722,7 @@ Table of Contents
    and the message count and per-message size are reported alongside the
    aggregate transfer size.
 
-3.3.3.  Acceptable Implementations
+3.4.3.  Acceptable Implementations
 
    The platform used is identified in all test reports.
 
@@ -567,7 +788,7 @@ Table of Contents
    | P99.9)     |               |                                      |
    +------------+---------------+--------------------------------------+
 
-                           Table 5: Primary KPIs
+                           Table 7: Primary KPIs
 
 4.2.  Secondary KPIs
 
@@ -611,7 +832,7 @@ Table of Contents
       |                |               | packet spray)             |
       +----------------+---------------+---------------------------+
 
-                         Table 6: Secondary KPIs
+                         Table 8: Secondary KPIs
 
 4.3.  Fabric Health Indicators
 
@@ -640,7 +861,7 @@ Table of Contents
    |                        |         | draw under test load          |
    +------------------------+---------+-------------------------------+
 
-                    Table 7: Fabric Health Indicators
+                    Table 9: Fabric Health Indicators
 
 5.  Test Category 1: RDMA Transport Benchmarks
 
@@ -773,7 +994,7 @@ Table of Contents
    | PDC/QP Count |      |        |        |        |        |        |
    +--------------+------+--------+--------+--------+--------+--------+
 
-               Table 8: UET Throughput by Transport Service
+              Table 10: UET Throughput by Transport Service
 
    NOTE: For RoCEv2 RC/UC, this measures QP connection setup time
    (handshake round-trip).  For UET (ROD/RUD/RUDI/UUD), PDCs have no
@@ -839,7 +1060,7 @@ Table of Contents
    | Flowlet         |        |        |        |        |             |
    +-----------------+--------+--------+--------+--------+-------------+
 
-                Table 9: Packet Spray Efficacy Under UET RUD
+               Table 11: Packet Spray Efficacy Under UET RUD
 
       This test evaluates whether UET RUD achieves zero host-visible
       reordering despite per-packet spray, since the transport layer is
@@ -931,7 +1152,7 @@ Table of Contents
    | AllGather  | 1GB  | 128    | (meas)  | (meas)  | (meas) | (meas) |
    +------------+------+--------+---------+---------+--------+--------+
 
-            Table 10: UET Collective Communication Performance
+            Table 12: UET Collective Communication Performance
 
 6.7.  UET PDC Scalability and Connection Setup Rate
 
@@ -1066,6 +1287,11 @@ Table of Contents
    collective communications library (CCL) in use (e.g., NCCL, RCCL,
    oneCCL).
 
+   Because collective placement determines how much of a collective's
+   traffic crosses the DUT boundary, every result in this section is
+   reported together with the fabric-visible data volume and placement
+   information required by Section 3.2.5.
+
 9.1.  AllReduce Benchmark
 
    *Objective:* Measure fabric performance during AllReduce operations,
@@ -1192,7 +1418,7 @@ Table of Contents
    | AllGather  | 1GB  | 512    | (meas)     | (meas)    | (meas)      |
    +------------+------+--------+------------+-----------+-------------+
 
-          Table 11: Collective Communication Bus Bandwidth Summary
+          Table 13: Collective Communication Bus Bandwidth Summary
 
 10.  Test Category 6: Job Completion Time (JCT) Benchmarks
 
@@ -1226,7 +1452,7 @@ Table of Contents
           | Iterations          | 1000                         |
           +---------------------+------------------------------+
 
-                 Table 12: Synthetic JCT Test Parameters
+                 Table 14: Synthetic JCT Test Parameters
 
    Execute 1000 iterations and measure total wall-clock JCT.
 
@@ -1416,7 +1642,7 @@ Table of Contents
 
    Test reports include the following sections:
 
-   1.  *DUT Identification:* Complete parameters from Section 3.2 for
+   1.  *DUT Identification:* Complete parameters from Section 3.3 for
        all fabric components.
 
    2.  *Test Topology:* Diagram and description per Section 3.1,
@@ -1427,7 +1653,7 @@ Table of Contents
        balancing mode, buffer allocation, and vendor-specific tuning.
 
    4.  *Host Configuration:* Complete host stack description per
-       Section 3.2 including NIC firmware, driver, collective library
+       Section 3.3 including NIC firmware, driver, collective library
        version, and any tuning.  For UET tests, additionally report: UEC
        compliance profile, libfabric provider version, NIC UEC firmware
        version, and enabled optional features (LLR, Packet Trimming,
@@ -1447,6 +1673,14 @@ Table of Contents
        typical run-to-run variation; per the charter disclaimer above,
        this document does not set a required or minimum threshold for
        test validity.
+
+   8.  *Comparability Statement:* When a report compares two or more
+       fabrics, tabulate the comparability set of Section 3.2 for each
+       result and state explicitly which parameters differ.  Reports
+       comparing fabrics of different topology class additionally
+       provide the structural descriptors listed in that section.
+       Reports that present results from a single fabric do not require
+       this section.
 
 14.  Security Considerations
 
@@ -1500,7 +1734,7 @@ Table of Contents
       isolation of the test fabric is required.
 
    *  *Line-rate RDMA traffic generators:* the equipment specified in
-      Section 3.3 is capable of saturating production links at line
+      Section 3.4 is capable of saturating production links at line
       rate; such generators MUST be confined to the test fabric.
 
    *  *PFC disabled in Section 6.4:* the UET PFC-free incast test
@@ -1734,7 +1968,7 @@ Appendix A.  KPI-to-Test Mapping Summary
    | PDCs          |         |                    |                    |
    +---------------+---------+--------------------+--------------------+
 
-                   Table 13: KPI-to-Test Mapping Summary
+                   Table 15: KPI-to-Test Mapping Summary
 
 Appendix B.  Indicative Reference Values (Non-Normative)
 
@@ -1766,7 +2000,7 @@ Appendix B.  Indicative Reference Values (Non-Normative)
     |            | Packet Loss definition in [TERMINOLOGY])          |
     +------------+---------------------------------------------------+
 
-         Table 14: Indicative Reference Values for Distributed AI
+         Table 16: Indicative Reference Values for Distributed AI
                     Training Fabrics (Non- Normative)
 
 Appendix C.  ASIC Feature Categories (Informational)
@@ -1821,7 +2055,7 @@ Appendix C.  ASIC Feature Categories (Informational)
    | Support      |                | scales        | ASIC count       |
    +--------------+----------------+---------------+------------------+
 
-                    Table 15: ASIC Feature Categories
+                    Table 17: ASIC Feature Categories
 
    All values are reported based on vendor documentation or measured
    capability.  Additional DUT capabilities affecting benchmark results
@@ -1875,7 +2109,7 @@ Appendix D.  RoCEv2 Test Frame Format
    | var+4  | FCS        | 4B   | Ethernet Frame Check Sequence       |
    +--------+------------+------+-------------------------------------+
 
-                    Table 16: RoCEv2 Test Frame Format
+                    Table 18: RoCEv2 Test Frame Format
 
 Appendix E.  UET (Ultra Ethernet Transport) Frame Format
 
@@ -1966,7 +2200,7 @@ E.1.  Key Differences from RoCEv2
    |          | headers         |                    |                 |
    +----------+-----------------+--------------------+-----------------+
 
-                    Table 17: RoCEv2 vs. UET Comparison
+                    Table 19: RoCEv2 vs. UET Comparison
 
    1.  *UDP Destination Port:* UET uses port 4793 vs. RoCEv2 port 4791.
 
