@@ -192,7 +192,7 @@ This document applies to Ethernet-based AI training backend network fabrics empl
 InfiniBand fabrics are explicitly **out of scope**, though many KPIs defined herein may be adapted for IB benchmarking by future documents. The DUT is the network fabric itself (the collection of switches and interconnecting links), not individual accelerators or host NICs; host-side configuration is documented in the test report as it materially affects results.
 
 The DUT boundary for all measurements in this document is the NIC-to-NIC Ethernet fabric segment.  Intra-node communication (proprietary accelerator interconnects, e.g., NVLink, Infinity Fabric/xGMI, or PCIe) and individual GPU/accelerator performance are explicitly out of scope.
-Collective operation measurements (AllReduce, AllGather, AllToAll) are measured at the Ethernet fabric boundary; intra-node accelerator-interconnect contributions are reported separately when characterizing wide Expert Parallelism (wide-EP) or multi-node configurations.
+Collective operation measurements (AllReduce, AllGather, AllToAll) are measured at the Ethernet fabric boundary; intra-node accelerator-interconnect contributions are reported separately when characterizing wide Expert Parallelism (wide-EP) or multi-node configurations. The reporting requirements that make this separation auditable, and the normalization basis that keeps it intact, are specified in {{comparability-normalization}}.
 
 The methodology is designed for controlled laboratory environments per the BMWG charter; it is NOT intended for production network measurement.
 
@@ -234,7 +234,7 @@ Acronyms used in this document are expanded in the Acronyms appendix of {{TERMIN
 
 ## Reference Fabric Topologies {#reference-fabric-topologies}
 
-Three reference topologies are defined. Every test report identifies which topology was used. Results obtained under different topologies are not directly comparable without normalization.
+Three reference topologies are defined. Every test report identifies which topology was used. Results obtained under different topologies are compared only under the conditions specified in {{comparability-normalization}}, which defines the normalization basis used by this methodology and the parameters that MUST match before two results are compared.
 
 ### Topology A: 2-Tier Clos (Leaf-Spine)
 
@@ -288,6 +288,83 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 {: #fig-topo-c align="center" title="Topology C: Rail-Optimized (schematic; only 4 of N rails and hosts shown)"}
 
 In rail-optimized topologies, each NIC on a multi-NIC host connects to a dedicated leaf switch ("rail"); this co-optimizes network locality with the collective communications library (CCL) in use (e.g., NCCL, RCCL, oneCCL). The diagram is schematic: it depicts a representative subset of rails and hosts, not the full cross-host fan-out; in the complete topology, the Rail-N leaf switch connects to GPU[N] of every host. The DUT boundary and rail mapping are fully documented in the test report.
+
+## Result Comparability and Normalization {#comparability-normalization}
+
+{{reference-fabric-topologies}} requires that results obtained under different topologies be compared only after normalization. This section defines what that normalization is, which parameters MUST be equal before two results are compared, and which quantities MUST NOT be used as normalization factors.
+
+### Normalization Basis
+
+Normalization in this document is achieved by reporting KPIs that are dimensionless or referenced to a rate observable at the Fabric DUT Boundary defined in {{TERMINOLOGY}}. It is not achieved by normalizing fabric hardware between the systems being compared.
+
+| KPI | Defined in | Normalizing denominator |
+|---|---|---|
+| JCT Ratio | {{synthetic-jct-under-controlled-conditions}} | Roofline_seq, whose communication term is (8 × S × algo_factor) / B_acc |
+| BusBW | {{test-collective}} | Per-accelerator; made algorithm-invariant by the fixed algo_factor of {{TERMINOLOGY}} |
+| BusBW efficiency | {{allreduce-benchmark}}, {{allgather-benchmark}} | Per-accelerator NIC line rate |
+| Throughput efficiency | {{baseline-throughput}} | Theoretical rate of the Ethernet links under test |
+| Aggregate Throughput | {{kpi-framework-and-metrics-taxonomy}} | Fabric bisection bandwidth, computed from Ethernet link rates |
+| MMR, JFI | {{test-lb}} | Dimensionless by construction |
+| JCT Interference Factor | {{multi-tenant-jct-interference}} | Baseline JCT measured on the same DUT |
+{: #tab-normalization-basis title="Normalization Basis for Reported KPIs"}
+
+Each denominator in {{tab-normalization-basis}} is either a workload parameter fixed by the test operator (S, algo_factor, N) or an Ethernet line rate at the DUT boundary. No denominator contains a term for switch internal capacity, accelerator interconnect capacity, or host bus capacity.
+
+Convergence and failover times ({{link-failure-convergence}}, {{zero-impact-failover-measurement}}), latency percentiles ({{latency-characterization}}), and queue occupancy are reported in absolute units and are not normalized; normalizing them would obscure the behavior they measure.
+
+### Aggregate Switching Capacity Is Not a Normalization Factor
+
+Aggregate switching capacity (ASIC forwarding capacity, in Tbps) MUST NOT be used as a normalization factor for any KPI defined in this document, and MUST NOT be held constant as a precondition for comparing two fabrics, for three reasons:
+
+1. Aggregate switching capacity is a vendor-declared internal property, not a quantity observable at the Fabric DUT Boundary. Benchmarking in this document is performed on a black-box basis ({{security-considerations}}).
+
+2. Whether a given switching capacity is sufficient for the offered collective pattern is what the tests in {{test-rdma}} through {{test-soak}} measure. Dividing a measured result by the capacity that produced it removes the effect under test: a fabric with half the switching capacity that completes the same job in 1.6 times the time would report a better result per Tbps while performing worse at the job.
+
+3. A capacity-normalized value is a cost or efficiency figure of merit. Per the BMWG charter, and consistent with {{reporting}} and {{indicative-reference-values}}, this document defines what is measured and how it is reported, and does not define figures of merit or acceptance criteria.
+
+Aggregate switching capacity, per-port speed, switch radix, and buffer architecture are reported as DUT characteristics ({{device-under-test-dut-identification}}, {{asic-features}}) so that a reader can attribute an observed difference to them. They are inputs to the interpretation of a result, not divisors applied to it.
+
+The same reasoning applies to intra-node switching and interconnect capacity (accelerator interconnects, PCIe, CXL). Were aggregate switching capacity used as a normalization factor, intra-node switching and interconnect capacity would have to be included for that normalization to be complete, which the DUT boundary of {{scope-and-applicability}} does not permit. Because no denominator in {{tab-normalization-basis}} contains such a term, the normalization defined here does not reach inside the node, and this section and {{scope-and-applicability}} are consistent by construction.
+
+### Comparability Set
+
+Results obtained on two different fabrics are compared directly for the KPIs in {{tab-normalization-basis}} when every parameter in {{tab-comparability-set}} is equal and reported for both results.
+
+| Parameter | Why it must match |
+|---|---|
+| Participating accelerator count N | Collective cost depends on N through algo_factor and through fabric path length |
+| Accelerators per node, and their placement and rail mapping | Determines the fabric-visible fraction of collective traffic ({{fabric-visible-data-volume}}) |
+| B_acc, the per-accelerator Ethernet line rate at the DUT boundary | Denominator of Roofline_seq and of BusBW efficiency |
+| Leaf oversubscription ratio | Determines whether the fabric can satisfy the offered pattern |
+| Collective type, message size S, and algo_factor | Definition of the offered workload |
+| Transport (RoCEv2 or UET), and for UET the transport service | Loss and retransmission semantics differ by transport |
+| Load balancing strategy | Comparisons are made strategy by strategy |
+{: #tab-comparability-set title="Comparability Set"}
+
+When any parameter in {{tab-comparability-set}} differs, the results are reported side by side with the difference stated, and are not combined into a single comparative figure.
+
+Topology class is a reported test condition, not a parameter that normalization removes. Two fabrics of different topology class that match on {{tab-comparability-set}} are compared for the KPIs in {{tab-normalization-basis}}, and the report states, for each result: the topology class; the switch tier count; the typical and worst-case hop count for the measured traffic pattern; the number of equal-cost paths available between a source-destination pair; and the bisection bandwidth. Such a comparison characterizes the topologies under the offered workload; it does not attribute the observed difference to any single fabric component.
+
+Topologies outside the reference set of {{reference-fabric-topologies}}, including mesh, torus, and direct-connect fabrics, are outside the scope stated in {{scope-and-applicability}}. Results obtained on such a fabric are reported as a deviation per {{reporting}}, and the hop-count and equal-cost-path descriptors above are supplied only where they are well defined for that topology.
+
+### Comparing Fabrics of the Same Topology Class
+
+**Different scale.** Comparison is performed at equal N, and scale is characterized rather than normalized away. {{synthetic-jct-under-controlled-conditions}} requires JCT Ratio to be reported for each N in its parameter table and plotted against N; the shape of that curve is the scaling result, and no single scalar replaces it. Two fabrics whose maximum supported scale differs are compared over the range of N that both support; the report gives the JCT Ratio at the largest common N together with the maximum N each fabric sustains per {{fabric-scale-limits}}.
+
+**Different switch capacity, radix, or buffer size.** Comparison is performed without adjustment, provided {{tab-comparability-set}} matches. The difference in the measured KPIs is the result of the comparison. The differing DUT characteristics are reported per {{device-under-test-dut-identification}} and {{asic-features}} to permit attribution, and are not used to scale the measured values.
+
+### Fabric-Visible Data Volume {#fabric-visible-data-volume}
+
+Collective placement determines how much of a collective's traffic crosses the DUT boundary. A hierarchical AllReduce that reduces within a node before reducing across the fabric presents less data to the fabric than a flat AllReduce across the same N accelerators, even though the application-level message size S is identical. Two results obtained under different placement therefore represent different offered fabric workloads at equal S.
+
+For every collective result reported under {{test-collective}}, {{uet-collective-communication-performance}}, or {{test-jct}}, the report states:
+
+- S, the application-level data size per participant;
+- S_fabric, the data volume per participant that crosses the Fabric DUT Boundary, together with the method used to obtain it. Measurement from NIC Ethernet port counters is preferred; derivation from the collective algorithm and the placement is acceptable when the derivation is stated;
+- the accelerator placement and, in rail-optimized topologies, the rail mapping;
+- the Intra-Node Transfer Overhead component defined in {{TERMINOLOGY}}, reported separately. This component is never added to, subtracted from, or folded into a fabric KPI.
+
+Comparisons use the same S and the same placement on both sides. When placement cannot be matched, for example when comparing a rail-optimized fabric using rail-aware placement against a Clos fabric that has no rail structure, the report gives S_fabric for each result so that the difference in offered fabric work is visible, and the results are not presented as an equal-workload comparison.
 
 ## Device Under Test (DUT) Identification {#device-under-test-dut-identification}
 
@@ -615,6 +692,8 @@ where LinkTx_i = transmitted traffic on fabric link i, N = total parallel links.
 
 These tests evaluate the fabric's performance under realistic collective communication patterns. Unlike synthetic RDMA tests in {{test-rdma}} and {{test-uec}}, these exercise the full stack including the collective communications library (CCL) in use (e.g., NCCL, RCCL, oneCCL).
 
+Because collective placement determines how much of a collective's traffic crosses the DUT boundary, every result in this section is reported together with the fabric-visible data volume and placement information required by {{fabric-visible-data-volume}}.
+
 ## AllReduce Benchmark {#allreduce-benchmark}
 
 **Objective:** Measure fabric performance during AllReduce operations, the dominant collective for gradient synchronization in data-parallel training.
@@ -830,6 +909,7 @@ Test reports include the following sections:
 5. **Test Results:** For each test from {{test-rdma}} through {{test-soak}}, provide specified tables, graphs, and statistical summaries. For {{test-uec}} tests, results include side-by-side UET vs. RoCEv2 comparison data on the identical DUT fabric.
 6. **Anomalies:** Any deviations from specified procedures, test failures, or unexpected behaviors are documented.
 7. **Repeatability Statement:** Report iteration count and coefficient of variation (std deviation / mean) for each test's primary metric. A CV of 5% is an illustrative reference point for typical run-to-run variation; per the charter disclaimer above, this document does not set a required or minimum threshold for test validity.
+8. **Comparability Statement:** When a report compares two or more fabrics, tabulate the comparability set of {{comparability-normalization}} for each result and state explicitly which parameters differ. Reports comparing fabrics of different topology class additionally provide the structural descriptors listed in that section. Reports that present results from a single fabric do not require this section.
 
 # Security Considerations
 
