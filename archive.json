@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-30T02:53:02.377015+00:00",
+  "timestamp": "2026-08-02T03:34:58.595634+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -408,6 +408,48 @@
       "createdAt": "2026-07-23T22:16:33Z",
       "updatedAt": "2026-07-28T19:51:37Z",
       "closedAt": "2026-07-28T19:51:37Z",
+      "comments": []
+    },
+    {
+      "number": 39,
+      "id": "I_kwDORX7w2M8AAAABK0Tl4w",
+      "title": "Normalization",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/39",
+      "state": "CLOSED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "address normalization comments on the list  by Niangen Ye, \n\n\nI have a question about the normalization statement in Section 3.1 of\ndraft-calabria-bmwg-ai-fabric-training-bench-03.\n\n\nSection 3.1 states that results obtained under different topologies are not directly comparable without normalization. However, I could not find guidance on how this normalization should be performed.\n\nHow should the methodology compare fabrics with the same topology but different scale or switch ASIC capacity, and fabrics with different topology types, such as rail-optimized, Fat-Tree/Clos, or mesh-based fabrics? For example, should total switching capacity be held constant or used as a normalization factor?\n\nIf total switching capacity is used for normalization, it may be necessary to consider the switching and interconnect capacity within a node or server as well. This appears to be in tension with Section 1.2, which defines the DUT boundary as the NIC-to-NIC Ethernet fabric segment and explicitly excludes intra-node communication. How do the authors recommend resolving this issue?",
+      "createdAt": "2026-07-30T14:41:21Z",
+      "updatedAt": "2026-07-31T19:51:39Z",
+      "closedAt": "2026-07-31T19:51:39Z",
+      "comments": [
+        {
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "body": "pull request #40 ",
+          "createdAt": "2026-07-31T19:51:24Z",
+          "updatedAt": "2026-07-31T19:51:24Z"
+        }
+      ]
+    },
+    {
+      "number": 41,
+      "id": "I_kwDORX7w2M8AAAABLDonuw",
+      "title": "ML-02 (Niangen Ye, BMWG list \u2014 s_fabric provenance; companion accounting profile",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/41",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-08-01T12:21:44Z",
+      "updatedAt": "2026-08-01T12:21:44Z",
+      "closedAt": null,
       "comments": []
     }
   ],
@@ -1347,6 +1389,102 @@
       "mergeCommit": {
         "oid": "13798ec527389a2a3d83b0309e5107fe9cfce9be"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 40,
+      "id": "PR_kwDORX7w2M74lfsu",
+      "title": "Add Result Comparability and Normalization section (ML-01)",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/40",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "Closes the gap raised on the BMWG list: Section 3.1 required normalization before cross-topology comparison without defining what that normalization is.\r\n\r\nC1  3.1: replace \"not directly comparable without normalization\" with a\r\n    pointer to the new section and a MUST on parameter matching.\r\nC2  New Section 3.2 \"Result Comparability and Normalization\", five\r\n    subsections: normalization basis (Table 3), the MUST NOT on\r\n    aggregate switching capacity as a normalization factor, the\r\n    comparability set (Table 4), same-class fabric comparison, and\r\n    fabric-visible data volume (S_fabric).\r\nC3  1.2: cross-reference the new section from the DUT boundary text. C4  Section 9 preamble: require S_fabric and placement reporting for all\r\n    collective results.\r\nC5  Section 13: new reporting item 8, Comparability Statement.\r\n\r\nNormalization is defined as reporting KPIs that are dimensionless or referenced to a rate observable at the Fabric DUT Boundary; no denominator contains switch internal, accelerator interconnect, or host bus capacity. Convergence, failover, latency percentiles, and queue occupancy stay in absolute units.\r\n\r\nRenumbers DUT Identification 3.2 -> 3.3 and Traffic Generator Requirements 3.3 -> 3.4. All internal cross-references use anchors, so no reference text changes. idnits reports the same 5 pre-existing nits as before this change.\r\n\r\n",
+      "createdAt": "2026-07-30T15:08:10Z",
+      "updatedAt": "2026-07-31T19:51:09Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "13798ec527389a2a3d83b0309e5107fe9cfce9be",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "Normalization",
+      "headRefOid": "8e403039e1b37ded181b699b6bdbf9546622749d",
+      "closedAt": "2026-07-31T19:51:04Z",
+      "mergedAt": "2026-07-31T19:51:04Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "bff5c89fa3282e61258e6325cf81cc8299f7e0b3"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M8AAAABH_HzeQ",
+          "commit": {
+            "abbreviatedOid": "7dd76fa"
+          },
+          "author": "cpignata",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "small edits",
+          "createdAt": "2026-07-31T17:47:48Z",
+          "updatedAt": "2026-07-31T17:48:37Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\nNormalization in this document is achieved by reporting KPIs that are dimensionless or referenced to a rate observable at the Fabric DUT Boundary defined in {{TERMINOLOGY}}. It is not achieved by normalizing fabric hardware between the systems being compared.\n```",
+              "createdAt": "2026-07-31T17:47:49Z",
+              "updatedAt": "2026-07-31T17:48:37Z"
+            },
+            {
+              "originalPosition": 43,
+              "body": "```suggestion\nConvergence and failover times ({{link-failure-convergence}}, {{zero-impact-failover-measurement}}), latency percentiles ({{latency-characterization}}), and queue occupancy are reported in absolute units and are not normalized; normalizing them would obscure the behavior they measure.\n```",
+              "createdAt": "2026-07-31T17:48:05Z",
+              "updatedAt": "2026-07-31T17:48:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDORX7w2M8AAAABH_5t3Q",
+          "commit": {
+            "abbreviatedOid": "8e40303"
+          },
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "10-4",
+          "createdAt": "2026-07-31T19:50:44Z",
+          "updatedAt": "2026-07-31T19:50:44Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 42,
+      "id": "PR_kwDORX7w2M75YXV7",
+      "title": "04 - Ye, N. email exchange on list",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/42",
+      "state": "OPEN",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "04 - Ye, N. email exchange on list",
+      "createdAt": "2026-08-01T12:48:47Z",
+      "updatedAt": "2026-08-01T12:48:47Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "bff5c89fa3282e61258e6325cf81cc8299f7e0b3",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "04/sfabric-provenance",
+      "headRefOid": "3cfb46cb795cfbe648abc6654888d2160921e35c",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
