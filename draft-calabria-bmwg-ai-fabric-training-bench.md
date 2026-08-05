@@ -67,6 +67,20 @@ normative:
 informative:
   RFC3849:
   INFERENCE-BENCH: I-D.calabria-bmwg-ai-fabric-inference-bench
+  SWITCHING-EFF:
+    title: "Switching Efficiency: A Metric Framework for AI Data Center Networks"
+    author:
+      - ins: N. Ye
+        name: Niangen Ye
+      - ins: W. Sun
+        name: Weiqiang Sun
+      - ins: D. Wang
+        name: Dong Wang
+      - ins: J. Sun
+        name: Jiang Sun
+    date: 2026-04
+    seriesinfo:
+      Internet-Draft: draft-ye-ippm-switching-efficiency-02
   EVPN-BENCH:
     title: "Benchmarking Methodology for EVPN and PBB-EVPN"
     author:
@@ -287,7 +301,7 @@ NIC-0 NIC-0 NIC-1 NIC-1 NIC-2 NIC-2 NIC-7 NIC-7
 ~~~
 {: #fig-topo-c align="center" title="Topology C: Rail-Optimized (schematic; only 4 of N rails and hosts shown)"}
 
-In rail-optimized topologies, each NIC on a multi-NIC host connects to a dedicated leaf switch ("rail"); this co-optimizes network locality with the collective communications library (CCL) in use (e.g., NCCL, RCCL, oneCCL). The diagram is schematic: it depicts a representative subset of rails and hosts, not the full cross-host fan-out; in the complete topology, the Rail-N leaf switch connects to GPU[N] of every host. The DUT boundary and rail mapping are fully documented in the test report.
+In rail-optimized topologies, each NIC on a multi-NIC host connects to a dedicated leaf switch ("rail"); this co-optimizes network locality with the collective communications library (CCL) in use (e.g., NCCL, RCCL, oneCCL). The diagram is schematic: it depicts a representative subset of rails and hosts, not the full cross-host fan-out; in the complete topology, the Rail-N leaf switch connects to GPU\[N\] of every host. The DUT boundary and rail mapping are fully documented in the test report.
 
 ## Result Comparability and Normalization {#comparability-normalization}
 
@@ -360,11 +374,13 @@ Collective placement determines how much of a collective's traffic crosses the D
 For every collective result reported under {{test-collective}}, {{uet-collective-communication-performance}}, or {{test-jct}}, the report states:
 
 - S, the application-level data size per participant;
-- S_fabric, the data volume per participant that crosses the Fabric DUT Boundary, together with the method used to obtain it. Measurement from NIC Ethernet port counters is preferred; derivation from the collective algorithm and the placement is acceptable when the derivation is stated;
+- S_fabric, the data volume per participant that crosses the Fabric DUT Boundary, together with the method used to obtain it. S_fabric is counted in application payload bytes, each byte counted once, using the byte-counting rule of the Fabric_Goodput definition in {{TERMINOLOGY}}. Retransmitted and duplicate bytes MUST NOT be included in S_fabric; they are reported separately as the RDMA Retransmission Rate and out-of-order delivery rate of {{kpi-framework-and-metrics-taxonomy}}. Measurement from NIC Ethernet port counters is preferred; derivation from the collective algorithm and the placement is acceptable when the derivation is stated. Under this byte-counting rule the two methods return the same value; when both are available and they disagree, the report gives both values and the difference;
 - the accelerator placement and, in rail-optimized topologies, the rail mapping;
 - the Intra-Node Transfer Overhead component defined in {{TERMINOLOGY}}, reported separately. This component is never added to, subtracted from, or folded into a fabric KPI.
 
 Comparisons use the same S and the same placement on both sides. When placement cannot be matched, for example when comparing a rail-optimized fabric using rail-aware placement against a Clos fabric that has no rail structure, the report gives S_fabric for each result so that the difference in offered fabric work is visible, and the results are not presented as an equal-workload comparison.
+
+Where a report needs to account for forwarding work inside the Fabric DUT, for example to explain why two results that match on {{tab-comparability-set}} and on S_fabric nevertheless differ, the optional diagnostic profile of {{forwarding-work-accounting}} may be applied. That profile does not alter S_fabric or any denominator in {{tab-normalization-basis}}.
 
 ## Device Under Test (DUT) Identification {#device-under-test-dut-identification}
 
@@ -1003,6 +1019,53 @@ This appendix identifies ASIC feature categories relevant to AI fabric performan
 
 All values are reported based on vendor documentation or measured capability. Additional DUT capabilities affecting benchmark results are also documented.
 
+# Optional Forwarding-Work Accounting (Non-Normative) {#forwarding-work-accounting}
+
+Two collective runs that match on every parameter of {{tab-comparability-set}} and report the same S_fabric can still impose different total forwarding work inside the Fabric DUT, because path length, routing behaviour, and replication differ. {{tab-normalization-basis}} does not capture that difference, and hop count is reported in {{comparability-normalization}} as a declared property of the topology rather than as an observed quantity. Under adaptive routing, dynamic load balancing, or packet spraying, the realised path length can depart from the declared one, and nothing observable at the Fabric DUT Boundary reveals it.
+
+This appendix defines an optional accounting view that makes that difference visible. It is diagnostic only. None of the quantities defined here is a KPI, none appears as a denominator in {{tab-normalization-basis}}, and none establishes an acceptance criterion. The variable names follow {{SWITCHING-EFF}} so that results are directly usable by that framework.
+
+## Quantities
+
+A report that applies this profile declares one observation window and one byte-counting rule, and uses them for all three volumes. The observation window is one collective iteration of the test being diagnosed. The byte-counting rule is the Fabric_Goodput rule of {{TERMINOLOGY}} for V_CED and V_RECV; for V_FWD the report states whether Ethernet framing overhead and inter-packet gap are included.
+
+The measurement domain is the Fabric DUT Boundary of {{TERMINOLOGY}}. Intra-node accelerator interconnects, PCIe, and CXL are outside it and contribute to none of the three volumes.
+
+| Quantity | Definition | Collected from |
+|---|---|---|
+| V_CED | Aggregate retained collective output at the participating endpoints over the window. For a reduction collective this is the final reduced result only; for AllGather and AllToAll dispatch it is the newly received payload retained for the next computation phase. | Collective library instrumentation |
+| V_RECV | Aggregate payload bytes accepted at the ingress of the participating NIC Ethernet ports over the window. Retransmitted and duplicate receipts each count. | NIC ingress counters |
+| V_FWD | Aggregate bytes emitted on the egress side of the fabric forwarding ports within the measurement domain over the window. Each egress transmission counts once, so replication, multicast fan-out, load-balancing replicas, and retransmissions each increase V_FWD. | Switch forwarding-plane counters |
+{: #tab-forwarding-work title="Optional Forwarding-Work Accounting Quantities"}
+
+## Forwarding Amplification
+
+The ratio V_FWD / V_RECV is dominated by switch tier count: a three-tier Clos forwards each byte more times than a two-tier Clos for structural reasons, which is a property of the declared topology and not a result. The diagnostic content is the departure from what the declared topology predicts:
+
+~~~
+A = (V_FWD / V_RECV) / H_declared
+~~~
+
+where H_declared is the expected forwarding events per received byte for the measured traffic pattern under the declared topology, derived from the hop counts already required by {{comparability-normalization}}. A equal to 1 indicates that forwarding behaved as the topology predicts. A greater than 1 isolates retransmission, replication, and path inflation from the structural baseline. The report states H_declared and how it was derived.
+
+## Reporting Conditions
+
+V_FWD is obtained from forwarding-plane counters inside the DUT and is therefore not observable at the Fabric DUT Boundary. Results that include V_FWD or A are labelled as incorporating DUT-supplied instrumentation and are not black-box results in the sense of {{security-considerations}}. A report applying this profile states:
+
+- the observation window and its alignment to the collective iteration;
+- the byte-counting rule, including whether Ethernet framing overhead and inter-packet gap are counted in V_FWD;
+- the set of forwarding ports included, and whether mirrored or sampled copies to a monitoring destination are counted;
+- whether packets recirculated through a multi-pass forwarding pipeline count once or once per pass;
+- for tests in {{test-uec}}, whether a trimmed packet counts as one egress transmission at its truncated length or at its original length;
+- where in-network reduction is active, the rule applied to a forwarding element that consumes several inputs and emits one reduced output;
+- counter polling interval, and the treatment of counter wrap, reset, and missing samples.
+
+## Quantities Deliberately Not Defined Here
+
+This appendix defines no aggregate switching capacity term and therefore no capacity-normalized ratio. {{comparability-normalization}} states that aggregate switching capacity MUST NOT be used as a normalization factor for any KPI in this document, and the reasoning there applies unchanged to a diagnostic ratio: the quantity is vendor-declared rather than boundary-observable, dividing by it removes the effect under test, and the result is a figure of merit, which the BMWG charter places outside the scope of this work. The Switching Efficiency and Port Utilization metrics of {{SWITCHING-EFF}} both carry that denominator and are consequently outside the scope of this appendix. Its Data Efficiency and Routing Efficiency factors are ratios of the byte counts in {{tab-forwarding-work}} and can be computed from a report that applies this profile.
+
+Readers computing the Data Efficiency factor should note that for reduction collectives its value is determined largely by the collective algorithm rather than by the fabric. This document carries the same term analytically, as the fixed algo_factor of the BusBW definition in {{TERMINOLOGY}}, which is declared rather than measured precisely so that BusBW stays algorithm-invariant.
+
 # RoCEv2 Test Frame Format {#rocev2-frame}
 
 | Offset | Field | Size | Value / Description |
@@ -1079,4 +1142,4 @@ Layering notes:
 # Acknowledgments
 {:numbered="false"}
 
-This work has benefited from the discussions that occurred during the joint IPPM and BMWG meeting and on the BMWG mailing list. Thanks to Carsten Rossenhoevel and Mohamed Boucadair for valuable review and comments. Thanks to Andrew Yourtchenko for a thorough review of the document set.
+This work has benefited from the discussions that occurred during the joint IPPM and BMWG meeting and on the BMWG mailing list. Thanks to Carsten Rossenhoevel and Mohamed Boucadair for valuable review and comments. Thanks to Andrew Yourtchenko for a thorough review of the document set. Thanks to Niangen Ye for the review comments on Fabric-Visible Data Volume provenance and on forwarding-work accounting, which prompted the byte-counting rule stated in {{fabric-visible-data-volume}} and the optional profile of {{forwarding-work-accounting}}.
