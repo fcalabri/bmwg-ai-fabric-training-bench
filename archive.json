@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-02T03:34:58.595634+00:00",
+  "timestamp": "2026-08-06T03:18:46.966528+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -441,15 +441,15 @@
       "id": "I_kwDORX7w2M8AAAABLDonuw",
       "title": "ML-02 (Niangen Ye, BMWG list \u2014 s_fabric provenance; companion accounting profile",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/41",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-08-01T12:21:44Z",
-      "updatedAt": "2026-08-01T12:21:44Z",
-      "closedAt": null,
+      "updatedAt": "2026-08-05T15:25:03Z",
+      "closedAt": "2026-08-05T15:25:03Z",
       "comments": []
     }
   ],
@@ -1467,24 +1467,26 @@
       "id": "PR_kwDORX7w2M75YXV7",
       "title": "04 - Ye, N. email exchange on list",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/42",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "04 - Ye, N. email exchange on list",
       "createdAt": "2026-08-01T12:48:47Z",
-      "updatedAt": "2026-08-01T12:48:47Z",
+      "updatedAt": "2026-08-05T15:25:14Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "bff5c89fa3282e61258e6325cf81cc8299f7e0b3",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "04/sfabric-provenance",
       "headRefOid": "3cfb46cb795cfbe648abc6654888d2160921e35c",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-08-05T15:25:14Z",
+      "mergedAt": "2026-08-05T15:25:14Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "2d28e1ee7244066f7844da7620925dcc965ed209"
+      },
       "comments": [],
       "reviews": []
     }
