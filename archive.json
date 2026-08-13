@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-11T02:10:29.140202+00:00",
+  "timestamp": "2026-08-13T02:34:56.654717+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -457,16 +457,24 @@
       "id": "I_kwDORX7w2M8AAAABMJK0Rw",
       "title": "Is benchmarking results comparable generic or AI Fabric training benchmarking specific",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/issues/43",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "billwuqin",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Regarding Niangen Ye\u2019s comments, I am struggling that whether his comments are only applied to AI Fabric Training Benchmarking? Why not make benchmarking results comparable being also applied to all the other benchmarking methodology drafts?\n \nIf you look at the original BMWG charter\n\u201c\npresent the requirements\nfor the common, unambiguous reporting of benchmarking results.\n\u201d\nOr latest BMWG/IPPM joint charter (https://github.com/ietf-ippm/wg-charter/blob/main/ippm-bmwg-joint.md):\n\u201c\nWhere in lab environments the testing procedures ensure consistent, reproducible, and reportable benchmarking results including system calibration. \n\u201d\nSo reportable, reproducible are key requirements for each Benchmarking work, but benchmarking results comparable  is not mandatory according to the Charter.\n",
       "createdAt": "2026-08-10T12:07:25Z",
-      "updatedAt": "2026-08-10T12:07:25Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-08-12T18:57:12Z",
+      "closedAt": "2026-08-12T18:57:12Z",
+      "comments": [
+        {
+          "author": "fcalabri",
+          "authorAssociation": "OWNER",
+          "body": "Merge pull request #44 from fcalabri/Niangen_comments_update",
+          "createdAt": "2026-08-12T18:57:12Z",
+          "updatedAt": "2026-08-12T18:57:12Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -1511,7 +1519,7 @@
       "id": "PR_kwDORX7w2M79CdtB",
       "title": "Update draft-calabria-bmwg-ai-fabric-training-bench.md",
       "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/44",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "fcalabri",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -1520,17 +1528,19 @@
       "labels": [],
       "body": "Niangen norm backed out\r\n\r\n1. The forwarding-work appendix (training bench) . The key amount, V_FWD , was read from counters internal to the DUT, therefore it was not a black box measurement. Also, we connected our variables with the IPPM draft and consequently joined a BMWG document with a very early stage of development for a draft of another WG.\r\n2. In Goodput definition, CED comparison (terminology). We compare our metric with an IPPM parameter which cannot be measure at the DUT boundary. This relationship has to be agreed on by the WGs and therefore should be included in cross WG coordination and NOT as part of a BMWG Terminology document.\r\n3. SWITCHING EFF reference (training and terminology). There are no references after this paragraph.",
       "createdAt": "2026-08-10T13:54:52Z",
-      "updatedAt": "2026-08-11T01:11:18Z",
+      "updatedAt": "2026-08-12T18:56:58Z",
       "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "baseRefName": "main",
       "baseRefOid": "2d28e1ee7244066f7844da7620925dcc965ed209",
       "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
       "headRefName": "Niangen_comments_update",
       "headRefOid": "b5317ce38e81ff3f4202dfcbcb1f88da81089764",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-08-12T18:56:51Z",
+      "mergedAt": "2026-08-12T18:56:51Z",
+      "mergedBy": "fcalabri",
+      "mergeCommit": {
+        "oid": "160f22c06b8eb0e88b8142aee306c9f5b0e5d0e5"
+      },
       "comments": [],
       "reviews": [
         {
