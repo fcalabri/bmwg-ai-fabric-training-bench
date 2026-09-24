@@ -900,16 +900,18 @@ Per the BMWG charter, the definition of acceptance criteria or performance requi
 
 Results from collective communication benchmarks ({{test-collective}}) MUST be reported per the reporting requirements stated in the BusBW definition of {{TERMINOLOGY}}.
 
-Test reports include the following sections:
+Test reports identify this document and {{TERMINOLOGY}} by name and revision, and include the following sections:
 
 1. **DUT Identification:** Complete parameters from {{device-under-test-dut-identification}} for all fabric components.
 2. **Test Topology:** Diagram and description per {{reference-fabric-topologies}}, including physical cabling.
-3. **Test Configuration:** All DUT configuration parameters: QoS policies (ECN thresholds, PFC headroom, DCQCN parameters), load balancing mode, buffer allocation, and vendor-specific tuning.
+3. **Test Configuration:** All DUT configuration parameters: QoS policies (ECN marking thresholds, PFC XOFF/XON thresholds and headroom, DCQCN parameters), traffic class and priority mapping for RDMA data and congestion notification packets, Ethernet MTU and RDMA path MTU, load balancing mode, buffer allocation, and vendor-specific tuning. A parameter left at its vendor default is reported with its default value, or as "vendor default" where the value is not exposed.
 4. **Host Configuration:** Complete host stack description per {{device-under-test-dut-identification}} including NIC firmware, driver, collective library version, and any tuning. For UET tests, additionally report: UEC compliance profile, libfabric provider version, NIC UEC firmware version, and enabled optional features (LLR, Packet Trimming, Packet Rate Improvement (PRI), CBFC).
 5. **Test Results:** For each test from {{test-rdma}} through {{test-soak}}, provide specified tables, graphs, and statistical summaries. For {{test-uec}} tests, results include side-by-side UET vs. RoCEv2 comparison data on the identical DUT fabric.
 6. **Anomalies:** Any deviations from specified procedures, test failures, or unexpected behaviors are documented.
 7. **Repeatability Statement:** Report iteration count and coefficient of variation (std deviation / mean) for each test's primary metric. A CV of 5% is an illustrative reference point for typical run-to-run variation; per the charter disclaimer above, this document does not set a required or minimum threshold for test validity.
 8. **Comparability Statement:** When a report compares two or more fabrics, tabulate the comparability set of {{comparability-normalization}} for each result and state explicitly which parameters differ. Reports comparing fabrics of different topology class additionally provide the structural descriptors listed in that section. Reports that present results from a single fabric do not require this section.
+9. **Observation Points:** State the Observation Point, as defined in {{TERMINOLOGY}}, of each reported value. ECN Marking Ratio, PFC Pause Count, PFC Pause Duration, and Queue Depth are reported together with the ports, direction, and traffic class over which they were collected, and with the offered load and incast ratio in effect.
+10. **Trial Accounting:** Trials follow the phase structure of {{RFC2544}} Section 23. State the Warmup Period applied before each measurement interval and whether counters were cleared or snapshotted at its start. Samples from convergence and recovery intervals are reported only by the tests that define those intervals (e.g., {{dcqcn-convergence-time}}, {{link-failure-convergence}}) and are not pooled with steady-state samples. Report the number of trials discarded (aborted, not at steady state by the end of the Warmup Period, or with a counter reset during the measurement interval) and the reason for each.
 
 # Security Considerations
 
