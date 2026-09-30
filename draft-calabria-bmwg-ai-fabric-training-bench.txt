@@ -1646,7 +1646,8 @@ Table of Contents
 
    Results from collective communication benchmarks (Section 9) MUST be
    reported per the reporting requirements stated in the BusBW
-   definition of [TERMINOLOGY].
+   definition of [TERMINOLOGY].  The report identifies this document and
+   [TERMINOLOGY] by name and revision.
 
    Test reports include the following sections:
 
