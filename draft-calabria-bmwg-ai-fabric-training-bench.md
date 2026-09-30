@@ -898,7 +898,7 @@ The objective of the soak test is to monitor and document fabric behavior under 
 
 Per the BMWG charter, the definition of acceptance criteria or performance requirements is explicitly outside the scope of this Working Group. This methodology defines what is measured and how it is reported; it does not set minimum acceptable values, certification, or pass/fail criteria. Any deployment-specific performance objectives are outside the scope of this document.
 
-Results from collective communication benchmarks ({{test-collective}}) MUST be reported per the reporting requirements stated in the BusBW definition of {{TERMINOLOGY}}.
+Results from collective communication benchmarks ({{test-collective}}) MUST be reported per the reporting requirements stated in the BusBW definition of {{TERMINOLOGY}}. The report identifies this document and {{TERMINOLOGY}} by name and revision.
 
 Test reports include the following sections:
 
