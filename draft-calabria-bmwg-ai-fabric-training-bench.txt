@@ -1669,7 +1669,8 @@ Table of Contents
         as interchangeable, even when they carry the same metric name.
         For DUT-reported values, the report additionally states the
         port, direction (ingress or egress), and traffic class to which
-        the value applies, per the black-box carve-out in [TERMINOLOGY].
+        the value applies, per the Observation Point definition in
+        [TERMINOLOGY].
 
    5.   *Host Configuration:* Complete host stack description per
         Section 3.3 including NIC firmware, driver, collective library
@@ -1735,13 +1736,11 @@ Table of Contents
    of a misconfigured test beyond the immediate DUT; DCQCN reduces, but
    does not eliminate, reliance on these mechanisms.
 
-   Benchmarking is performed on a "black-box" basis, relying solely on
+   Benchmarking is performed on a "black-box" basis, relying on
    measurements observable external to the DUT as defined in
-   [TERMINOLOGY].  Counters or telemetry read from the DUT itself (e.g.,
-   switch queue occupancy, ECN-marked packet counts, PFC PAUSE counts)
-   are a bounded exception to this principle per the black-box carve-out
-   in [TERMINOLOGY], reported as DUT-reported rather than independently
-   observed.
+   [TERMINOLOGY].  DUT-reported values (e.g., switch queue occupancy)
+   are used only under the conditions stated in the Security
+   Considerations of [TERMINOLOGY].
 
    Special capabilities SHOULD NOT exist in the DUT specifically for
    benchmarking purposes.  Any implications for network security arising
