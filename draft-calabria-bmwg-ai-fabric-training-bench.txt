@@ -5,13 +5,13 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 3 April 2027                               Blue Fern Consulting
+Expires: 4 April 2027                               Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
                                                                 S. Reddy
                                                                    Apple
-                                                       30 September 2026
+                                                          1 October 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 April 2027.
+   This Internet-Draft will expire on 4 April 2027.
 
 Copyright Notice
 
@@ -1673,10 +1673,11 @@ Table of Contents
 
    5.   *Host Configuration:* Complete host stack description per
         Section 3.3 including NIC firmware, driver, collective library
-        version, and any tuning.  For UET tests, additionally report:
-        UEC compliance profile, libfabric provider version, NIC UEC
-        firmware version, and enabled optional features (LLR, Packet
-        Trimming, Packet Rate Improvement (PRI), CBFC).
+        version, and any tuning.  For UET tests, additional
+        configuration parameters include: UEC compliance profile,
+        libfabric provider version, NIC UEC firmware version, and
+        enabled optional features (LLR, Packet Trimming, Packet Rate
+        Improvement (PRI), CBFC).
 
    6.   *Test Results:* For each test from Section 5 through Section 12,
         provide specified tables, graphs, and statistical summaries.
@@ -1698,9 +1699,8 @@ Table of Contents
    9.   *Repeatability Statement:* Report iteration count and
         coefficient of variation (std deviation / mean) for each test's
         primary metric.  A CV of 5% is an illustrative reference point
-        for typical run-to-run variation; per the charter disclaimer
-        above, this document does not set a required or minimum
-        threshold for test validity.
+        for typical run-to-run variation; Note that this document does
+        not set a required or minimum threshold for test validity.
 
    10.  *Comparability Statement:* When a report compares two or more
         fabrics, tabulate the comparability set of Section 3.2 for each
