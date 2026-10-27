@@ -339,9 +339,10 @@ Results obtained on two different fabrics are compared directly for the KPIs in 
 | Collective type, message size S, and algo_factor | Definition of the offered workload |
 | Transport (RoCEv2 or UET), and for UET the transport service | Loss and retransmission semantics differ by transport |
 | Load balancing strategy | Comparisons are made strategy by strategy |
+| Observation Point of each compared value, per {{TERMINOLOGY}} | Values obtained at different Observation Points are not interchangeable, even when they carry the same metric name; for DUT-reported values the port, direction, and traffic class also match |
 {: #tab-comparability-set title="Comparability Set"}
 
-When any parameter in {{tab-comparability-set}} differs, the results are reported side by side with the difference stated, and are not combined into a single comparative figure.
+When any parameter in {{tab-comparability-set}} differs, the results are reported side by side with the difference stated, and are not combined into a single comparative figure. The Observation Point row restates, as a comparability condition, the rule given with the term in {{TERMINOLOGY}} and in item 4 of {{reporting}}.
 
 Topology class is a reported test condition, not a parameter that normalization removes. Two fabrics of different topology class that match on {{tab-comparability-set}} are compared for the KPIs in {{tab-normalization-basis}}, and the report states, for each result: the topology class; the switch tier count; the typical and worst-case hop count for the measured traffic pattern; the number of equal-cost paths available between a source-destination pair; and the bisection bandwidth. Such a comparison characterizes the topologies under the offered workload; it does not attribute the observed difference to any single fabric component.
 
