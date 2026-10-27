@@ -5,13 +5,13 @@
 BMWG                                                         F. Calabria
 Internet-Draft                                                     Cisco
 Intended status: Informational                              C. Pignataro
-Expires: 28 March 2027                              Blue Fern Consulting
+Expires: 30 April 2027                              Blue Fern Consulting
                                                                    Q. Wu
                                                              G. Fioccola
                                                                   Huawei
                                                                 S. Reddy
                                                                    Apple
-                                                       24 September 2026
+                                                         27 October 2026
 
 
         Benchmarking Methodology for AI Training Network Fabrics
@@ -79,7 +79,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 March 2027.
+   This Internet-Draft will expire on 30 April 2027.
 
 Copyright Notice
 
@@ -527,41 +527,53 @@ Table of Contents
    the KPIs in Table 3 when every parameter in Table 4 is equal and
    reported for both results.
 
-       +===========================+===============================+
-       | Parameter                 | Why it must match             |
-       +===========================+===============================+
-       | Participating accelerator | Collective cost depends on N  |
-       | count N                   | through algo_factor and       |
-       |                           | through fabric path length    |
-       +---------------------------+-------------------------------+
-       | Accelerators per node,    | Determines the fabric-visible |
-       | and their placement and   | fraction of collective        |
-       | rail mapping              | traffic (Section 3.2.5)       |
-       +---------------------------+-------------------------------+
-       | B_acc, the per-           | Denominator of Roofline_seq   |
-       | accelerator Ethernet line | and of BusBW efficiency       |
-       | rate at the DUT boundary  |                               |
-       +---------------------------+-------------------------------+
-       | Leaf oversubscription     | Determines whether the fabric |
-       | ratio                     | can satisfy the offered       |
-       |                           | pattern                       |
-       +---------------------------+-------------------------------+
-       | Collective type, message  | Definition of the offered     |
-       | size S, and algo_factor   | workload                      |
-       +---------------------------+-------------------------------+
-       | Transport (RoCEv2 or      | Loss and retransmission       |
-       | UET), and for UET the     | semantics differ by transport |
-       | transport service         |                               |
-       +---------------------------+-------------------------------+
-       | Load balancing strategy   | Comparisons are made strategy |
-       |                           | by strategy                   |
-       +---------------------------+-------------------------------+
+    +=====================+==========================================+
+    | Parameter           | Why it must match                        |
+    +=====================+==========================================+
+    | Participating       | Collective cost depends on N through     |
+    | accelerator count N | algo_factor and through fabric path      |
+    |                     | length                                   |
+    +---------------------+------------------------------------------+
+    | Accelerators per    | Determines the fabric-visible fraction   |
+    | node, and their     | of collective traffic (Section 3.2.5)    |
+    | placement and rail  |                                          |
+    | mapping             |                                          |
+    +---------------------+------------------------------------------+
+    | B_acc, the per-     | Denominator of Roofline_seq and of BusBW |
+    | accelerator         | efficiency                               |
+    | Ethernet line rate  |                                          |
+    | at the DUT boundary |                                          |
+    +---------------------+------------------------------------------+
+    | Leaf                | Determines whether the fabric can        |
+    | oversubscription    | satisfy the offered pattern              |
+    | ratio               |                                          |
+    +---------------------+------------------------------------------+
+    | Collective type,    | Definition of the offered workload       |
+    | message size S, and |                                          |
+    | algo_factor         |                                          |
+    +---------------------+------------------------------------------+
+    | Transport (RoCEv2   | Loss and retransmission semantics differ |
+    | or UET), and for    | by transport                             |
+    | UET the transport   |                                          |
+    | service             |                                          |
+    +---------------------+------------------------------------------+
+    | Load balancing      | Comparisons are made strategy by         |
+    | strategy            | strategy                                 |
+    +---------------------+------------------------------------------+
+    | Observation Point   | Values obtained at different Observation |
+    | of each compared    | Points are not interchangeable, even     |
+    | value, per          | when they carry the same metric name;    |
+    | [TERMINOLOGY]       | for DUT-reported values the port,        |
+    |                     | direction, and traffic class also match  |
+    +---------------------+------------------------------------------+
 
-                         Table 4: Comparability Set
+                        Table 4: Comparability Set
 
    When any parameter in Table 4 differs, the results are reported side
    by side with the difference stated, and are not combined into a
-   single comparative figure.
+   single comparative figure.  The Observation Point row restates, as a
+   comparability condition, the rule given with the term in
+   [TERMINOLOGY] and in item 4 of Section 13.
 
    Topology class is a reported test condition, not a parameter that
    normalization removes.  Two fabrics of different topology class that
@@ -1646,10 +1658,10 @@ Table of Contents
 
    Results from collective communication benchmarks (Section 9) MUST be
    reported per the reporting requirements stated in the BusBW
-   definition of [TERMINOLOGY].
+   definition of [TERMINOLOGY].  The report identifies this document and
+   [TERMINOLOGY] by name and revision.
 
-   Test reports identify this document and [TERMINOLOGY] by name and
-   revision, and include the following sections:
+   Test reports include the following sections:
 
    1.   *DUT Identification:* Complete parameters from Section 3.3 for
         all fabric components.
@@ -1658,61 +1670,58 @@ Table of Contents
         including physical cabling.
 
    3.   *Test Configuration:* All DUT configuration parameters: QoS
-        policies (ECN marking thresholds, PFC XOFF/XON thresholds and
-        headroom, DCQCN parameters), traffic class and priority mapping
-        for RDMA data and congestion notification packets, Ethernet MTU
-        and RDMA path MTU, load balancing mode, buffer allocation, and
-        vendor-specific tuning.  A parameter left at its vendor default
-        is reported with its default value, or as "vendor default" where
-        the value is not exposed.
+        policies (ECN thresholds, PFC headroom, DCQCN parameters), load
+        balancing mode, buffer allocation, and vendor-specific tuning.
 
-   4.   *Host Configuration:* Complete host stack description per
+   4.   *Observation Points:* For each reported value, state the
+        Observation Point per [TERMINOLOGY]: the Fabric DUT Boundary,
+        DUT-reported telemetry read from the DUT itself, or an endpoint
+        software boundary.  Values obtained at different Observation
+        Points are not combined into a single reported value or treated
+        as interchangeable, even when they carry the same metric name.
+        For DUT-reported values, the report additionally states the
+        port, direction (ingress or egress), and traffic class to which
+        the value applies, per the Observation Point definition in
+        [TERMINOLOGY].
+
+   5.   *Host Configuration:* Complete host stack description per
         Section 3.3 including NIC firmware, driver, collective library
-        version, and any tuning.  For UET tests, additionally report:
-        UEC compliance profile, libfabric provider version, NIC UEC
-        firmware version, and enabled optional features (LLR, Packet
-        Trimming, Packet Rate Improvement (PRI), CBFC).
+        version, and any tuning.  For UET tests, additional
+        configuration parameters include: UEC compliance profile,
+        libfabric provider version, NIC UEC firmware version, and
+        enabled optional features (LLR, Packet Trimming, Packet Rate
+        Improvement (PRI), CBFC).
 
-   5.   *Test Results:* For each test from Section 5 through Section 12,
+   6.   *Test Results:* For each test from Section 5 through Section 12,
         provide specified tables, graphs, and statistical summaries.
         For Section 6 tests, results include side-by-side UET vs. RoCEv2
         comparison data on the identical DUT fabric.
 
-   6.   *Anomalies:* Any deviations from specified procedures, test
+   7.   *Anomalies:* Any deviations from specified procedures, test
         failures, or unexpected behaviors are documented.
 
-   7.   *Repeatability Statement:* Report iteration count and
+   8.   *Trial Accounting:* For each test, report the number of trials
+        attempted and the number included in the primary result.  A
+        trial excluded from the primary result states the reason:
+        failure to reach steady state within the configured observation
+        window, a counter reset or discontinuity, an incomplete
+        measurement window, or a retransmission or loss event outside
+        the scope of the test objective.  Excluded trials are reported,
+        not silently dropped from the trial count.
+
+   9.   *Repeatability Statement:* Report iteration count and
         coefficient of variation (std deviation / mean) for each test's
         primary metric.  A CV of 5% is an illustrative reference point
-        for typical run-to-run variation; per the charter disclaimer
-        above, this document does not set a required or minimum
-        threshold for test validity.
+        for typical run-to-run variation; Note that this document does
+        not set a required or minimum threshold for test validity.
 
-   8.   *Comparability Statement:* When a report compares two or more
+   10.  *Comparability Statement:* When a report compares two or more
         fabrics, tabulate the comparability set of Section 3.2 for each
         result and state explicitly which parameters differ.  Reports
         comparing fabrics of different topology class additionally
         provide the structural descriptors listed in that section.
         Reports that present results from a single fabric do not require
         this section.
-
-   9.   *Observation Points:* State the Observation Point, as defined in
-        [TERMINOLOGY], of each reported value.  ECN Marking Ratio, PFC
-        Pause Count, PFC Pause Duration, and Queue Depth are reported
-        together with the ports, direction, and traffic class over which
-        they were collected, and with the offered load and incast ratio
-        in effect.
-
-   10.  *Trial Accounting:* Trials follow the phase structure of
-        [RFC2544] Section 23.  State the Warmup Period applied before
-        each measurement interval and whether counters were cleared or
-        snapshotted at its start.  Samples from convergence and recovery
-        intervals are reported only by the tests that define those
-        intervals (e.g., Section 7.3, Section 11.2) and are not pooled
-        with steady-state samples.  Report the number of trials
-        discarded (aborted, not at steady state by the end of the Warmup
-        Period, or with a counter reset during the measurement interval)
-        and the reason for each.
 
 14.  Security Considerations
 
@@ -1739,9 +1748,11 @@ Table of Contents
    of a misconfigured test beyond the immediate DUT; DCQCN reduces, but
    does not eliminate, reliance on these mechanisms.
 
-   Benchmarking is performed on a "black-box" basis, relying solely on
+   Benchmarking is performed on a "black-box" basis, relying on
    measurements observable external to the DUT as defined in
-   [TERMINOLOGY].
+   [TERMINOLOGY].  DUT-reported values (e.g., switch queue occupancy)
+   are used only under the conditions stated in the Security
+   Considerations of [TERMINOLOGY].
 
    Special capabilities SHOULD NOT exist in the DUT specifically for
    benchmarking purposes.  Any implications for network security arising
@@ -1835,9 +1846,9 @@ Table of Contents
               Calabria, F., Pignataro, C., Wu, Q., Fioccola, G., and S.
               Reddy, "Benchmarking Terminology for AI Network Fabrics",
               Work in Progress, Internet-Draft, draft-calabria-bmwg-ai-
-              fabric-terminology-04, 12 August 2026,
+              fabric-terminology-05, 8 October 2026,
               <https://datatracker.ietf.org/doc/html/draft-calabria-
-              bmwg-ai-fabric-terminology-04>.
+              bmwg-ai-fabric-terminology-05>.
 
    [UEC-1.0]  Ultra Ethernet Consortium, "Ultra Ethernet Transport (UET)
               Specification 1.0", June 2025,
@@ -1864,9 +1875,9 @@ Table of Contents
               Calabria, F., Pignataro, C., Wu, Q., Fioccola, G., and S.
               Reddy, "Benchmarking Methodology for AI Inference Serving
               Network Fabrics", Work in Progress, Internet-Draft, draft-
-              calabria-bmwg-ai-fabric-inference-bench-04, 12 August
+              calabria-bmwg-ai-fabric-inference-bench-05, 8 October
               2026, <https://datatracker.ietf.org/doc/html/draft-
-              calabria-bmwg-ai-fabric-inference-bench-04>.
+              calabria-bmwg-ai-fabric-inference-bench-05>.
 
    [LIBFABRIC]
               OpenFabrics Interfaces Working Group, "libfabric: Open
