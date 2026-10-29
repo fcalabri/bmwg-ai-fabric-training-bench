@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-04T05:28:42.253420+00:00",
+  "timestamp": "2026-10-29T05:23:39.907556+00:00",
   "repo": "fcalabri/bmwg-ai-fabric-training-bench",
   "labels": [
     {
@@ -1737,6 +1737,50 @@
           "body": "Good, thank for addressing this inconsistency issue.",
           "createdAt": "2026-10-01T11:32:01Z",
           "updatedAt": "2026-10-01T11:32:01Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 51,
+      "id": "PR_kwDORX7w2M8AAAABLDEI9w",
+      "title": "Observation Point - Table 4 ",
+      "url": "https://github.com/fcalabri/bmwg-ai-fabric-training-bench/pull/51",
+      "state": "MERGED",
+      "author": "fcalabri",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "fcalabri"
+      ],
+      "labels": [],
+      "body": "Table 4 update - Observation Point",
+      "createdAt": "2026-10-27T15:15:42Z",
+      "updatedAt": "2026-10-27T18:29:17Z",
+      "baseRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "baseRefName": "main",
+      "baseRefOid": "a2c60226e3c77cad1814394121f231e8e41233a7",
+      "headRepository": "fcalabri/bmwg-ai-fabric-training-bench",
+      "headRefName": "06-Observation_Point",
+      "headRefOid": "ef76deb4ba3bacdddf16893fa8a922cfcbae6474",
+      "closedAt": "2026-10-27T18:29:17Z",
+      "mergedAt": "2026-10-27T18:29:17Z",
+      "mergedBy": "cpignata",
+      "mergeCommit": {
+        "oid": "387289167b330360468af42b737438e3b74de235"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDORX7w2M8AAAABUhjwUg",
+          "commit": {
+            "abbreviatedOid": "ef76deb"
+          },
+          "author": "cpignata",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-27T18:28:54Z",
+          "updatedAt": "2026-10-27T18:28:55Z",
           "comments": []
         }
       ]
