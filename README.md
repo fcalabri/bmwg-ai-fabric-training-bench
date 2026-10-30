@@ -4,10 +4,10 @@
 
 This is the working area for the individual Internet-Draft, "Benchmarking Methodology for AI Training Network Fabrics".
 
-* [Editor's Copy](https://fcalabri.github.io/bmwg-ai-fabric-training-bench/#go.draft-calabria-bmwg-ai-fabric-training-bench.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-calabria-bmwg-ai-fabric-training-bench)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-calabria-bmwg-ai-fabric-training-bench)
-* [Compare Editor's Copy to Individual Draft](https://fcalabri.github.io/bmwg-ai-fabric-training-bench/#go.draft-calabria-bmwg-ai-fabric-training-bench.diff)
+* [Editor's Copy](https://fcalabri.github.io/bmwg-ai-fabric-training-bench/#go.draft-calabria-bpm-ai-fabric-training-bench.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-calabria-bpm-ai-fabric-training-bench)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-calabria-bpm-ai-fabric-training-bench)
+* [Compare Editor's Copy to Individual Draft](https://fcalabri.github.io/bmwg-ai-fabric-training-bench/#go.draft-calabria-bpm-ai-fabric-training-bench.diff)
 
 
 ## Contributing

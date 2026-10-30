@@ -1,13 +1,13 @@
 ---
 title: "Benchmarking Methodology for AI Training Network Fabrics"
 abbrev: "AI Training Fabric Benchmarking"
-docname: draft-calabria-bmwg-ai-fabric-training-bench-latest
+docname: draft-calabria-bpm-ai-fabric-training-bench-latest
 category: info
 
 submissiontype: IETF
 ipr: trust200902
 area: "Operations and Management"
-workgroup: "BMWG"
+workgroup: "BPM"
 keyword: Internet-Draft
 
 stand_alone: yes
@@ -20,7 +20,7 @@ venue:
   type: Working Group
   mail: bmwg@ietf.org
   github: "fcalabri/bmwg-ai-fabric-training-bench"
-  latest: "https://fcalabri.github.io/bmwg-ai-fabric-training-bench/draft-calabria-bmwg-ai-fabric-training-bench.html"
+  latest: "https://fcalabri.github.io/bmwg-ai-fabric-training-bench/draft-calabria-bpm-ai-fabric-training-bench.html"
 
 author:
   - name: Fernando Calabria
@@ -62,11 +62,11 @@ normative:
       - org: Ultra Ethernet Consortium
     date: 2025-06
     target: "https://ultraethernet.org"
-  TERMINOLOGY: I-D.calabria-bmwg-ai-fabric-terminology
+  TERMINOLOGY: I-D.calabria-bpm-ai-fabric-terminology
 
 informative:
   RFC3849:
-  INFERENCE-BENCH: I-D.calabria-bmwg-ai-fabric-inference-bench
+  INFERENCE-BENCH: I-D.calabria-bpm-ai-fabric-inference-bench
   EVPN-BENCH:
     title: "Benchmarking Methodology for EVPN and PBB-EVPN"
     author:
